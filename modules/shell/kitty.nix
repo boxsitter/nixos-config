@@ -4,7 +4,8 @@
 {
   # Install JetBrains Mono Nerd Font
   fonts.packages = [
-    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    pkgs.nerd-fonts._0xproto
+           pkgs.nerd-fonts.droid-sans-mono
   ];
 
   # Just install Kitty system-wide
@@ -20,5 +21,6 @@
     
     # Catppuccin Macchiato theme
     include ${pkgs.kitty-themes}/share/kitty-themes/themes/Catppuccin-Macchiato.conf
+        cursor_shape beam
   '';
 }

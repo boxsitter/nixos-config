@@ -7,10 +7,10 @@
     enable = true;
     displayManager.sddm.enable = true;
     desktopManager.plasma6.enable = true;
+    dpi = 140;
   };
 
   # Enable sound with pipewire
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -23,8 +23,6 @@
   # Install KDE applications and utilities
   environment.systemPackages = with pkgs; [
     # Essential KDE applications
-    kdePackages.kate
-    kdePackages.konsole
     kdePackages.dolphin
     kdePackages.spectacle
     kdePackages.ark
