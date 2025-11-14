@@ -4,6 +4,9 @@
 
 {
   imports = [
+    # Copy /etc/nixos/hardware-configuration.nix to your config directory
+    # Then use: ../hardware-configuration.nix
+    # For now, this will cause an error until you copy the file
     /etc/nixos/hardware-configuration.nix
   ];
   # GRUB bootloader configuration for dual-boot
@@ -42,44 +45,50 @@
   # Intel WiFi firmware and drivers
   hardware.enableAllFirmware = true;
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-  };
+  # Use latest kernel for best NVIDIA support
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  
+  # Kernel parameters for NVIDIA RTX 5080 with DSC support
   boot.kernelParams = [
-    "nvidia-drm.modeset=1"
-    "nvidia-drm.fbdev=1"
-    "video=DP-2:7680x2160@240"
+    "nvidia-drm.modeset=1"           # Enable modesetting
+    "nvidia-drm.fbdev=1"             # Enable framebuffer device
+    "nvidia.NVreg_EnableGpuFirmware=1"  # Enable GPU firmware loading
+    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"  # Better power management
+    "nvidia.NVreg_TemporaryFilePath=/var/tmp"  # Temp file location
   ];
 
-  # Graphics drivers configuration
+  # Blacklist nouveau driver
   boot.blacklistedKernelModules = [ "nouveau" ];
+  
+  # Set NVIDIA as the video driver
   services.xserver.videoDrivers = [ "nvidia" ];
-  # Change to "amdgpu" for AMD or remove for Intel integrated
+  
+  # Graphics configuration (replaces deprecated hardware.opengl)
   hardware.graphics = {
     enable = true;
-    enable32Bit = true; # For 32-bit applications
+    enable32Bit = true;  # For 32-bit applications and games
   };
 
-  # NVIDIA configuration (comment out if not using NVIDIA)
+  # NVIDIA RTX 5080 configuration
   hardware.nvidia = {
+    # Use open-source kernel modules (recommended for RTX 40/50 series)
     open = true;
+    
+    # Required for most Wayland compositors and proper display configuration
     modesetting.enable = true;
-    # Disable power management during troubleshooting
-    powerManagement.enable = false;
+    
+    # Enable power management (helps with display issues)
+    powerManagement.enable = true;
     powerManagement.finegrained = false;
+    
+    # Enable nvidia-settings GUI
     nvidiaSettings = true;
-    # Use the 'production' driver for newer hardware support
+    
+    # Use beta/production driver for RTX 5080 support
+    # RTX 5000 series requires very recent drivers
     package = config.boot.kernelPackages.nvidiaPackages.beta;
-
-    prime = {
-      reverseSync.enable = false;
-      offload.enable = true;
-
-      nvidiaBusId = "PCI:1:0:0";
-      amdgpuBusId = "PCI:4:0:0";
-    };
+    
+    # No hybrid graphics setup needed - single GPU system
   };
 
   time.timeZone = "America/Los_Angeles";
@@ -108,9 +117,7 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      pulseaudio = true;
       nvidia.acceptLicense = true;
-      packageOverrides = pkgs: { inherit (pkgs) linuxPackages_latest nvidia_x11; };
     };
   };
 
@@ -139,6 +146,6 @@
     enable = true;
     # Certain features, including CLI integration and system authentication support,
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = [ "yourUsernameHere" ];
+    polkitPolicyOwners = [ "leyton" ];
   };
 }
