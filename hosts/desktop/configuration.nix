@@ -5,8 +5,8 @@
 
 {
   imports = [
-    # Hardware detection
-    ./hardware-configuration.nix
+    # Hardware detection - references the system's hardware config
+    /etc/nixos/hardware-configuration.nix
     
     # Shared modules
     ../../modules/core.nix

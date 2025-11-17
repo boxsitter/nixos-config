@@ -20,8 +20,6 @@
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/desktop/configuration.nix
-          ./hosts/desktop/hardware-configuration.nix
-          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -39,8 +37,6 @@
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/vm/configuration.nix
-          ./hosts/vm/hardware-configuration.nix
-          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -58,8 +54,6 @@
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/wsl/configuration.nix
-          ./hosts/wsl/hardware-configuration.nix
-          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
