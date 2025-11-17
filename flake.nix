@@ -1,6 +1,6 @@
 # ./flake.nix
 {
-  description = "A NixOS configuration for KDE Plasma";
+  description = "NixOS configurations for desktop, VM, and WSL";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,17 +8,46 @@
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
-    # Replace "nixos" with your actual hostname
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
+    nixosConfigurations = {
+      # Desktop with NVIDIA RTX 5080 and Hyprland
+      desktop = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.catppuccin.nixosModules.catppuccin
+          ./hosts/desktop/configuration.nix
+        ];
       };
-      modules = [
-        inputs.catppuccin.nixosModules.catppuccin
-        # --- CHANGE THIS LINE ---
-        ./configuration.nix # Use the relative path to the file
-      ];
+
+      # VirtualBox VM with Hyprland
+      vm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.catppuccin.nixosModules.catppuccin
+          ./hosts/vm/configuration.nix
+        ];
+      };
+
+      # WSL2 - no GUI, minimal config
+      wsl = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.catppuccin.nixosModules.catppuccin
+          ./hosts/wsl/configuration.nix
+        ];
+      };
+
+      # Legacy alias for backward compatibility
+      nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.catppuccin.nixosModules.catppuccin
+          ./hosts/desktop/configuration.nix
+        ];
+      };
     };
   };
 }
