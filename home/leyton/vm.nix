@@ -33,6 +33,7 @@
   # Hyprland window manager configuration (same as desktop)
   wayland.windowManager.hyprland = {
     enable = true;
+    catppuccin.enable = true;
     settings = {
       "$mod" = "SUPER";
       
@@ -112,18 +113,18 @@
   ];
 
   # GTK theme
-  gtk = {
-    enable = true;
-    catppuccin.enable = true;
-  };
+  gtk.enable = true;
 
-  # Qt theme with Catppuccin
+  # Qt theme
   qt = {
     enable = true;
     platformTheme.name = "kvantum";
-    style = {
-      name = "kvantum";
-      catppuccin.enable = true;
-    };
+    style.name = "kvantum";
   };
+  
+  # Add kvantum for Qt theming
+  home.packages = with pkgs; [
+    libsForQt5.qtstyleplugin-kvantum
+    qt6Packages.qtstyleplugin-kvantum
+  ];
 }
