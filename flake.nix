@@ -20,6 +20,7 @@
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/desktop/configuration.nix
+          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -33,10 +34,13 @@
       # VirtualBox VM with Hyprland
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        config = import ./hosts/vm/hardware-configuration.nix;
+        config
         specialArgs = { inherit inputs; };
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/vm/configuration.nix
+          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -54,28 +58,12 @@
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
           ./hosts/wsl/configuration.nix
+          config
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/wsl.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-        ];
-      };
-
-      # Legacy alias for backward compatibility
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          inputs.catppuccin.nixosModules.catppuccin
-          ./hosts/desktop/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.leyton = import ./home/leyton/desktop.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
           }
         ];
