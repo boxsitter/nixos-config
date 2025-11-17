@@ -16,6 +16,7 @@
       # Desktop with NVIDIA RTX 5080 and Hyprland
       desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        config = import ./hosts/desktop/hardware-configuration.nix;
         specialArgs = { inherit inputs; };
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
@@ -35,7 +36,6 @@
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         config = import ./hosts/vm/hardware-configuration.nix;
-        config
         specialArgs = { inherit inputs; };
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
@@ -54,6 +54,7 @@
       # WSL2 - no GUI, minimal config
       wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        config = import ./hosts/wsl/hardware-configuration.nix;
         specialArgs = { inherit inputs; };
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
