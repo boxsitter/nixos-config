@@ -148,6 +148,7 @@
     slurp
     hyprpaper
     hyprlock
+    wofi  # App launcher
     
     # Applications
     firefox

@@ -108,6 +108,7 @@
     slurp
     hyprpaper
     hyprlock
+    wofi  # App launcher
     firefox
     vlc
     
