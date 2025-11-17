@@ -13,11 +13,13 @@
   catppuccin = {
     enable = true;
     flavor = "macchiato";
+    accent = "mauve";
   };
 
   # Kitty terminal with Catppuccin theme
   programs.kitty = {
     enable = true;
+    catppuccin.enable = true;
     font = {
       name = "0xProto Nerd Font";
       size = 14;
@@ -26,7 +28,6 @@
       background_opacity = "0.9";
       cursor_shape = "beam";
     };
-    theme = "Catppuccin-Macchiato";
   };
 
   # Hyprland window manager configuration
@@ -138,11 +139,6 @@
     catppuccin.enable = true;
   };
 
-  # Wofi launcher
-  programs.wofi = {
-    enable = true;
-  };
-
   # Desktop-specific packages
   home.packages = with pkgs; [
     # Wayland utilities
@@ -160,16 +156,16 @@
   # GTK theme (for file pickers, etc.)
   gtk = {
     enable = true;
-    catppuccin = {
-      enable = true;
-      flavor = "macchiato";
-      accent = "mauve";
-    };
+    catppuccin.enable = true;
   };
 
-  # Qt theme
+  # Qt theme with Catppuccin
   qt = {
     enable = true;
-    platformTheme.name = "gtk";
+    platformTheme.name = "kvantum";
+    style = {
+      name = "kvantum";
+      catppuccin.enable = true;
+    };
   };
 }
