@@ -152,6 +152,10 @@
     # Applications
     firefox
     vlc
+    
+    # Qt theming
+    libsForQt5.qtstyleplugin-kvantum
+    qt6Packages.qtstyleplugin-kvantum
   ];
 
   # GTK theme (for file pickers, etc.)
@@ -163,10 +167,4 @@
     platformTheme.name = "kvantum";
     style.name = "kvantum";
   };
-  
-  # Add kvantum for Qt theming
-  home.packages = with pkgs; [
-    libsForQt5.qtstyleplugin-kvantum
-    qt6Packages.qtstyleplugin-kvantum
-  ];
 }
