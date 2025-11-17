@@ -15,11 +15,12 @@
     enable = true;
     settings = {
       default_session = {
-        # Start a user session with Hyprland
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+        # Start a user session with Hyprland wrapped in dbus
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd 'dbus-run-session ${pkgs.hyprland}/bin/Hyprland'";
         user = "greeter";
       };
     };
+    vt = 1;
   };
 
   # Audio: PipeWire with PulseAudio compatibility
