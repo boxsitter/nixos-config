@@ -15,8 +15,8 @@
     enable = true;
     settings = {
       default_session = {
-        # Start a user session with Hyprland under dbus-run-session
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --remember-user --time --cmd Hyprland";
+        # Start a user session with Hyprland
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
         user = "greeter";
       };
     };
