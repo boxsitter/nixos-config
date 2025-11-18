@@ -20,7 +20,6 @@
         user = "greeter";
       };
     };
-    vt = 1;
   };
 
   # Audio: PipeWire with PulseAudio compatibility
