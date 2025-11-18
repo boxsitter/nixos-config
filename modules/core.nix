@@ -1,7 +1,7 @@
 # ./modules/core.nix
 # Shared base configuration for all systems
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Configure console with a modern font and Catppuccin theme
@@ -14,7 +14,7 @@
   };
 
   # Networking - common across systems
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = lib.mkDefault true;
 
   # Time and locale
   time.timeZone = "America/Los_Angeles";
