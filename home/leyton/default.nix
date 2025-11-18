@@ -35,8 +35,12 @@
   # Git
   programs.git = {
     enable = true;
-    userName = "Leyton Houck";
-    userEmail = "leyton@example.com";
+    settings = {
+      user = {
+        name = "Leyton Houck";
+        email = "leyton@example.com";
+      };
+    };
   };
 
   # Basic packages
