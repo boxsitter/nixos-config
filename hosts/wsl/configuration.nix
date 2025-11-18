@@ -11,6 +11,12 @@
     # Note: No kitty.nix - terminal is provided by Windows
   ];
 
+  # Enable WSL integration
+  wsl = {
+    enable = true;
+    defaultUser = "leyton";
+  };
+
   # Set the flavor system-wide for Catppuccin modules
   catppuccin.flavor = "macchiato";
 
