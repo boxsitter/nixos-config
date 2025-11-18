@@ -98,6 +98,11 @@
         vfr = true;
         disable_hyprland_logo = true;
       };
+      
+      # VirtualBox compatibility
+      render = {
+        explicit_sync = 0;  # Disable for VirtualBox
+      };
     };
   };
 

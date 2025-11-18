@@ -51,12 +51,10 @@
     greetd.tuigreet
   ];
 
-  # NVIDIA + Wayland friendly environment
+  # Wayland environment variables
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";                # Prefer Wayland for Electron/Chromium apps
-    WLR_NO_HARDWARE_CURSORS = "1";      # Workaround for NVIDIA cursor glitches
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";         # GBM backend for NVIDIA
-    LIBVA_DRIVER_NAME = "nvidia";       # VA-API via NVIDIA
+    WLR_NO_HARDWARE_CURSORS = "1";      # Workaround for cursor glitches
+    WLR_RENDERER_ALLOW_SOFTWARE = "1";  # Allow software rendering fallback
   };
 }
