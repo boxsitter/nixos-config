@@ -1,0 +1,76 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    "logo": {
+        "type": "auto",
+        "padding": {
+            "top": 0,
+            "left": 1
+        }
+    },
+    "modules": [
+        {
+            "type": "custom",
+            "format": "\u001b[90m┌────────────────────────────NixOS──────────────────────────────┐"
+        },
+        {
+            "type": "title",
+            "key": "   PC",
+            "keyColor": "blue"
+        },
+        {
+            "type": "cpu",
+            "key": "  ├ ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "gpu",
+            "key": "  ├󰍛 ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "memory",
+            "key": "  ├󰍛 ",
+            "keyColor": "blue"
+        },
+        {
+            "type": "disk",
+            "key": "  └󱛟 ",
+            "keyColor": "blue"
+        },
+        "break",
+        {
+            "type": "os",
+            "key": "   OS",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "kernel",
+            "key": "  ├ ",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "wm",
+            "key": "  ├ ",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "packages",
+            "key": "  ├󰏖 ",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "shell",
+            "key": "  └ ",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "custom",
+            "format": "\u001b[90m└────────────────────────────────────────────────────────────────┘"
+        },
+        {
+            "type": "colors",
+            "paddingLeft": 2,
+            "symbol": "circle"
+        }
+    ]
+}
