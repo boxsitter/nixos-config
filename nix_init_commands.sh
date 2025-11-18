@@ -9,11 +9,9 @@ exit
 cd ~/nixos-config
 
 # For desktop:
-HOSTNAME=desktop
 # For VM:
 # HOSTNAME=vm
 # For WSL:
 # HOSTNAME=wsl
-
 sudo nixos-rebuild switch --flake .#$HOSTNAME
 sudo reboot
