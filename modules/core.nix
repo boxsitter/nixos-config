@@ -53,7 +53,7 @@
     git nano wget curl pciutils usbutils lshw htop tree
 
     # Shell and terminal
-    fish neofetch eza starship
+    fish fastfetch eza starship
 
     # Development tools
     vscode gcc mono jdk python3 racket bc

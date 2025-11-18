@@ -14,6 +14,7 @@
     shellInit = ''
       starship init fish | source
       set fish_greeting ""
+      fastfetch
     '';
     shellAliases = {
       ls = "eza -F";
@@ -41,6 +42,6 @@
   # Basic packages
   home.packages = with pkgs; [
     eza
-    neofetch
+    fastfetch
   ];
 }
