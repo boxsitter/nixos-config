@@ -6,7 +6,7 @@
 {
   imports = [
     ./default.nix  # Import shared config
-    inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.catppuccin.homeModules.catppuccin
   ];
 
   # Catppuccin theme

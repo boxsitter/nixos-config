@@ -10,8 +10,8 @@
       device = "nodev";
       efiSupport = true;
       useOSProber = true;  # This detects Windows
-      timeout = 10;
     };
+    timeout = 10;
     efi.canTouchEfiVariables = true;
   };
 }
