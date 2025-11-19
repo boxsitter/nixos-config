@@ -23,6 +23,12 @@
     };
   };
 
+  # Direnv for automatic Nix shell activation
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   # Starship prompt
   programs.starship = {
     enable = true;
