@@ -37,10 +37,16 @@
     settings = {
       "$mod" = "SUPER";
       
-      exec-once = [
-        "waybar"
-        "hyprpaper"
-      ];
+      # Debug settings
+      debug = {
+        disable_logs = false;
+      };
+      
+      # Startup applications - commented out for debugging
+      # exec-once = [
+      #   "waybar"
+      #   "hyprpaper"
+      # ];
       
       bind = [
         "$mod, RETURN, exec, kitty"
@@ -91,6 +97,11 @@
       misc = {
         vfr = true;
         disable_hyprland_logo = true;
+      };
+      
+      # VirtualBox compatibility
+      render = {
+        explicit_sync = 0;  # Disable for VirtualBox
       };
     };
   };

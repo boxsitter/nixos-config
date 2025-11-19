@@ -37,11 +37,16 @@
     settings = {
       "$mod" = "SUPER";
       
-      # Startup applications
-      exec-once = [
-        "waybar"
-        "hyprpaper"
-      ];
+      # Debug settings
+      debug = {
+        disable_logs = false;
+      };
+      
+      # Startup applications - commented out for debugging
+      # exec-once = [
+      #   "waybar"
+      #   "hyprpaper"
+      # ];
       
       # Keybindings
       bind = [

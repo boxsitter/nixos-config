@@ -23,6 +23,12 @@
     };
   };
 
+  # Direnv for automatic Nix shell activation
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   # Starship prompt
   programs.starship = {
     enable = true;
@@ -35,8 +41,16 @@
   # Git
   programs.git = {
     enable = true;
-    userName = "Leyton Houck";
-    userEmail = "leyton@example.com";
+    settings = {
+      user = {
+        name = "Leyton Houck";
+        email = "leyton@example.com";
+      };
+      core = {
+        autocrlf = "input";  # Convert CRLF to LF on commit, keep LF on checkout
+        eol = "lf";          # Always use LF in the working directory
+      };
+    };
   };
 
   # Basic packages

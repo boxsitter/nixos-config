@@ -17,6 +17,9 @@
     defaultUser = "leyton";
   };
 
+  # Enable VS Code server for Remote-WSL
+  programs.nix-ld.enable = true;
+
   # Set the flavor system-wide for Catppuccin modules
   catppuccin.flavor = "macchiato";
 

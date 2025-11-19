@@ -8,10 +8,10 @@
   console = {
     font = "${pkgs.terminus_font}/share/consolefonts/ter-v20n.psf.gz";
     packages = with pkgs; [ terminus_font ];
-    catppuccin = {
-      enable = true;
-    };
   };
+  
+  # Catppuccin TTY theme
+  catppuccin.tty.enable = true;
 
   # Networking - common across systems
   networking.networkmanager.enable = lib.mkDefault true;
@@ -53,7 +53,7 @@
     git nano wget curl pciutils usbutils lshw htop tree
 
     # Shell and terminal
-    fish fastfetch eza starship
+    fish fastfetch eza starship direnv
 
     # Development tools
     vscode gcc mono jdk python3 racket bc
