@@ -46,6 +46,10 @@
         name = "Leyton Houck";
         email = "leyton@example.com";
       };
+      core = {
+        autocrlf = "input";  # Convert CRLF to LF on commit, keep LF on checkout
+        eol = "lf";          # Always use LF in the working directory
+      };
     };
   };
 

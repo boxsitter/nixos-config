@@ -1,0 +1,14 @@
+# Ensure all text files use LF line endings in the repository
+* text=auto eol=lf
+
+# Nix files should always use LF
+*.nix text eol=lf
+*.sh text eol=lf
+
+# Explicitly mark these as text files
+*.md text eol=lf
+*.toml text eol=lf
+*.jsonc text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
