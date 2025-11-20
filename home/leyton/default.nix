@@ -53,12 +53,6 @@
     };
   };
 
-  # Basic packages
-  home.packages = with pkgs; [
-    eza
-    fastfetch
-  ];
-
   # Fastfetch configuration
   xdg.configFile."fastfetch/config.jsonc".source = ./dotfiles/fastfetch-config.jsonc;
 }
