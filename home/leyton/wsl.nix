@@ -15,6 +15,11 @@
     end
   '';
 
+  # VS Code via Windows (Remote-WSL)
+  programs.fish.shellAliases = {
+    code = "/mnt/c/Users/leyton/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
+  };
+
   # WSL-specific packages (minimal)
   home.packages = with pkgs; [
     # Add any WSL-specific tools here
