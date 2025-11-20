@@ -30,7 +30,7 @@
   networking.networkmanager.enable = false;  # WSL handles networking
   
   # Disable time sync - WSL syncs time with Windows host
-  services.chrony.enable = false;
+  services.chrony.enable = pkgs.lib.mkForce false;
   
   # WSL doesn't need these
   console.font = null;
