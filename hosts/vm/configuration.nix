@@ -31,6 +31,11 @@
     polkitPolicyOwners = [ "leyton" ];
   };
 
+  # VM-specific packages
+  environment.systemPackages = with pkgs; [
+    vscode
+  ];
+
   # Enable SSH for remote rebuilds from host
   services.openssh = {
     enable = true;

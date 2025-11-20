@@ -56,7 +56,7 @@
     fish fastfetch eza starship direnv
 
     # Development tools
-    vscode gcc mono jdk python3 racket bc
+    gcc mono jdk python3 racket bc
 
     # Archive utilities
     unzip zip

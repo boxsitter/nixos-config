@@ -40,6 +40,7 @@
   environment.systemPackages = with pkgs; [
     os-prober   # For detecting Windows in dual-boot
     ntfs3g      # For Windows partition support
+    vscode
   ];
 
   system.stateVersion = "24.11";
