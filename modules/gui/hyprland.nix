@@ -16,7 +16,7 @@
     settings = {
       default_session = {
         # Start a user session with Hyprland wrapped in dbus
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd 'dbus-run-session ${pkgs.hyprland}/bin/Hyprland'";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'dbus-run-session ${pkgs.hyprland}/bin/Hyprland'";
         user = "greeter";
       };
     };
@@ -24,7 +24,7 @@
 
   # Audio: PipeWire with PulseAudio compatibility
   security.rtkit.enable = true;
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -48,7 +48,7 @@
   # User apps (kitty, waybar, etc.) are now in Home Manager
   environment.systemPackages = with pkgs; [
     # Only essential system-level tools
-    greetd.tuigreet
+    tuigreet
   ];
 
   # Wayland environment variables

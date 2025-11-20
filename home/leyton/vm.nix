@@ -6,20 +6,22 @@
 {
   imports = [
     ./default.nix  # Import shared config
-    inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.catppuccin.homeModules.catppuccin
   ];
 
   # Catppuccin theme
   catppuccin = {
     enable = true;
     flavor = "macchiato";
+    kitty.enable = true;
+    waybar.enable = true;
+    hyprland.enable = true;
     accent = "mauve";
   };
 
   # Kitty terminal with Catppuccin theme
   programs.kitty = {
     enable = true;
-    catppuccin.enable = true;
     font = {
       name = "0xProto Nerd Font";
       size = 14;
@@ -33,7 +35,6 @@
   # Hyprland window manager configuration (same as desktop)
   wayland.windowManager.hyprland = {
     enable = true;
-    catppuccin.enable = true;
     settings = {
       "$mod" = "SUPER";
       
@@ -109,7 +110,6 @@
   # Waybar
   programs.waybar = {
     enable = true;
-    catppuccin.enable = true;
   };
 
   # VM-specific packages
