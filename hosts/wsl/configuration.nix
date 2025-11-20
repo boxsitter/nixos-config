@@ -15,7 +15,16 @@
   wsl = {
     enable = true;
     defaultUser = "leyton";
+    startMenuLaunchers = true;
+    
+    # Always start in home directory
+    wslConf.automount.root = "/mnt";
   };
+  
+  # Set default directory to home for Fish shell
+  programs.fish.loginShellInit = ''
+    cd ~
+  '';
 
   # Enable VS Code server for Remote-WSL
   programs.nix-ld.enable = true;
