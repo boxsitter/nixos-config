@@ -31,7 +31,7 @@
 
   # Security configuration
   security.sudo.wheelNeedsPassword = true;
-  security.polkit.enable = true;
+  security.polkit.enable = lib.mkDefault true;  # Disabled in WSL
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.gc = {
@@ -53,16 +53,13 @@
     git nano wget curl pciutils usbutils lshw htop tree
 
     # Shell and terminal
-    fish fastfetch eza starship direnv
+    fish fastfetch eza starship direnv nnn
 
     # Development tools
     gcc mono jdk python3 racket bc
 
     # Archive utilities
     unzip zip
-
-    # Network tools
-    networkmanagerapplet
   ];
 
   # 1Password (GUI only on desktop/VM, CLI everywhere)

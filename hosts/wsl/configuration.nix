@@ -38,6 +38,7 @@
 
   # WSL-specific: disable services that don't work
   networking.networkmanager.enable = false;  # WSL handles networking
+  security.polkit.enable = false;  # No D-Bus/display in WSL
   
   # Disable time sync - WSL syncs time with Windows host
   services.chrony.enable = pkgs.lib.mkForce false;
