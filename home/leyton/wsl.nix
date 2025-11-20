@@ -9,7 +9,7 @@
   ];
 
   # Disable systemd user service management in WSL (no D-Bus)
-  systemd.user.startServices = "legacy";
+  systemd.user.startServices = false;
 
   # Always start in home directory when WSL launches
   programs.fish.loginShellInit = ''
