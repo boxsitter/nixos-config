@@ -8,9 +8,6 @@
     ./default.nix  # Import shared config (fish, starship, etc.)
   ];
 
-  # Disable systemd user service management in WSL (no D-Bus)
-  systemd.user.startServices = false;
-
   # Always start in home directory when WSL launches
   programs.fish.loginShellInit = ''
     if test "$PWD" != "$HOME"
