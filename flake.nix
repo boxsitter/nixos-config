@@ -65,8 +65,6 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/wsl.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            # Disable systemd integration in WSL (no D-Bus)
-            systemd.services.home-manager-leyton.enable = false;
           }
         ];
       };
