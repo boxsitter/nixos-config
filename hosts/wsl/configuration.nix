@@ -22,11 +22,14 @@
     
     # Always start in home directory
     wslConf.automount.root = "/mnt";
+    
+    # Start in home directory when launching WSL
+    wslConf.user.default = "leyton";
   };
   
-  # Set default directory to home for Fish shell
-  programs.fish.loginShellInit = ''
-    cd ~
+  # Force starting directory to home via shell
+  environment.shellInit = ''
+    cd
   '';
 
   # Enable VS Code server for Remote-WSL
