@@ -29,6 +29,9 @@
   # WSL-specific: disable services that don't work
   networking.networkmanager.enable = false;  # WSL handles networking
   
+  # Disable time sync - WSL syncs time with Windows host
+  services.chrony.enable = false;
+  
   # WSL doesn't need these
   console.font = null;
   console.packages = [];
