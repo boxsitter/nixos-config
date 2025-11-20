@@ -8,6 +8,13 @@
     ./default.nix  # Import shared config (fish, starship, etc.)
   ];
 
+  # Always start in home directory when WSL launches
+  programs.fish.loginShellInit = ''
+    if test "$PWD" != "$HOME"
+      cd ~
+    end
+  '';
+
   # Add VS Code server bin to PATH for 'code' command
   home.sessionPath = [
     "$HOME/.vscode-server/bin/*/bin"

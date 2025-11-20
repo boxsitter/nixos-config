@@ -27,11 +27,6 @@
     wslConf.user.default = "leyton";
   };
   
-  # Force starting directory to home via shell
-  environment.shellInit = ''
-    cd
-  '';
-
   # Enable VS Code server for Remote-WSL
   programs.nix-ld.enable = true;
 
