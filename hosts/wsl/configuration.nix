@@ -17,6 +17,9 @@
     defaultUser = "leyton";
     startMenuLaunchers = true;
     
+    # Disable Windows PATH appending for faster startup
+    interop.appendWindowsPath = false;
+    
     # Always start in home directory
     wslConf.automount.root = "/mnt";
   };
