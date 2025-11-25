@@ -4,7 +4,7 @@
     {
       "label": "NixOS: Rebuild (test)",
       "type": "shell",
-      "command": "HOSTNAME=$(hostname | sed 's/nixos-//') && sudo nixos-rebuild test --flake .#$HOSTNAME",
+      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and sudo nixos-rebuild test --flake .#$HOSTNAME",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -21,7 +21,7 @@
     {
       "label": "NixOS: Rebuild and Switch",
       "type": "shell",
-      "command": "HOSTNAME=$(hostname | sed 's/nixos-//') && sudo nixos-rebuild switch --flake .#$HOSTNAME",
+      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and sudo nixos-rebuild switch --flake .#$HOSTNAME",
       "problemMatcher": [],
       "presentation": {
         "echo": true,

@@ -30,7 +30,16 @@
   };
 
   # Security configuration
-  security.sudo.wheelNeedsPassword = true;
+  security.sudo = {
+    wheelNeedsPassword = true;
+    extraRules = [{
+      users = [ "leyton" ];
+      commands = [{
+        command = "/run/current-system/sw/bin/nixos-rebuild";
+        options = [ "NOPASSWD" ];
+      }];
+    }];
+  };
   security.polkit.enable = lib.mkDefault true;  # Disabled in WSL
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
