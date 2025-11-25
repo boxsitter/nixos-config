@@ -10,9 +10,6 @@
     # No hyprland.nix - WSL has no GUI
   ];
 
-  home.username = "leyton";
-  home.homeDirectory = "/home/leyton";
-
   # Always start in home directory when WSL launches
   programs.fish.loginShellInit = ''
     if test "$PWD" != "$HOME"

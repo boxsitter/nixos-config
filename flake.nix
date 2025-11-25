@@ -48,6 +48,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/vm.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
@@ -65,6 +66,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/laptop.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
@@ -83,6 +85,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/wsl.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };

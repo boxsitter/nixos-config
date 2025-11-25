@@ -1,4 +1,4 @@
-# ./modules/core.nix
+# modules/nixos/common.nix
 # Shared base configuration for all systems
 
 { config, pkgs, lib, ... }:

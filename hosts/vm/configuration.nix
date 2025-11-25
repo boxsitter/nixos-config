@@ -9,7 +9,7 @@
     ./hardware.nix
     
     # Shared modules
-    ../../modules/nixos/core.nix
+    ../../modules/nixos/common.nix
     ../../modules/nixos/shell/fish.nix
     ../../modules/nixos/shell/kitty.nix
     

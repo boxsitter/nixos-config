@@ -10,9 +10,6 @@
     ../../modules/home-manager/hyprland.nix
   ];
 
-  home.username = "leyton";
-  home.homeDirectory = "/home/leyton";
-
   # Laptop-specific overrides
   programs.kitty.font.size = 13;  # Slightly smaller for laptop screen
 }

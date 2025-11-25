@@ -9,7 +9,4 @@
     ../../modules/home-manager/shell.nix
     ../../modules/home-manager/hyprland.nix
   ];
-
-  home.username = "leyton";
-  home.homeDirectory = "/home/leyton";
 }

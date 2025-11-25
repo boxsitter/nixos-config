@@ -6,7 +6,7 @@
 {
   imports = [
     # Shared modules
-    ../../modules/nixos/core.nix
+    ../../modules/nixos/common.nix
     ../../modules/nixos/shell/fish.nix
     # Note: No kitty.nix - terminal is provided by Windows
   ];
@@ -48,7 +48,7 @@
   console.packages = [];
 
   # 1Password CLI only (no GUI in WSL)
-  # Already enabled in core.nix
+  # Already enabled in common.nix
 
   system.stateVersion = "24.11";
 }

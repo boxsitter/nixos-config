@@ -15,7 +15,11 @@
     accent = "mauve";
   };
 
-  home.stateVersion = "24.11";
+  home = {
+    username = "leyton";
+    homeDirectory = "/home/leyton";
+    stateVersion = "24.11";
+  };
 
   # Fish shell - basic setup
   programs.fish = {
