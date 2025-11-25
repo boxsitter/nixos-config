@@ -1,12 +1,11 @@
 # home/leyton/vm.nix
-# VM-specific user configuration with GUI apps
+# VM-specific user configuration
 
 { config, pkgs, inputs, ... }:
 
 {
   imports = [
-    ../../modules/home-manager/common.nix
-    ../../modules/home-manager/shell.nix
-    ../../modules/home-manager/hyprland.nix
+    ../../modules/home/common.nix
+    ../../modules/home/hyprland.nix
   ];
 }
