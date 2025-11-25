@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NixOS: Rebuild (test)",
+      "type": "shell",
+      "command": "HOSTNAME=$(hostname | sed 's/nixos-//') && sudo nixos-rebuild test --flake .#$HOSTNAME",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "NixOS: Rebuild and Switch",
+      "type": "shell",
+      "command": "HOSTNAME=$(hostname | sed 's/nixos-//') && sudo nixos-rebuild switch --flake .#$HOSTNAME",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "NixOS: Update Flake Lock",
+      "type": "shell",
+      "command": "nix flake update",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    }
+  ]
+}
