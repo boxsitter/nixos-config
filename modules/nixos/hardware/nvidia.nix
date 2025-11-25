@@ -7,14 +7,13 @@
   # Use latest kernel for best NVIDIA support
   boot.kernelPackages = pkgs.linuxPackages_latest;
   
-  # Kernel parameters for NVIDIA RTX 5080 with DP 2.1 and DSC support
+  # Kernel parameters for NVIDIA RTX 5080 with DP 2.1 support
   boot.kernelParams = [
     "nvidia-drm.modeset=1"           # Enable modesetting
     "nvidia-drm.fbdev=1"             # Enable framebuffer device
     "nvidia.NVreg_EnableGpuFirmware=1"  # Enable GPU firmware loading (required for DP 2.1)
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"  # Better power management
     "nvidia.NVreg_TemporaryFilePath=/var/tmp"  # Temp file location
-    "nvidia.NVreg_EnableDSC=1"       # Force enable Display Stream Compression
     "nvidia.NVreg_DynamicPowerManagement=0x00"  # Disable dynamic PM for stability
   ];
 

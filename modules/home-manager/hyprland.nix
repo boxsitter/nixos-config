@@ -16,6 +16,21 @@
     settings = {
       "$mod" = "SUPER";
       
+      # Monitor configuration for Samsung Odyssey G9 Neo
+      # Currently limited to 120Hz - 240Hz causes black screen (DSC issue)
+      # HDR Note: Your monitor supports HDR but Hyprland 0.52.1 has limited HDR support
+      monitor = [
+        "DP-4,7680x2160@120,0x0,1"
+        # Fallback monitors for unrecognized outputs
+        ",preferred,auto,1"
+      ];
+      
+      # Cursor configuration
+      cursor = {
+        # Enable hardware cursor for better performance
+        no_hardware_cursors = false;
+      };
+      
       # Debug settings
       debug = {
         disable_logs = false;

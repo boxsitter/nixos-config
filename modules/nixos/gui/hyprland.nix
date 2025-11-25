@@ -56,5 +56,14 @@
     NIXOS_OZONE_WL = "1";                # Prefer Wayland for Electron/Chromium apps
     WLR_NO_HARDWARE_CURSORS = "1";      # Workaround for cursor glitches
     WLR_RENDERER_ALLOW_SOFTWARE = "1";  # Allow software rendering fallback
+    
+    # NVIDIA-specific Wayland variables for high refresh rate displays
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    GBM_BACKEND = "nvidia-drm";
+    LIBVA_DRIVER_NAME = "nvidia";
+    
+    # Force enable DSC at environment level
+    __GL_GSYNC_ALLOWED = "1";
+    __GL_VRR_ALLOWED = "1";
   };
 }
