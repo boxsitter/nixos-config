@@ -5,18 +5,16 @@
 
 {
   imports = [
-    # Hardware detection
-    ./hardware.nix
-    
-    # Shared modules
+    # Hardware and system modules
+    ./hardware-configuration.nix
     ../../modules/nixos/common.nix
-    ../../modules/nixos/shell/fish.nix
-    ../../modules/nixos/shell/kitty.nix
-    
-    # VM-specific
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/virtualbox.nix
     ../../modules/nixos/gui/hyprland.nix
+    
+    # Package imports
+    ../../modules/nixos/packages/cli.nix
+    ../../modules/nixos/packages/gui.nix
   ];
 
   # Set the flavor system-wide for Catppuccin modules
@@ -30,11 +28,6 @@
     enable = true;
     polkitPolicyOwners = [ "leyton" ];
   };
-
-  # VM-specific packages
-  environment.systemPackages = with pkgs; [
-    vscode
-  ];
 
   # Enable SSH for remote rebuilds from host
   services.openssh = {

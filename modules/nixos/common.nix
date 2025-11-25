@@ -57,19 +57,8 @@
   };
 
   # Common system packages across all environments
-  environment.systemPackages = with pkgs; [
-    # Core system tools
-    git nano wget curl pciutils usbutils lshw htop tree
-
-    # Shell and terminal
-    fish fastfetch eza starship direnv nnn
-
-    # Development tools
-    gcc mono jdk python3 racket bc
-
-    # Archive utilities
-    unzip zip
-  ];
+  # Packages are now organized in modules/nixos/packages/
+  # Import cli.nix, gui.nix, etc. per-host as needed
 
   # 1Password (GUI only on desktop/VM, CLI everywhere)
   programs._1password.enable = true;

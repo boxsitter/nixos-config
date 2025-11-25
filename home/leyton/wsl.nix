@@ -22,8 +22,5 @@
     code = "/mnt/c/Users/leyton/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
   };
 
-  # WSL-specific packages (minimal)
-  home.packages = with pkgs; [
-    # Add any WSL-specific tools here
-  ];
+  # WSL packages moved to system-level common.nix
 }

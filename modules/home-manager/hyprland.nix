@@ -140,25 +140,6 @@
     enable = true;
   };
 
-  # Hyprland-specific packages
-  home.packages = with pkgs; [
-    # Wayland utilities
-    wl-clipboard
-    grim
-    slurp
-    hyprpaper
-    hyprlock
-    wofi  # App launcher
-    
-    # Applications
-    firefox
-    vlc
-    
-    # Qt theming
-    libsForQt5.qtstyleplugin-kvantum
-    qt6Packages.qtstyleplugin-kvantum
-  ];
-
   # GTK theme (for file pickers, etc.)
   gtk.enable = true;
 

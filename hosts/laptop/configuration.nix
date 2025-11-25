@@ -5,18 +5,18 @@
 
 {
   imports = [
-    # Hardware detection
-    ./hardware.nix
-    
-    # Shared modules
+    # Hardware and system modules
+    ./hardware-configuration.nix
     ../../modules/nixos/common.nix
-    ../../modules/nixos/shell/fish.nix
-    ../../modules/nixos/shell/kitty.nix
-    
-    # Laptop-specific
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia-laptop.nix
     ../../modules/nixos/gui/hyprland.nix
+    
+    # Package imports
+    ../../modules/nixos/packages/cli.nix
+    ../../modules/nixos/packages/gui.nix
+    ../../modules/nixos/packages/dual-boot.nix
+    ../../modules/nixos/packages/laptop.nix
   ];
 
   # Set the flavor system-wide for Catppuccin modules
@@ -58,15 +58,5 @@
     polkitPolicyOwners = [ "leyton" ];
   };
 
-  # Laptop-specific packages
-  environment.systemPackages = with pkgs; [
-    os-prober   # For detecting Windows in dual-boot
-    ntfs3g      # For Windows partition support
-    vscode
-    brightnessctl  # Screen brightness control
-    powertop      # Power consumption monitoring
-    acpi          # Battery status
-  ];
-
-  system.stateVersion = "24.11";
+  # TLP for battery management  system.stateVersion = "24.11";
 }

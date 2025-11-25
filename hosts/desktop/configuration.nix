@@ -5,18 +5,17 @@
 
 {
   imports = [
-    # Hardware detection
-    ./hardware.nix
-    
-    # Shared modules
+    # Hardware and system modules
+    ./hardware-configuration.nix
     ../../modules/nixos/common.nix
-    ../../modules/nixos/shell/fish.nix
-    ../../modules/nixos/shell/kitty.nix
-    
-    # Desktop-specific
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia.nix
     ../../modules/nixos/gui/hyprland.nix
+    
+    # Package imports
+    ../../modules/nixos/packages/cli.nix
+    ../../modules/nixos/packages/gui.nix
+    ../../modules/nixos/packages/dual-boot.nix
   ];
 
   # Set the flavor system-wide for Catppuccin modules
@@ -44,13 +43,6 @@
     enable = true;
     polkitPolicyOwners = [ "leyton" ];
   };
-
-  # Desktop-specific packages
-  environment.systemPackages = with pkgs; [
-    os-prober   # For detecting Windows in dual-boot
-    ntfs3g      # For Windows partition support
-    vscode
-  ];
 
   system.stateVersion = "24.11";
 }

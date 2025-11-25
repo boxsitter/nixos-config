@@ -44,10 +44,9 @@
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
   };
 
-  # System packages needed for Wayland/Hyprland to function
-  # User apps (kitty, waybar, etc.) are now in Home Manager
+  # Hyprland system packages (login manager only)
+  # Wayland tools are per-host to avoid installing on WSL
   environment.systemPackages = with pkgs; [
-    # Only essential system-level tools
     tuigreet
   ];
 

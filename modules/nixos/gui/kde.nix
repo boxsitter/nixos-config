@@ -34,19 +34,14 @@
     pulse.enable = true;
   };
 
-  # Install KDE applications and utilities
+  # KDE-specific applications
   environment.systemPackages = with pkgs; [
-    # Essential KDE applications
     kdePackages.dolphin
     kdePackages.spectacle
     kdePackages.ark
-    kdePackages.okular        # PDF viewer
-    kdePackages.gwenview      # Image viewer
-    kdePackages.partitionmanager  # Useful for dual-boot management
-    
-    # Web and media
-    firefox
-    vlc
+    kdePackages.okular
+    kdePackages.gwenview
+    kdePackages.partitionmanager
     
     # System monitoring
     kdePackages.ksystemlog
