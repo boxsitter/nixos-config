@@ -7,10 +7,18 @@
 {
   environment.systemPackages = with pkgs; [
     # GUI applications
-    vscode firefox vlc
+    vscode firefox vlc kitty
     
     # Wayland/Hyprland utilities
-    wl-clipboard grim slurp hyprpaper hyprlock wofi
+    wl-clipboard       # Clipboard manager
+    grim slurp         # Screenshots
+    hyprpaper          # Wallpaper daemon
+    hyprlock           # Screen locker
+    wofi               # Application launcher
+    dunst              # Notification daemon
+    pavucontrol        # PulseAudio volume control
+    networkmanagerapplet  # Network manager tray
+    imagemagick        # Image processing (for wallpaper generation)
     
     # Qt/GTK theming
     libsForQt5.qtstyleplugin-kvantum

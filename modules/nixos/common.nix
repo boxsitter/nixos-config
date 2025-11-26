@@ -1,7 +1,7 @@
 # modules/nixos/common.nix
 # Shared base configuration for all systems
 
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   # Configure console with a modern font and Catppuccin theme
@@ -28,6 +28,9 @@
     extraGroups = [ "wheel" "networkmanager" "video" "input" ];
     shell = pkgs.fish;
   };
+
+  # Enable fish shell system-wide
+  programs.fish.enable = true;
 
   # Security configuration
   security.sudo = {

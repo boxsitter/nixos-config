@@ -1,7 +1,7 @@
 # ./hosts/laptop/configuration.nix
 # Laptop system with NVIDIA RTX 3050 Mobile, optimized for battery life and portability
 
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports = [

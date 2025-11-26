@@ -1,7 +1,7 @@
 # modules/home-manager/common.nix
 # Shared user configuration across all systems
 
-{ config, pkgs, inputs, ... }:
+{ inputs, ... }:
 
 {
   imports = [
@@ -64,6 +64,26 @@
         eol = "lf";          # Always use LF in the working directory
       };
     };
+  };
+
+  # Kitty terminal
+  programs.kitty = {
+    enable = true;
+    themeFile = "Catppuccin-Macchiato";
+    settings = {
+      font_family = "FiraCode Nerd Font";
+      font_size = 11;
+      background_opacity = "0.95";
+      confirm_os_window_close = 0;
+      linux_display_server = "wayland";
+      wayland_titlebar_color = "background";
+    };
+  };
+
+  # Disable kitty's systemd integration via environment variable
+  home.sessionVariables = {
+    KITTY_ENABLE_WAYLAND = "1";
+    XCURSOR_SIZE = "14";
   };
 
   # Fastfetch configuration

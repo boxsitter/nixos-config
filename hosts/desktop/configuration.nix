@@ -1,12 +1,12 @@
 # ./hosts/desktop/configuration.nix
 # Desktop system with NVIDIA RTX 5080, dual-boot, and Hyprland
 
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports = [
     # Hardware and system modules
-    ./hardware-configuration.nix
+    ./hardware.nix
     ../../modules/nixos/common.nix
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia.nix

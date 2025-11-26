@@ -1,7 +1,7 @@
 # home/leyton/vm.nix
 # VM-specific user configuration
 
-{ config, pkgs, inputs, ... }:
+{ ... }:
 
 {
   imports = [

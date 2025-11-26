@@ -1,7 +1,7 @@
 # ./hosts/vm/configuration.nix
 # VirtualBox VM with Hyprland desktop
 
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports = [

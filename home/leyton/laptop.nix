@@ -1,7 +1,7 @@
 # home/leyton/laptop.nix
 # Laptop-specific user configuration
 
-{ config, pkgs, inputs, ... }:
+{ ... }:
 
 {
   imports = [

@@ -1,7 +1,7 @@
 # home/leyton/wsl.nix
 # WSL-specific user configuration (no GUI)
 
-{ config, pkgs, inputs, ... }:
+{ ... }:
 
 {
   imports = [

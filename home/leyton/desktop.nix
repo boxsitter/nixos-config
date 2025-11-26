@@ -1,7 +1,7 @@
 # home/leyton/desktop.nix
 # Desktop-specific user configuration
 
-{ config, pkgs, inputs, ... }:
+{ ... }:
 
 {
   imports = [

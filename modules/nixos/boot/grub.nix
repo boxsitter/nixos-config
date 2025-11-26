@@ -1,7 +1,7 @@
 # ./modules/boot/grub.nix
 # GRUB bootloader configuration for dual-boot
 
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   boot.loader = {

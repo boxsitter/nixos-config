@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Disable X11 display manager; we'll run Wayland/Hyprland directly
