@@ -10,7 +10,7 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia-laptop.nix
-    ../../modules/nixos/gui/hyprland.nix
+    ../../modules/nixos/gui/gnome.nix
     
     # Package imports
     ../../modules/nixos/packages/cli.nix

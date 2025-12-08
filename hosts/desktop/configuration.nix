@@ -1,5 +1,5 @@
 # ./hosts/desktop/configuration.nix
-# Desktop system with NVIDIA RTX 5080, dual-boot, and Hyprland
+# Desktop system with NVIDIA RTX 5080, dual-boot, and GNOME
 
 { ... }:
 
@@ -10,7 +10,7 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia.nix
-    ../../modules/nixos/gui/hyprland.nix
+    ../../modules/nixos/gui/gnome.nix
     
     # Package imports
     ../../modules/nixos/packages/cli.nix
