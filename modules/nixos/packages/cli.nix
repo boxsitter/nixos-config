@@ -12,7 +12,7 @@
     fish fastfetch eza starship direnv nnn
 
     # Development tools
-    gcc mono jdk python3 racket bc
+    gcc mono jdk python3 bc
     
     # Nix development
     nil nixpkgs-fmt
