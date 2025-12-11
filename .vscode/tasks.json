@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NixOS: Rebuild (test)",
+      "type": "shell",
+      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and sudo nixos-rebuild test --flake .#$HOSTNAME",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "NixOS: Rebuild (test with auto-revert)",
+      "type": "shell",
+      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and echo 'Building and testing - will AUTO-REVERT in 30 seconds...'; and sudo nixos-rebuild test --flake .#$HOSTNAME; and echo ''; and echo 'Config applied! Auto-reverting in 30 seconds...'; and sleep 30; and echo 'Reverting now...'; and sudo nixos-rebuild switch --rollback; and echo 'Reverted to previous config.'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "NixOS: Rebuild and Switch",
+      "type": "shell",
+      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and sudo nixos-rebuild switch --flake .#$HOSTNAME",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "NixOS: Update Flake Lock",
+      "type": "shell",
+      "command": "nix flake update",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    }
+  ]
+}

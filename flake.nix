@@ -1,6 +1,6 @@
 # ./flake.nix
 {
-  description = "NixOS configurations for desktop, VM, and WSL";
+  description = "NixOS configurations for desktop, laptop, and WSL";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,7 +17,7 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
-      # Desktop with NVIDIA RTX 5080 and Hyprland
+      # Desktop with NVIDIA RTX 5080 and GNOME
       desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
@@ -30,23 +30,25 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/desktop.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
 
-      # VirtualBox VM with Hyprland
-      vm = nixpkgs.lib.nixosSystem {
+      # Laptop with NVIDIA RTX 3050 Mobile and GNOME
+      laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           inputs.catppuccin.nixosModules.catppuccin
-          ./hosts/vm/configuration.nix
+          ./hosts/laptop/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.leyton = import ./home/leyton/vm.nix;
+            home-manager.users.leyton = import ./home/leyton/laptop.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
@@ -65,6 +67,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./home/leyton/wsl.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };

@@ -1,5 +1,17 @@
 {
     "cSpell.words": [
-        "nixpkgs"
-    ]
+        "greetd",
+        "nixos",
+        "nixpkgs",
+        "pkgs"
+    ],
+    "nix.enableLanguageServer": true,
+    "nix.serverPath": "nil",
+    "nix.serverSettings": {
+        "nil": {
+            "formatting": {
+                "command": ["nixfmt"]
+            }
+        }
+    }
 }
