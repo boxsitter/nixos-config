@@ -5,7 +5,7 @@
 
 {
   imports = [
-    ../../modules/home-manager/common.nix
+    ../../modules/home/common.nix
     # No shell.nix - WSL uses Windows terminal
     # No hyprland.nix - WSL has no GUI
   ];
