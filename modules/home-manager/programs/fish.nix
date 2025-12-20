@@ -12,9 +12,17 @@
       fastfetch
     '';
     shellAliases = {
-      ls = "eza -F";
+      # Modern replacements for core utilities
+      ls = "eza";
       ll = "eza -lah";
-      g = "git";
+      la = "eza -a";
+      lt = "eza --tree";
+      tree = "eza --tree";
+      cat = "bat";
+      grep = "rg";
+      find = "fd";
+      top = "btop";
+      htop = "btop";
     };
   };
 }
