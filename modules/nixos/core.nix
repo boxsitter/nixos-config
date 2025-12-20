@@ -1,22 +1,16 @@
-# modules/nixos/common.nix
+# modules/nixos/core.nix
 # Shared base configuration for all systems
 
 { pkgs, lib, ... }:
 
 {
-  # Configure console with a modern font and Catppuccin theme
   console = {
     font = "${pkgs.terminus_font}/share/consolefonts/ter-v20n.psf.gz";
     packages = with pkgs; [ terminus_font ];
   };
-  
-  # Catppuccin TTY theme
-  catppuccin.tty.enable = true;
 
-  # Networking - common across systems
   networking.networkmanager.enable = lib.mkDefault true;
 
-  # Time and locale
   time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
@@ -29,10 +23,8 @@
     shell = pkgs.fish;
   };
 
-  # Enable fish shell system-wide
   programs.fish.enable = true;
 
-  # Security configuration
   security.sudo = {
     wheelNeedsPassword = true;
     extraRules = [{
@@ -43,7 +35,7 @@
       }];
     }];
   };
-  security.polkit.enable = lib.mkDefault true;  # Disabled in WSL
+  security.polkit.enable = lib.mkDefault true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.gc = {
@@ -59,10 +51,20 @@
     };
   };
 
-  # Common system packages across all environments
-  # Packages are now organized in modules/nixos/packages/
-  # Import cli.nix, gui.nix, etc. per-host as needed
+  environment.systemPackages = with pkgs; [
+    git nano vim wget curl pciutils usbutils lshw htop btop tree file which
+    strace lsof tcpdump
+    fish fastfetch eza starship direnv nnn fzf ripgrep fd bat
+    jq yq-go gnused gawk gnugrep
+    dig nmap netcat-gnu inetutils openssh rsync
+    git git-lfs lazygit gh
+    docker docker-compose lazydocker kubectl k9s helm
+    postgresql sqlite
+    nil nixpkgs-fmt nix-tree nix-index
+    unzip zip gzip bzip2 xz p7zip
+    bc man-pages man-pages-posix tldr entr watchexec
+  ];
 
-  # 1Password (GUI only on desktop/VM, CLI everywhere)
-  programs._1password.enable = true;
+  # DO NOT CHANGE - set once at initial install
+  system.stateVersion = "24.11";
 }

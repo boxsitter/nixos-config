@@ -5,44 +5,20 @@
 
 {
   imports = [
-    # Hardware and system modules
     ./hardware.nix
-    ../../modules/nixos/common.nix
+    ../../modules/nixos/core.nix
     ../../modules/nixos/boot/grub.nix
     ../../modules/nixos/hardware/nvidia.nix
-    ../../modules/nixos/gui/gnome.nix
-    
-    # Package imports
-    ../../modules/nixos/packages/cli.nix
-    ../../modules/nixos/packages/gui.nix
-    ../../modules/nixos/packages/dual-boot.nix
+    ../../modules/nixos/hardware/dual-boot.nix
+    ../../modules/nixos/hardware/intel-wifi.nix
+    ../../modules/nixos/services/gnome.nix
+    ../../modules/nixos/programs/1password-gui.nix
   ];
 
-  # Set the flavor system-wide for Catppuccin modules
-  catppuccin.flavor = "macchiato";
-
-  # Hostname for desktop
   networking.hostName = "nixos-desktop";
 
-  # Desktop-specific firmware
-  hardware.enableRedistributableFirmware = true;
-  hardware.enableAllFirmware = true;
-  boot.kernelModules = [ "iwlwifi" ];  # Intel WiFi
-
-  # Performance-focused power management for desktop
   powerManagement.cpuFreqGovernor = "performance";
-  services.power-profiles-daemon.enable = false;  # Disable to avoid conflicts
+  services.power-profiles-daemon.enable = false;
   
-  # Performance tuning
-  boot.kernelParams = [
-    "preempt=none"  # Better for desktop performance
-  ];
-
-  # 1Password GUI for desktop
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "leyton" ];
-  };
-
-  system.stateVersion = "24.11";
+  boot.kernelParams = [ "preempt=none" ];
 }

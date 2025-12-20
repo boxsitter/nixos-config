@@ -1,13 +1,12 @@
-# home/leyton/wsl.nix
-# WSL-specific user configuration (no GUI)
+# hosts/wsl/leyton.nix
+# User configuration for leyton on WSL
 
 { ... }:
 
 {
   imports = [
-    ../../modules/home/common.nix
-    # No shell.nix - WSL uses Windows terminal
-    # No hyprland.nix - WSL has no GUI
+    ../../modules/home-manager/users/leyton.nix
+    ../../modules/home-manager/core.nix
   ];
 
   # Always start in home directory when WSL launches
@@ -21,6 +20,4 @@
   programs.fish.shellAliases = {
     code = "/mnt/c/Users/leyton/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
   };
-
-  # WSL packages moved to system-level common.nix
 }

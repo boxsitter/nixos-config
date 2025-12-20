@@ -1,5 +1,5 @@
-# modules/nixos/packages/dual-boot.nix
-# Packages for dual-boot systems (desktop/laptop only)
+# modules/nixos/hardware/dual-boot.nix
+# Dual-boot configuration for systems with Windows
 
 { pkgs, ... }:
 
