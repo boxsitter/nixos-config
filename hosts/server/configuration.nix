@@ -12,6 +12,12 @@
 
   networking.hostName = "nixos-server";
 
+  # Performance settings
+  powerManagement.cpuFreqGovernor = "performance";
+
+  # Enable VS Code Server for Remote-SSH
+  programs.nix-ld.enable = true;
+
   # Server-specific configurations
   services.timesyncd.enable = true;  # NTP time sync
   
