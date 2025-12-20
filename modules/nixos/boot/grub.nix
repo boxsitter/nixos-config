@@ -1,7 +1,7 @@
-# ./modules/boot/grub.nix
-# GRUB bootloader configuration for dual-boot
+# modules/nixos/boot/grub.nix
+# GRUB bootloader configuration
 
-{ ... }:
+{ lib, ... }:
 
 {
   boot.loader = {
@@ -9,24 +9,25 @@
       enable = true;
       device = "nodev";
       efiSupport = true;
-      useOSProber = true;  # This detects Windows
+      useOSProber = true;
       
-      # Fix tiny text on high-resolution displays
-      # Use 1024x768 for better readability on 4K+ displays
-      gfxmodeEfi = "1024x768";
+      # Auto-detect best resolution (works across different displays)
+      gfxmodeEfi = "auto";
       
-      # Set Windows as default boot option (starts counting from 0)
-      # Typically: 0=NixOS current, 1=NixOS generations submenu, 2=Windows
-      default = 2;
+      # Remember last booted OS (convenient for dual-boot)
+      default = "saved";
+      
+      # Theme for better appearance
+      theme = null;  # Uses default theme (clean and modern)
+      
+      # Console-only mode for simplicity and speed
+      extraConfig = ''
+        terminal_input console
+        terminal_output console
+      '';
     };
-    timeout = 10;
+    
+    timeout = lib.mkDefault 5;  # Can be overridden per-host
     efi.canTouchEfiVariables = true;
   };
-  
-  # Performance: reduce input lag in GRUB
-  boot.loader.grub.extraConfig = ''
-    # Disable graphical terminal for faster input response
-    terminal_input console
-    terminal_output console
-  '';
 }
