@@ -105,7 +105,7 @@ After first boot, connect to your Tailscale network:
 
 ```bash
 # Generate a reusable auth key at: https://login.tailscale.com/admin/settings/keys
-sudo tailscale up --authkey=tskey-auth-xxxxxxxxxx
+sudo tailscale up --ssh --authkey=tskey-auth-xxxxxxxxxx
 ```
 
 The authentication persists across reboots - you only need to do this once per machine.
