@@ -21,8 +21,7 @@
       cat = "bat";
       grep = "rg";
       find = "fd";
-      top = "btop";
-      htop = "btop";
+      top = "htop";
     };
   };
 }
