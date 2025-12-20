@@ -80,15 +80,13 @@ git clone https://github.com/boxsitter/nixos-config.git ~/nixos-config
 HOSTNAME=desktop
 sudo cp /etc/nixos/hardware-configuration.nix ~/nixos-config/hosts/$HOSTNAME/
 sudo chown $USER:users ~/nixos-config/hosts/$HOSTNAME/hardware-configuration.nix
-
-# Exit the temporary shell
-exit
+git add ~/nixos-config/hosts/$HOSTNAME/hardware-configuration.nix
 
 # Navigate to the config directory
 cd ~/nixos-config
 
 # Update flake.lock (first time only)
-nix flake update
+nix flake update --extra-experimental-features 'nix-command flakes'
 
 # Build and switch to the new configuration
 sudo nixos-rebuild switch --flake .#$HOSTNAME
