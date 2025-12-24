@@ -1,7 +1,7 @@
 # ./hosts/laptop/configuration.nix
 # Laptop system with NVIDIA RTX 3050 Mobile, optimized for battery life and portability
 
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -12,6 +12,7 @@
     ../../modules/nixos/hardware/dual-boot.nix
     ../../modules/nixos/hardware/intel-wifi.nix
     ../../modules/nixos/services/gnome.nix
+    ../../modules/nixos/services/hyprland.nix
     ../../modules/nixos/programs/1password-gui.nix
   ];
 

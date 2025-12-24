@@ -28,7 +28,7 @@
   
   environment.systemPackages = with pkgs; [
     gnome-tweaks gnomeExtensions.appindicator
-    vscode firefox vlc
+    firefox vlc
     wl-clipboard pavucontrol networkmanagerapplet
   ];
 }
