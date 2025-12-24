@@ -19,23 +19,6 @@
       }
     },
     {
-      "label": "NixOS: Rebuild (test with auto-revert)",
-      "type": "shell",
-      "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and echo 'Building and testing - will AUTO-REVERT in 30 seconds...'; and sudo nixos-rebuild test --flake .#$HOSTNAME; and echo ''; and echo 'Config applied! Auto-reverting in 30 seconds...'; and sleep 30; and echo 'Reverting now...'; and sudo nixos-rebuild switch --rollback; and echo 'Reverted to previous config.'",
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "dedicated",
-        "showReuseMessage": false
-      },
-      "group": {
-        "kind": "test",
-        "isDefault": false
-      }
-    },
-    {
       "label": "NixOS: Rebuild and Switch",
       "type": "shell",
       "command": "set HOSTNAME (hostname | sed 's/nixos-//'); and sudo nixos-rebuild switch --flake .#$HOSTNAME",
