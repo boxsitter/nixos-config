@@ -8,7 +8,7 @@
   };
 
   # Ensure display managers (e.g. GDM) can offer Hyprland as a selectable session.
-  services.xserver.displayManager.sessionPackages = [ pkgs.hyprland ];
+  services.displayManager.sessionPackages = [ pkgs.hyprland ];
 
   # Audio: PipeWire with PulseAudio compatibility
   security.rtkit.enable = true;

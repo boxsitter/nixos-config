@@ -11,96 +11,161 @@ let
   emergencyTerminal = "foot";
 
   # Nix-managed equivalents for Symphony scripts.
-  launchBrowser = pkgs.writeShellScriptBin "hypr-launch-browser" ''
-    exec ${pkgs.firefox}/bin/firefox
-  '';
+  launchBrowser = pkgs.writeTextFile {
+    name = "hypr-launch-browser";
+    executable = true;
+    destination = "/bin/hypr-launch-browser";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      exec ${pkgs.firefox}/bin/firefox
+    '';
+  };
 
   # Simple webapp launcher: uses Firefox in app-like window.
-  launchWebapp = pkgs.writeShellScriptBin "hypr-launch-webapp" ''
-    set -e
-    if test (count $argv) -lt 1
-      echo "usage: hypr-launch-webapp <url>" >&2
-      exit 2
-    end
-    set url $argv[1]
-    exec ${pkgs.firefox}/bin/firefox --new-window "$url"
-  '';
+  launchWebapp = pkgs.writeTextFile {
+    name = "hypr-launch-webapp";
+    executable = true;
+    destination = "/bin/hypr-launch-webapp";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      if test (count $argv) -lt 1
+        echo "usage: hypr-launch-webapp <url>" >&2
+        exit 2
+      end
+
+      set -l url $argv[1]
+      exec ${pkgs.firefox}/bin/firefox --new-window "$url"
+    '';
+  };
 
   # Minimal "lock" command (hyprlock will read HM-provisioned config later).
   lockScreen = pkgs.writeShellScriptBin "hypr-lock-screen" ''
     exec ${pkgs.hyprlock}/bin/hyprlock
   '';
 
-  toggleWaybar = pkgs.writeShellScriptBin "hypr-toggle-waybar" ''
-    if ${pkgs.procps}/bin/pgrep -x waybar >/dev/null
-      ${pkgs.procps}/bin/pkill -x waybar
-    else
-      exec ${pkgs.waybar}/bin/waybar
-    end
-  '';
+  toggleWaybar = pkgs.writeTextFile {
+    name = "hypr-toggle-waybar";
+    executable = true;
+    destination = "/bin/hypr-toggle-waybar";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      if ${pkgs.procps}/bin/pgrep -x waybar >/dev/null
+        ${pkgs.procps}/bin/pkill -x waybar
+      else
+        exec ${pkgs.waybar}/bin/waybar
+      end
+    '';
+  };
 
   # Simple powermenu (lock/logout/reboot/poweroff) via rofi.
-  powerMenu = pkgs.writeShellScriptBin "hypr-powermenu" ''
-    set -l choice (printf "lock\nlogout\nreboot\npoweroff\n" | ${pkgs.rofi-wayland}/bin/rofi -dmenu -p "power")
-    switch "$choice"
-      case lock
-        exec ${pkgs.hyprlock}/bin/hyprlock
-      case logout
-        exec ${pkgs.hyprland}/bin/hyprctl dispatch exit
-      case reboot
-        exec ${pkgs.systemd}/bin/systemctl reboot
-      case poweroff
-        exec ${pkgs.systemd}/bin/systemctl poweroff
-      case '*'
-        exit 0
-    end
-  '';
+  powerMenu = pkgs.writeTextFile {
+    name = "hypr-powermenu";
+    executable = true;
+    destination = "/bin/hypr-powermenu";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      set -l choice (printf "lock\nlogout\nreboot\npoweroff\n" | ${pkgs.rofi}/bin/rofi -dmenu -p "power")
+      switch "$choice"
+        case lock
+          exec ${pkgs.hyprlock}/bin/hyprlock
+        case logout
+          exec ${pkgs.hyprland}/bin/hyprctl dispatch exit
+        case reboot
+          exec ${pkgs.systemd}/bin/systemctl reboot
+        case poweroff
+          exec ${pkgs.systemd}/bin/systemctl poweroff
+        case '*'
+          exit 0
+      end
+    '';
+  };
 
   # Screenshot helpers (minimal, functional).
-  screenshot = pkgs.writeShellScriptBin "hypr-screenshot" ''
-    set -l mode region
-    if test (count $argv) -ge 1
-      set mode $argv[1]
-    end
-    switch "$mode"
-      case clipboard
-        ${pkgs.grim}/bin/grim -g (${pkgs.slurp}/bin/slurp) - | ${pkgs.wl-clipboard}/bin/wl-copy
-      case region
-        set -l dir "$HOME/Pictures/Screenshots"
-        mkdir -p "$dir"
-        set -l file "$dir/(date +%Y-%m-%d_%H-%M-%S).png"
-        ${pkgs.grim}/bin/grim -g (${pkgs.slurp}/bin/slurp) "$file"
-      case '*'
-        echo "usage: hypr-screenshot [region|clipboard]" >&2
-        exit 2
-    end
-  '';
+  screenshot = pkgs.writeTextFile {
+    name = "hypr-screenshot";
+    executable = true;
+    destination = "/bin/hypr-screenshot";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      set -l mode region
+      if test (count $argv) -ge 1
+        set mode $argv[1]
+      end
+
+      switch "$mode"
+        case clipboard
+          ${pkgs.grim}/bin/grim -g (${pkgs.slurp}/bin/slurp) - | ${pkgs.wl-clipboard}/bin/wl-copy
+        case region
+          set -l dir "$HOME/Pictures/Screenshots"
+          mkdir -p "$dir"
+          set -l file "$dir/(date +%Y-%m-%d_%H-%M-%S).png"
+          ${pkgs.grim}/bin/grim -g (${pkgs.slurp}/bin/slurp) "$file"
+        case '*'
+          echo "usage: hypr-screenshot [region|clipboard]" >&2
+          exit 2
+      end
+    '';
+  };
 
   # Clipboard history menu using cliphist + rofi.
-  clipboardMenu = pkgs.writeShellScriptBin "hypr-clipboard" ''
-    set -l selection (${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu -p "clipboard")
-    test -n "$selection"; or exit 0
-    ${pkgs.cliphist}/bin/cliphist decode <<<"$selection" | ${pkgs.wl-clipboard}/bin/wl-copy
-  '';
+  clipboardMenu = pkgs.writeTextFile {
+    name = "hypr-clipboard";
+    executable = true;
+    destination = "/bin/hypr-clipboard";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      set -l selection (${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -p "clipboard")
+      test -n "$selection"; or exit 0
+      ${pkgs.cliphist}/bin/cliphist decode <<<"$selection" | ${pkgs.wl-clipboard}/bin/wl-copy
+    '';
+  };
 
   # Show keybindings by dumping current Hyprland binds.
-  keyhints = pkgs.writeShellScriptBin "hypr-keyhints" ''
-    ${pkgs.hyprland}/bin/hyprctl binds | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "keys" >/dev/null
-  '';
+  keyhints = pkgs.writeTextFile {
+    name = "hypr-keyhints";
+    executable = true;
+    destination = "/bin/hypr-keyhints";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      ${pkgs.hyprland}/bin/hyprctl binds | ${pkgs.rofi}/bin/rofi -dmenu -i -p "keys" >/dev/null
+    '';
+  };
 
   # Toggle idle inhibitor by stopping/starting hypridle.
-  toggleIdle = pkgs.writeShellScriptBin "hypr-toggle-idle" ''
-    if ${pkgs.systemd}/bin/systemctl --user is-active --quiet hypridle
-      ${pkgs.systemd}/bin/systemctl --user stop hypridle
-    else
-      ${pkgs.systemd}/bin/systemctl --user start hypridle
-    end
-  '';
+  # This script is fish (not POSIX shell).
+  toggleIdle = pkgs.writeTextFile {
+    name = "hypr-toggle-idle";
+    executable = true;
+    destination = "/bin/hypr-toggle-idle";
+    text = ''
+      #!${pkgs.fish}/bin/fish
 
-  osdClient = pkgs.writeShellScriptBin "hypr-osdclient" ''
-    # Keep it simple for now; Symphony uses swayosd-client per-focused monitor.
-    exec ${pkgs.swayosd}/bin/swayosd-client $argv
-  '';
+      if ${pkgs.systemd}/bin/systemctl --user is-active --quiet hypridle
+        ${pkgs.systemd}/bin/systemctl --user stop hypridle
+      else
+        ${pkgs.systemd}/bin/systemctl --user start hypridle
+      end
+    '';
+  };
+
+  osdClient = pkgs.writeTextFile {
+    name = "hypr-osdclient";
+    executable = true;
+    destination = "/bin/hypr-osdclient";
+    text = ''
+      #!${pkgs.fish}/bin/fish
+
+      # Keep it simple for now; Symphony uses swayosd-client per-focused monitor.
+      exec ${pkgs.swayosd}/bin/swayosd-client $argv
+    '';
+  };
 
   # Polkit agent for Hyprland sessions (GNOME provides one; Hyprland needs it).
   polkitAgent = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
@@ -194,9 +259,9 @@ in
         "SUPER,N,exec,${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"
 
         # Launchers / rofi tools
-        "SUPER,SPACE,exec,pkill rofi || ${pkgs.rofi-wayland}/bin/rofi -show drun"
+        "SUPER,SPACE,exec,pkill rofi || ${pkgs.rofi}/bin/rofi -show drun"
         "ALT,comma,exec,$clipboard"
-        "ALT,SPACE,exec,pkill rofi || ${pkgs.rofi-wayland}/bin/rofi -show drun"
+        "ALT,SPACE,exec,pkill rofi || ${pkgs.rofi}/bin/rofi -show drun"
 
         # Window management
         "SUPER,Q,killactive,"

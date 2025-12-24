@@ -6,11 +6,11 @@
 {
   programs.kitty = {
     enable = true;
+    font = {
+      name = "FiraCode Nerd Font";
+      size = 13;
+    };
     settings = {
-      # Terminal/code font
-      font_family = "FiraCode Nerd Font";
-      font_size = 13;
-
       # Behavior
       enable_audio_bell = false;
       cursor_trail = 1;

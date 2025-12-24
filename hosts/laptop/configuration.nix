@@ -24,6 +24,11 @@
 
   networking.hostName = "nixos-laptop";
 
+  # `auto-cpufreq` conflicts with `power-profiles-daemon`.
+  # Prefer `auto-cpufreq` for laptops since it applies cpu/battery tuning
+  # automatically without relying on desktop power profile integration.
+  services.power-profiles-daemon.enable = false;
+
   services.thermald.enable = true;
   services.auto-cpufreq = {
     enable = true;
