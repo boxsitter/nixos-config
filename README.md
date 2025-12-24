@@ -1,6 +1,6 @@
 # NixOS Configuration
 
-A modular, multi-host NixOS configuration with home-manager integration.
+My modular, multi-host NixOS configuration with home-manager integration.
 
 ## Hosts
 
@@ -17,7 +17,7 @@ nixos-config/
 ├── hosts/                       # Host-specific configurations
 │   ├── desktop/
 │   │   ├── configuration.nix   # System config
-│   │   └── leyton.nix          # User config
+│   │   └── user.nix          # User config
 │   ├── laptop/
 │   ├── server/
 │   └── wsl/
@@ -34,7 +34,7 @@ nixos-config/
         ├── programs/           # Program configs (fish, git, etc.)
         ├── dotfiles/           # Configuration files
         └── users/              # User identity configs
-            └── leyton.nix
+            └── user.nix
 ```
 
 ## Design Principles
@@ -54,15 +54,6 @@ nixos-config/
 - CLI packages in `modules/nixos/core.nix`
 - GUI packages in `modules/nixos/services/gnome.nix`
 - Host-specific packages in host configurations
-
-## Core Features
-
-All hosts include:
-- **SSH** - Secure shell access (key-based auth only)
-- **Tailscale** - VPN for secure remote access
-- **Fish shell** with modern CLI tools (eza, bat, ripgrep, fd, btop)
-- **1Password CLI** - Password management
-- **Docker** - Container runtime
 
 ## Initial Setup (Fresh NixOS Installation)
 
@@ -99,6 +90,8 @@ sudo reboot
 
 ## Post-Installation Setup
 
+**⚠️ IMPORTANT:** Any imperative (non-declarative) setup steps must be documented here to ensure reproducibility.
+
 ### Tailscale Authentication
 
 After first boot, connect to your Tailscale network:
@@ -109,3 +102,53 @@ sudo tailscale up --ssh --authkey=tskey-auth-xxxxxxxxxx
 ```
 
 The authentication persists across reboots - you only need to do this once per machine.
+
+### Samba Password Setup (Server Only)
+
+After enabling Samba shares, set your Samba password:
+
+```bash
+sudo smbpasswd -a $USER
+```
+
+**Why this is imperative:** Samba requires SMB-protocol-specific password hashes that cannot be declaratively derived from system passwords. This must be set once per user.
+
+**To connect from Windows:**
+1. Press `Win + R`
+2. Type: `\\<server-tailscale-ip>` (e.g., `\\100.80.198.94`)
+3. Username: `username`
+4. Password: The password you set with `smbpasswd`
+
+Available shares:
+- `\\<server-ip>\minecraft` - Minecraft server files
+- `\\<server-ip>\homes` - Home directory
+
+### Playit Agent Setup (Server Only)
+
+Playit.gg provides tunneling to expose the Minecraft server on a custom domain.
+
+**Initial claim (one-time setup):**
+
+```bash
+# Download and run the playit agent to claim it
+nix run github:pedorich-n/playit-nixos-module#playit-cli -- start
+```
+
+Follow the link provided to claim the agent on playit.gg website. After claiming, exit the program and copy the secret:
+
+```bash
+# Copy the generated secret to the expected location
+sudo mkdir -p /var/lib/playit
+sudo cp ~/.config/playit_gg/playit.toml /var/lib/playit/
+sudo chown playit:playit /var/lib/playit/playit.toml
+sudo chmod 600 /var/lib/playit/playit.toml
+```
+
+**Configure tunnels:**
+1. Go to https://playit.gg/account/tunnels
+2. Create a tunnel for port `25565` (Minecraft)
+3. Optionally set up a custom domain
+
+**Why this is imperative:** The playit agent secret is generated when you claim the agent and cannot be created declaratively.
+
+After setup, the playit service will automatically start and maintain the tunnel.

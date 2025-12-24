@@ -1,13 +1,16 @@
 # hosts/server/configuration.nix
 # Headless server configuration
 
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/core.nix
     ../../modules/nixos/boot/systemd-boot.nix
+    ../../modules/nixos/services/minecraft.nix
+    ../../modules/nixos/services/samba.nix
+    ../../modules/nixos/services/playit.nix
   ];
 
   networking.hostName = "nixos-server";
@@ -17,6 +20,11 @@
 
   # Enable VS Code Server for Remote-SSH
   programs.nix-ld.enable = true;
+  
+  # Server-specific packages
+  environment.systemPackages = with pkgs; [
+    mcrcon  # Minecraft RCON client for interactive console
+  ];
 
   # Server-specific configurations
   services.timesyncd.enable = true;  # NTP time sync

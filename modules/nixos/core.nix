@@ -34,15 +34,34 @@
     wheelNeedsPassword = true;
     extraRules = [{
       users = [ "leyton" ];
-      commands = [{
-        command = "/run/current-system/sw/bin/nixos-rebuild";
-        options = [ "NOPASSWD" ];
-      }];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/nixos-rebuild";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/journalctl -u minecraft-server-main -f --no-hostname -o cat";
+          options = [ "NOPASSWD" ];
+        }
+      ];
     }];
   };
   security.polkit.enable = lib.mkDefault true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    # Speed up builds
+    max-jobs = "auto";  # Use all CPU cores
+    cores = 0;  # Use all cores per job
+    # Enable binary cache
+    substituters = [
+      "https://cache.nixos.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -57,16 +76,35 @@
   };
 
   environment.systemPackages = with pkgs; [
+    # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
     strace lsof tcpdump
-    fish fastfetch eza starship direnv nnn fzf ripgrep fd bat
+    
+    # Shell and CLI enhancements
+    fish fastfetch eza starship direnv nnn fzf ripgrep fd bat tmux
+    
+    # Text processing
     jq yq-go gnused gawk gnugrep
-    dig nmap netcat-gnu inetutils openssh rsync
+    
+    # Networking tools
+    dig nmap netcat-gnu inetutils openssh rsync iftop nload vnstat speedtest-cli
+    
+    # Git tools
     git git-lfs lazygit gh
+    
+    # Container and cluster management
     docker docker-compose lazydocker kubectl k9s helm
+    
+    # Databases
     postgresql sqlite
-    nil nixpkgs-fmt nix-tree nix-index
+    
+    # Nix development tools
+    nixd nixpkgs-fmt nix-tree nix-index
+    
+    # Archive utilities
     unzip zip gzip bzip2 xz p7zip
+    
+    # Documentation and utilities
     bc man-pages man-pages-posix tldr entr watchexec
   ];
 

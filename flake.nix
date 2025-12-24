@@ -2,6 +2,12 @@
 {
   description = "NixOS configurations for desktop, laptop, and WSL";
 
+  # Optional: Binary cache for faster builds
+  nixConfig = {
+    extra-substituters = [ "https://playit-nixos-module.cachix.org" ];
+    extra-trusted-public-keys = [ "playit-nixos-module.cachix.org-1:22hBXWXBbd/7o1cOnh+p0hpFUVk9lPdRLX3p5YSfRz4=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-wsl = {
@@ -10,6 +16,14 @@
     };
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    playit-nixos-module = {
+      url = "github:pedorich-n/playit-nixos-module";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -73,6 +87,8 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
+          inputs.playit-nixos-module.nixosModules.default
+          inputs.nix-minecraft.nixosModules.minecraft-servers
           ./hosts/server/configuration.nix
           home-manager.nixosModules.home-manager
           {
@@ -81,6 +97,7 @@
             home-manager.users.leyton = import ./hosts/server/leyton.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.backupFileExtension = "backup";
+            nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
           }
         ];
       };
