@@ -231,9 +231,6 @@ in
 
         # Set cursor (as Symphony)
         "hyprctl setcursor Bibata-Modern-Ice 24"
-
-        # Delay waybar slightly
-        "sleep 1 && ${pkgs.waybar}/bin/waybar"
       ];
 
       # --- Variables used by binds (translated from Symphony bindings.conf) ---
