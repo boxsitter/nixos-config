@@ -6,6 +6,7 @@
 
 {
   imports = [
+    ./gnome.nix
     ./programs/kitty.nix
     ./programs/hyprland.nix
     ./programs/rofi.nix

@@ -18,7 +18,9 @@
       shell_integration = "no-cursor";
 
       # Window
-      background_opacity = "0.8";
+      # GNOME blur is provided by the compositor/extension; Kitty needs some
+      # transparency for the blur to be visible.
+      background_opacity = 0.60;
       window_padding_width = "0 10";
       confirm_os_window_close = 0;
 
