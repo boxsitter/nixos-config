@@ -40,6 +40,10 @@
           options = [ "NOPASSWD" ];
         }
         {
+          command = "/run/current-system/sw/bin/nix flake update";
+          options = [ "NOPASSWD" ];
+        }
+        {
           command = "/run/current-system/sw/bin/journalctl -u minecraft-server-main -f --no-hostname -o cat";
           options = [ "NOPASSWD" ];
         }
