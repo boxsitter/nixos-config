@@ -1,23 +1,6 @@
 My goals for this config that I haven't yet implemented
 
-- [ ] Migrate back to main branch and delete symphony branch
-  - Notes / approach:
-    - Make sure `main` is up to date and clean: `git checkout main && git pull`.
-    - If `symphony` contains needed work, merge/rebase it into `main` (pick one):
-      - Merge: `git merge symphony` (keeps branch history)
-      - Rebase: `git checkout symphony && git rebase main` then merge fast-forward
-    - Confirm `main` builds on your key hosts (`nixos-rebuild test --flake .#<host>`).
-    - Delete branches:
-      - Local: `git branch -d symphony` (or `-D` if you’re sure)
-      - Remote: `git push origin --delete symphony` (if it exists)
 - [ ] Global, robust cattpuccin machiato theming
-  - Notes / approach:
-    - Centralize theme knobs (flavor/accent/wallpaper/font/icon/cursor) in one place.
-      A common pattern is a small theming module (e.g. `modules/home-manager/theming/…`) that exports options used by:
-      - GTK + GNOME via `dconf.settings` and `gtk.*` Home Manager options
-      - Hyprland stack (kitty/rofi/waybar/swaync) via your existing HM program modules
-    - Decide the “source of truth” first (GTK theme? base palette? wallpaper?), then generate downstream configs from it.
-
   - [ ] Blurring kitty and vscode background with blur my shell on gnome (not needed
     on hyprland)
     - Notes / approach:
@@ -116,11 +99,22 @@ My goals for this config that I haven't yet implemented
         - Touchpad: tune `services.libinput` and verify gestures if desired.
         - Make a “hardware smoke test” doc: what to click/run after a rebuild.
 
-- [ ] FL Studio setup with wine
+- [ ] High-Performance Windows VM for Adobe CC (GPU) & FL Studio (ASIO)
   - Notes / approach:
-    - Decide on a launcher strategy: `bottles` (easy) vs `lutris` vs a fully declarative wineprefix.
-    - Audio is the hard part: plan around PipeWire + JACK compatibility; consider `wineasio` if you need ASIO-like behavior.
-    - Expect some plugins/DRM to be the blocker; keep a short list of must-have VSTs and test early.
+    - **Architecture:** KVM/QEMU on NixOS + Windows 11 IoT Enterprise LTSC 2024 (Guest).
+    - **Hardware Isolation (Host):**
+      - Use `vfio-pci` kernel modules in NixOS to isolate the secondary GPU and the specific USB controller for audio.
+      - Configure `libvirtd` and `looking-glass-client` permissions declaratively.
+    - **Video (Looking Glass):**
+      - Setup Looking Glass for low-latency, shared-memory frame buffering (seamless window on Linux desktop).
+      - Pass through secondary GPU to VM for native Photoshop/Lightroom AI performance.
+    - **Audio (Focusrite/ASIO):**
+      - Do not use generic USB passthrough. Identify and pass through the entire PCI USB Controller that the Focusrite connects to.
+      - Ensures native ASIO driver performance with zero virtualization crackle/latency.
+    - **Windows Installation:**
+      - Generate `autounattend.xml` (via Schneegans) to automate install, bypass TPM/OOBE, and inject Generic Key.
+      - Use "Emulated TPM 2.0" in `virt-manager` (do not pass through host TPM).
+      - Install `virtio` drivers for disk/network and specific drivers for GPU/Looking Glass manually post-install.
 
 - [ ] Need to fix the persistent bug of my desktop not being able to drive my
   7680x2160@240hz monitor above 120hz. This is clearly a software issue since my
