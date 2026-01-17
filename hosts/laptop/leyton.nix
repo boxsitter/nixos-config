@@ -10,6 +10,10 @@
     ../../modules/home-manager/desktop.nix
   ];
 
+  home.sessionVariables = {
+    XCURSOR_SIZE = "14";
+  };
+
   # Laptop-specific overrides
   programs.kitty.font.size = 13;  # Slightly smaller for laptop screen
 }

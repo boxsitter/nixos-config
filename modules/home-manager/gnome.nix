@@ -21,11 +21,15 @@
         enabled-extensions = [
           "appindicatorsupport@rgcjonas.gmail.com"
           "blur-my-shell@aunetx"
+          "gSnap@micahosborne"
         ];
       };
     };
   };
 
   # Install the extension so GNOME can load it.
-  home.packages = [ pkgs.gnomeExtensions.blur-my-shell ];
+  home.packages = [
+    pkgs.gnomeExtensions.blur-my-shell
+    pkgs.gnomeExtensions.gsnap
+  ];
 }

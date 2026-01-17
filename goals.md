@@ -116,22 +116,6 @@ My goals for this config that I haven't yet implemented
       - Use "Emulated TPM 2.0" in `virt-manager` (do not pass through host TPM).
       - Install `virtio` drivers for disk/network and specific drivers for GPU/Looking Glass manually post-install.
 
-- [ ] Need to fix the persistent bug of my desktop not being able to drive my
-  7680x2160@240hz monitor above 120hz. This is clearly a software issue since my
-  RTX 5080 has no issues driving it in windows. I have narrowed it down to
-  driver incompatibility with the level of DSP needed for this bandwidth. It may
-  be a configuration issue, but it is likely the fact that the nvidia linux
-  drivers just haven't caught up. I need to really pin the issue down though and
-  make sure that it is truly out of my hands before I give up.
-  - Notes / approach:
-    - First confirm the link requirements: 7680×2160@240 typically requires DSC / very high DP bandwidth. Check monitor OSD for DSC + DP mode.
-    - Collect facts on Linux:
-      - Current session (Wayland vs X11), driver version, connector (DP/HDMI), reported max link rate, and whether DSC is active.
-    - Try “bandwidth reducers” to see if 240 becomes available (helps identify where the cap is):
-      - 8bpc instead of 10/12bpc, disable HDR, different chroma subsampling if supported, different cable/port.
-    - If still capped: test on a newer NVIDIA driver (including beta if you’re comfortable) and track whether it’s a known limitation.
-    - Goal is to end with a clear repro + a minimal config snippet you can share upstream (or accept as driver limitation).
-
 - [ ] Organize, simplify, and consolidate entire config. Need to make sure all AI
   artifacts and vibe coding slop is removed to get a truly simplified, modular,
   understandable config that is nix-pure and complies with common practices (not
