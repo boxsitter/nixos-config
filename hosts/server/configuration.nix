@@ -11,6 +11,7 @@
     ../../modules/nixos/services/minecraft.nix
     ../../modules/nixos/services/samba.nix
     ../../modules/nixos/services/playit.nix
+    ../../modules/nixos/services/immich.nix
   ];
 
   networking.hostName = "nixos-server";
