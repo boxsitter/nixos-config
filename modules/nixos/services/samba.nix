@@ -33,6 +33,16 @@
         "comment" = "Minecraft Server Files";
       };
       
+      # Immich photos (read-only access)
+      photos = {
+        "path" = "/var/lib/immich";
+        "browseable" = "yes";
+        "read only" = "yes";
+        "valid users" = "leyton";
+        "force group" = "immich";
+        "comment" = "Immich Photos";
+      };
+      
       # Optional: Your home directory
       homes = {
         "path" = "/home/leyton";

@@ -6,11 +6,8 @@
 {
   services.immich = {
     enable = true;
-    mediaLocation = "/home/leyton/media/photos";
+    host = "0.0.0.0";
   };
-
-  # Ensure media directory exists with correct permissions
-  systemd.tmpfiles.rules = [
-    "d /home/leyton/media/photos 0755 leyton users -"
-  ];
+  
+  users.users.leyton.extraGroups = [ "immich" ];
 }

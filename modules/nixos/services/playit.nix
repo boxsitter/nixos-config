@@ -6,8 +6,6 @@
 {
   services.playit = {
     enable = true;
-    user = "playit";
-    group = "playit";
     # Path to the secret file (needs to be set up imperatively first)
     secretPath = "/var/lib/playit/playit.toml";
   };
