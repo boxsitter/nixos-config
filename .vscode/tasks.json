@@ -38,7 +38,7 @@
     {
       "label": "NixOS: Update Flake Lock",
       "type": "shell",
-      "command": "nix flake update",
+      "command": "sudo nix flake update",
       "problemMatcher": [],
       "presentation": {
         "echo": true,

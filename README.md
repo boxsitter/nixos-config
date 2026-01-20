@@ -149,6 +149,6 @@ sudo chmod 600 /var/lib/playit/playit.toml
 2. Create a tunnel for port `25565` (Minecraft)
 3. Optionally set up a custom domain
 
-**Why this is imperative:** The playit agent secret is generated when you claim the agent and cannot be created declaratively.
+**Why this is important:** The playit agent secret is generated when you claim the agent and cannot be created declaratively.
 
 After setup, the playit service will automatically start and maintain the tunnel.

@@ -1,26 +1,14 @@
 { pkgs, ... }:
 
 {
-  # Disable X11 display manager; we'll run Wayland/Hyprland directly
-  services.xserver.enable = false;
-
   # Hyprland compositor (system provides it, user configures it via Home Manager)
   programs.hyprland = {
     enable = true;
     xwayland.enable = true; # XWayland for legacy X11 apps
   };
 
-  # Login manager: greetd with tuigreet (simple TUI greeter)
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        # Start a user session with Hyprland wrapped in dbus
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'dbus-run-session ${pkgs.hyprland}/bin/Hyprland'";
-        user = "greeter";
-      };
-    };
-  };
+  # Ensure display managers (e.g. GDM) can offer Hyprland as a selectable session.
+  services.displayManager.sessionPackages = [ pkgs.hyprland ];
 
   # Audio: PipeWire with PulseAudio compatibility
   security.rtkit.enable = true;
@@ -43,12 +31,6 @@
     # hyprland portal alongside gtk for broader compatibility
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
   };
-
-  # Hyprland system packages (login manager only)
-  # Wayland tools are per-host to avoid installing on WSL
-  environment.systemPackages = with pkgs; [
-    tuigreet
-  ];
 
   # Wayland environment variables
   environment.sessionVariables = {

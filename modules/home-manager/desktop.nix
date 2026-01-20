@@ -6,11 +6,12 @@
 
 {
   imports = [
+    ./gnome.nix
     ./programs/kitty.nix
+    ./programs/hyprland.nix
+    ./programs/rofi.nix
+    ./programs/waybar.nix
+    ./programs/swaync.nix
+    ./desktop-apps.nix
   ];
-
-  # GUI environment variables
-  home.sessionVariables = {
-    XCURSOR_SIZE = "14";
-  };
 }

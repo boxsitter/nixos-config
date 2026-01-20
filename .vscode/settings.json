@@ -4,22 +4,5 @@
         "nixos",
         "nixpkgs",
         "pkgs"
-    ],
-    "nix.enableLanguageServer": true,
-    "nix.serverPath": "nixd",
-    "nix.serverSettings": {
-        "nixd": {
-            "formatting": {
-                "command": ["nixfmt"]
-            },
-            "nixpkgs": {
-                "expr": "import <nixpkgs> { }"
-            },
-            "options": {
-                "nixos": {
-                    "expr": "(builtins.getFlake \"/home/leyton/nixos-config\").nixosConfigurations.server.options"
-                }
-            }
-        }
-    }
+    ]
 }

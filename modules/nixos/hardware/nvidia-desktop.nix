@@ -1,4 +1,4 @@
-# ./modules/hardware/nvidia.nix
+# ./modules/hardware/nvidia-desktop.nix
 # NVIDIA RTX 5080 configuration for desktop
 
 { config, pkgs, ... }:

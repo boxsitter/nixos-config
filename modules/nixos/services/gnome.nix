@@ -3,9 +3,10 @@
 {
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
   };
+
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour epiphany geary gnome-music gnome-photos totem
@@ -26,9 +27,16 @@
   hardware.bluetooth.powerOnBoot = true;
   services.gnome.gnome-keyring.enable = true;
   
+  # Enable xdg-desktop-portal for file pickers and other integrations
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "*";
+  };
+  
   environment.systemPackages = with pkgs; [
     gnome-tweaks gnomeExtensions.appindicator
-    vscode firefox vlc
+    firefox vlc
     wl-clipboard pavucontrol networkmanagerapplet
   ];
 }

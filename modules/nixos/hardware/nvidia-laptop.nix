@@ -29,16 +29,16 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     
-    # PRIME configuration - uncomment and set bus IDs for hybrid graphics
-    # Find bus IDs with: lspci | grep -E "VGA|3D"
-    # prime = {
-    #   intelBusId = "PCI:0:2:0";
-    #   nvidiaBusId = "PCI:1:0:0";
-    #   offload = {
-    #     enable = true;
-    #     enableOffloadCmd = true;
-    #   };
-    # };
+    # PRIME offload (hybrid graphics): Intel drives the desktop; NVIDIA powers
+    # up only for offloaded apps. This is typically the most power-efficient.
+    prime = {
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
+    };
   };
 
   nixpkgs.config.nvidia.acceptLicense = true;

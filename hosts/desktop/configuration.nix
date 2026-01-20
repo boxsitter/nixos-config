@@ -8,10 +8,11 @@
     ./hardware-configuration.nix
     ../../modules/nixos/core.nix
     ../../modules/nixos/boot/grub.nix
-    ../../modules/nixos/hardware/nvidia.nix
+    ../../modules/nixos/hardware/nvidia-desktop.nix
     ../../modules/nixos/hardware/dual-boot.nix
     ../../modules/nixos/hardware/intel-wifi.nix
     ../../modules/nixos/services/gnome.nix
+    ../../modules/nixos/services/hyprland.nix
     ../../modules/nixos/programs/1password-gui.nix
   ];
 

@@ -40,6 +40,10 @@
           options = [ "NOPASSWD" ];
         }
         {
+          command = "/run/current-system/sw/bin/nix flake update";
+          options = [ "NOPASSWD" ];
+        }
+        {
           command = "/run/current-system/sw/bin/journalctl -u minecraft-server-main -f --no-hostname -o cat";
           options = [ "NOPASSWD" ];
         }
@@ -75,10 +79,21 @@
     };
   };
 
+  boot.kernel.sysctl = {
+    "kernel.perf_event_paranoid" = 1;
+    "kernel.kptr_restrict" = 0;
+  };
+
+  # Fonts (system-wide)
+  # Ensures "FiraCode Nerd Font" is available for Kitty/VS Code/etc.
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+  ];
+
   environment.systemPackages = with pkgs; [
     # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
-    strace lsof tcpdump
+    strace lsof tcpdump sysprof
     
     # Shell and CLI enhancements
     fish fastfetch eza starship direnv nnn fzf ripgrep fd bat tmux
@@ -106,7 +121,12 @@
     
     # Documentation and utilities
     bc man-pages man-pages-posix tldr entr watchexec
+
+    # Mouse configuration
+    piper
   ];
+
+  services.ratbagd.enable = true;
 
   # DO NOT CHANGE - set once at initial install
   system.stateVersion = "24.11";
