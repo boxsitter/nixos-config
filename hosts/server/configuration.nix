@@ -12,6 +12,7 @@
     ../../modules/nixos/services/samba.nix
     ../../modules/nixos/services/playit.nix
     ../../modules/nixos/services/immich.nix
+    ../../modules/nixos/services/komga.nix
   ];
 
   networking.hostName = "nixos-server";

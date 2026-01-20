@@ -43,6 +43,19 @@
         "comment" = "Immich Photos";
       };
       
+      # Manga library for Komga
+      manga = {
+        "path" = "/var/lib/komga/manga";
+        "browseable" = "yes";
+        "read only" = "no";
+        "valid users" = "leyton";
+        "force user" = "komga";
+        "force group" = "komga";
+        "create mask" = "0664";
+        "directory mask" = "0775";
+        "comment" = "Manga Library";
+      };
+      
       # Optional: Your home directory
       homes = {
         "path" = "/home/leyton";
