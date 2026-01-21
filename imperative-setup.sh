@@ -133,11 +133,13 @@ step_sops_setup() {
       warn ".sops.yaml not found; skipping update."
     fi
     
-    # Prompt for Cloudflare token and encrypt
+    # Prompt for secrets and encrypt
     info "Now you need to encrypt your secrets."
     read -r -p "Enter Cloudflare API token (DNS edit for lhsv.net): " CF_TOKEN
+    read -r -p "Enter Samba password for auto-mounting: " -s SAMBA_PASSWORD
+    echo ""
     
-    if [[ -n "$CF_TOKEN" ]]; then
+    if [[ -n "$CF_TOKEN" || -n "$SAMBA_PASSWORD" ]]; then
       local secrets_file="/home/${SUDO_USER_REAL}/nixos-config/secrets/secrets.yaml"
       info "Creating and encrypting $secrets_file..."
       
@@ -145,18 +147,24 @@ step_sops_setup() {
       cat > "$secrets_file" <<EOF
 # Cloudflare API token for DNS-01 challenges (used by Caddy)
 cloudflare-dns-token: CLOUDFLARE_API_TOKEN=$CF_TOKEN
+# Samba credentials for auto-mounting server on clients
+samba-credentials: |
+  username=leyton
+  password=$SAMBA_PASSWORD
+  domain=WORKGROUP
 EOF
       chown "$SUDO_USER_REAL:users" "$secrets_file"
       
       # Encrypt it with sops
       info "Encrypting secrets file..."
       cd "/home/${SUDO_USER_REAL}/nixos-config"
-      sudo -u "$SUDO_USER_REAL" nix-shell -p sops --run "sops -e -i $secrets_file"
+      export SOPS_AGE_KEY_FILE="$key_file"
+      sudo -E nix-shell -p sops --run "sops -e -i $secrets_file"
       
       info "Secrets encrypted successfully!"
       info "Don't forget to: cd ~/nixos-config && git add .sops.yaml secrets/secrets.yaml && git commit"
     else
-      warn "No Cloudflare token provided; skipping secrets encryption."
+      warn "No secrets provided; skipping secrets encryption."
     fi
   fi
 }

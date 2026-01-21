@@ -7,7 +7,7 @@
   services.minecraft-servers = {
     enable = true;
     eula = true;
-    dataDir = "/var/lib/minecraft";
+    dataDir = "/home/leyton/media/minecraft";
     
     servers.main = {
       enable = true;
@@ -83,13 +83,16 @@
     };
   };
   
+  # Override ProtectHome to allow access to /home/leyton/media
+  systemd.services.minecraft-server-main.serviceConfig.ProtectHome = lib.mkForce false;
+  
   # Automatic daily backups
   systemd.services.minecraft-backup = {
     description = "Backup Minecraft world";
     serviceConfig = {
       Type = "oneshot";
       User = "minecraft";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'cd /var/lib/minecraft/main && ${pkgs.gnutar}/bin/tar -czf /var/lib/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world'";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'cd /home/leyton/media/minecraft/main && ${pkgs.gnutar}/bin/tar -czf /home/leyton/media/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world'";
     };
   };
   
@@ -103,7 +106,7 @@
   };
   
   systemd.tmpfiles.rules = [
-    "d /var/lib/minecraft/backups 0755 minecraft minecraft -"
+    "d /home/leyton/media/minecraft/backups 0755 minecraft minecraft -"
   ];
 }
 

@@ -6,6 +6,7 @@
 {
   imports = [
     ../../modules/nixos/core.nix
+    ../../modules/nixos/services/samba-client.nix
   ];
 
   wsl = {

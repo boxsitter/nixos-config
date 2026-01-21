@@ -30,6 +30,14 @@
     mcrcon  # Minecraft RCON client for interactive console
   ];
 
+  # Create media directory structure and ensure home directory is traversable
+  systemd.tmpfiles.rules = [
+    "d /home/leyton 0755 leyton users -"  # Allow service users to traverse into /home/leyton
+    "d /home/leyton/media 0755 leyton users -"
+    "d /home/leyton/media/movies 0755 leyton users -"
+    "d /home/leyton/media/tv 0755 leyton users -"
+  ];
+
   # Server-specific configurations
   services.timesyncd.enable = true;  # NTP time sync
   

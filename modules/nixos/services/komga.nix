@@ -8,7 +8,7 @@
   users.users.komga = {
     isSystemUser = true;
     group = "komga";
-    home = "/var/lib/komga";
+    home = "/home/leyton/media/komga";
     createHome = true;
   };
   
@@ -19,9 +19,9 @@
   
   # Create manga library directory
   systemd.tmpfiles.rules = [
-    "d /var/lib/komga 0755 komga komga -"
-    "d /var/lib/komga/data 0755 komga komga -"
-    "d /var/lib/komga/manga 0775 komga komga -"
+    "d /home/leyton/media/komga 0755 komga komga -"
+    "d /home/leyton/media/komga/data 0755 komga komga -"
+    "d /home/leyton/media/komga/manga 0775 komga komga -"
   ];
   
   # Komga systemd service
@@ -31,7 +31,7 @@
     wantedBy = [ "multi-user.target" ];
     
     environment = {
-      KOMGA_CONFIGDIR = "/var/lib/komga/data";
+      KOMGA_CONFIGDIR = "/home/leyton/media/komga/data";
       SERVER_PORT = "8080";
       SERVER_SERVLET_CONTEXT_PATH = "/";
     };
@@ -39,7 +39,7 @@
     serviceConfig = {
       User = "komga";
       Group = "komga";
-      WorkingDirectory = "/var/lib/komga";
+      WorkingDirectory = "/home/leyton/media/komga";
       ExecStart = "${pkgs.komga}/bin/komga";
       Restart = "on-failure";
       RestartSec = "10s";
@@ -48,8 +48,8 @@
       NoNewPrivileges = true;
       PrivateTmp = true;
       ProtectSystem = "strict";
-      ProtectHome = true;
-      ReadWritePaths = [ "/var/lib/komga" ];
+      ProtectHome = false;
+      ReadWritePaths = [ "/home/leyton/media/komga" ];
     };
   };
 }

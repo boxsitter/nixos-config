@@ -20,45 +20,8 @@
         "map to guest" = "never";
       };
       
-      # Minecraft server files
-      minecraft = {
-        "path" = "/var/lib/minecraft";
-        "browseable" = "yes";
-        "read only" = "no";
-        "valid users" = "leyton";
-        "force user" = "minecraft";
-        "force group" = "minecraft";
-        "create mask" = "0664";
-        "directory mask" = "0775";
-        "comment" = "Minecraft Server Files";
-      };
-      
-      # Immich photos (read-only access)
-      photos = {
-        "path" = "/var/lib/immich";
-        "browseable" = "yes";
-        "read only" = "yes";
-        "valid users" = "leyton";
-        "force user" = "immich";
-        "force group" = "immich";
-        "comment" = "Immich Photos";
-      };
-      
-      # Manga library for Komga
-      manga = {
-        "path" = "/var/lib/komga/manga";
-        "browseable" = "yes";
-        "read only" = "no";
-        "valid users" = "leyton";
-        "force user" = "komga";
-        "force group" = "komga";
-        "create mask" = "0664";
-        "directory mask" = "0775";
-        "comment" = "Manga Library";
-      };
-      
-      # Optional: Your home directory
-      homes = {
+      # Home directory - provides access to all media
+      home = {
         "path" = "/home/leyton";
         "browseable" = "yes";
         "read only" = "no";

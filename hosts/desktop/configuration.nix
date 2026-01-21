@@ -13,6 +13,7 @@
     ../../modules/nixos/hardware/intel-wifi.nix
     ../../modules/nixos/services/gnome.nix
     ../../modules/nixos/services/hyprland.nix
+    ../../modules/nixos/services/samba-client.nix
     ../../modules/nixos/programs/1password-gui.nix
   ];
 
