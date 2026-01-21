@@ -18,6 +18,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     catppuccin = {
       url = "github:catppuccin/nix";
     };
@@ -92,6 +96,7 @@
         modules = [
           inputs.playit-nixos-module.nixosModules.default
           inputs.nix-minecraft.nixosModules.minecraft-servers
+          inputs.sops-nix.nixosModules.sops
           ./hosts/server/configuration.nix
           home-manager.nixosModules.home-manager
           {

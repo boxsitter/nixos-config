@@ -7,8 +7,8 @@
   services.samba = {
     enable = true;
     openFirewall = false;  # Only accessible via Tailscale
-    enableNmbd = false;  # Disable NetBIOS (not needed for Tailscale)
-    enableWinbindd = false;  # Disable Active Directory support
+    nmbd.enable = false;  # Disable NetBIOS (not needed for Tailscale)
+    winbindd.enable = false;  # Disable Active Directory support
     
     settings = {
       global = {
@@ -39,6 +39,7 @@
         "browseable" = "yes";
         "read only" = "yes";
         "valid users" = "leyton";
+        "force user" = "immich";
         "force group" = "immich";
         "comment" = "Immich Photos";
       };

@@ -1,0 +1,8 @@
+# .sops.yaml
+# Configuration for sops encryption
+
+# Define which keys can decrypt which files
+creation_rules:
+  - path_regex: secrets/secrets\.yaml$
+    age: >-
+      age1uypa94r4vz7e2jrmruyu6857a6hxyntzxhnsfw2n5eq4n2lfy96qtjc7hq

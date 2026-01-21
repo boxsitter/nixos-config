@@ -90,65 +90,49 @@ sudo reboot
 
 ## Post-Installation Setup
 
-**⚠️ IMPORTANT:** Any imperative (non-declarative) setup steps must be documented here to ensure reproducibility.
+### 1. Initial Rebuild (Server Only)
 
-### Tailscale Authentication
-
-After first boot, connect to your Tailscale network:
+On the server, run an initial rebuild to generate the sops age key:
 
 ```bash
-# Generate a reusable auth key at: https://login.tailscale.com/admin/settings/keys
-sudo tailscale up --ssh --authkey=tskey-auth-xxxxxxxxxx
+cd ~/nixos-config
+sudo nixos-rebuild switch --flake .#server
 ```
 
-The authentication persists across reboots - you only need to do this once per machine.
+This generates `/var/lib/sops-nix/key.txt` needed for secrets encryption.
 
-### Samba Password Setup (Server Only)
+### 2. Run Imperative Setup Script
 
-After enabling Samba shares, set your Samba password:
+Run the helper script for one-time imperative steps:
 
 ```bash
-sudo smbpasswd -a $USER
+cd ~/nixos-config
+scripts/imperative-setup.sh
 ```
 
-**Why this is imperative:** Samba requires SMB-protocol-specific password hashes that cannot be declaratively derived from system passwords. This must be set once per user.
+The script will:
+- Configure Tailscale authentication
+- Set Samba password (server only)
+- Claim Playit tunnel (server only)
+- **Set up sops secrets** (server only): extracts age key, updates `.sops.yaml`, encrypts Cloudflare token
 
-**To connect from Windows:**
-1. Press `Win + R`
-2. Type: `\\<server-tailscale-ip>` (e.g., `\\100.80.198.94`)
-3. Username: `username`
-4. Password: The password you set with `smbpasswd`
+### 3. Commit and Final Rebuild (Server Only)
 
-Available shares:
-- `\\<server-ip>\minecraft` - Minecraft server files
-- `\\<server-ip>\homes` - Home directory
-
-### Playit Agent Setup (Server Only)
-
-Playit.gg provides tunneling to expose the Minecraft server on a custom domain.
-
-**Initial claim (one-time setup):**
+After the script completes, commit the encrypted secrets:
 
 ```bash
-# Download and run the playit agent to claim it
-nix run github:pedorich-n/playit-nixos-module#playit-cli -- start
+cd ~/nixos-config
+git add .sops.yaml secrets/secrets.yaml
+git commit -m "Add encrypted secrets"
+git push
 ```
 
-Follow the link provided to claim the agent on playit.gg website. After claiming, exit the program and copy the secret:
+Then rebuild to deploy the secrets:
 
 ```bash
-# Copy the generated secret to the expected location
-sudo mkdir -p /var/lib/playit
-sudo cp ~/.config/playit_gg/playit.toml /var/lib/playit/
-sudo chown playit:playit /var/lib/playit/playit.toml
-sudo chmod 600 /var/lib/playit/playit.toml
+sudo nixos-rebuild switch --flake .#server
 ```
 
-**Configure tunnels:**
-1. Go to https://playit.gg/account/tunnels
-2. Create a tunnel for port `25565` (Minecraft)
-3. Optionally set up a custom domain
+Caddy will now have access to the Cloudflare token for DNS-01 challenges.
 
-**Why this is important:** The playit agent secret is generated when you claim the agent and cannot be created declaratively.
-
-After setup, the playit service will automatically start and maintain the tunnel.
+**⚠️ IMPORTANT:** Any imperative (non-declarative) setup steps must be added to the setup script.

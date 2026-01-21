@@ -7,12 +7,14 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/core.nix
+    ../../modules/nixos/secrets.nix
     ../../modules/nixos/boot/systemd-boot.nix
     ../../modules/nixos/services/minecraft.nix
     ../../modules/nixos/services/samba.nix
     ../../modules/nixos/services/playit.nix
     ../../modules/nixos/services/immich.nix
     ../../modules/nixos/services/komga.nix
+    ../../modules/nixos/services/caddy.nix
   ];
 
   networking.hostName = "nixos-server";
