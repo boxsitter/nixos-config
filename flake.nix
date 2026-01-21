@@ -18,6 +18,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+    };
     playit-nixos-module = {
       url = "github:pedorich-n/playit-nixos-module";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,7 +44,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/desktop/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
             home-manager.backupFileExtension = "backup";
           }
         ];
@@ -58,7 +61,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/laptop/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
             home-manager.backupFileExtension = "backup";
           }
         ];

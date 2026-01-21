@@ -312,13 +312,6 @@ in
     procps                  # Provides pgrep/pkill used by toggle scripts
   ];
 
-  # Cursor theme used by `hyprctl setcursor ...`.
-  home.pointerCursor = {
-    name = "Bibata-Modern-Ice";
-    size = 24;
-    package = pkgs.bibata-cursors;
-  };
-
   # Ensure rofi sees the expected terminal.
   home.sessionVariables = {
     TERMINAL = terminal;

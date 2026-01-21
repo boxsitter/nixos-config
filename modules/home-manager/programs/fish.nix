@@ -21,6 +21,7 @@
       grep = "rg";
       find = "fd";
       top = "htop";
+      ff = "fastfetch";
     };
     functions = {
       mc = ''

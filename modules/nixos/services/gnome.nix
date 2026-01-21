@@ -35,8 +35,15 @@
   };
   
   environment.systemPackages = with pkgs; [
-    gnome-tweaks gnomeExtensions.appindicator
-    firefox vlc
-    wl-clipboard pavucontrol networkmanagerapplet
+    gnome-tweaks
+    gnomeExtensions.appindicator
+    firefox
+    vlc
+    wl-clipboard
+    pavucontrol
+    networkmanagerapplet
+
+    # Stable GTK3 theme that matches GNOME’s look; avoids oversized buttons
+    adw-gtk3
   ];
 }

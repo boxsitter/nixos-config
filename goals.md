@@ -1,12 +1,6 @@
 My goals for this config that I haven't yet implemented
 
-- [ ] Global, robust cattpuccin machiato theming
-  - [ ] Blurring kitty and vscode background with blur my shell on gnome (not needed
-    on hyprland)
-    - Notes / approach:
-      - GNOME: install `Blur my Shell` via `gnomeExtensions.*` (in NixOS or HM), and set extension prefs via `dconf.settings`.
-      - Kitty: enable transparency in kitty + let GNOME blur behind (blur happens in the compositor/extension).
-      - VS Code: blur isn’t “native”; you usually rely on window transparency + compositor blur, or keep it opaque and only theme colors.
+- [ ] Global, robust catppuccin machiato theming
   - [ ] Cattpuccin just to start, I want to implement a theme switcher with various
     themes eventually
     - Notes / approach:
@@ -80,7 +74,6 @@ My goals for this config that I haven't yet implemented
   that are present by default on windows but need to be manually configured on
   nixos. Things that I, as a windows user, take for granted.
   - Notes / approach:
-    - Turn this into a checklist module (one file) that you can import on desktop/laptop:
       - printing/scanning, bluetooth, screenshot tool, archive tools, basic viewers, codecs, clipboard, notifications, portals
       - sane defaults for file associations (xdg mime)
     - For each item: decide NixOS service vs HM program, then add a quick “verification command” you can run.

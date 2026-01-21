@@ -24,6 +24,12 @@
           "gSnap@micahosborne"
         ];
       };
+
+      # Legacy applications theme support
+      "org/gnome/desktop/interface" = {
+        font-antialiasing = "rgba";
+        font-hinting = "slight";
+      };
     };
   };
 

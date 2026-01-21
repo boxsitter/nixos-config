@@ -6,6 +6,7 @@
 
 {
   imports = [
+    ./theming.nix
     ./gnome.nix
     ./programs/kitty.nix
     ./programs/hyprland.nix
