@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 # Tailscale VPN Authentication Step
 
+get_tailscale_help() {
+  echo "Authenticate this machine to your Tailscale network for secure VPN access."
+}
+
+check_tailscale_status() {
+  if ! command_exists tailscale; then
+    echo "not-applicable"
+    return
+  fi
+  
+  if tailscale status --peers=false >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "needed"
+  fi
+}
+
 step_tailscale() {
   info "Configuring Tailscale VPN authentication..."
   

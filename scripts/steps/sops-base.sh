@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 # sops-nix Base Setup Step
 
+get_sops_base_help() {
+  echo "Configure age encryption for secrets management. Extracts your age key and updates .sops.yaml."
+}
+
+check_sops_base_status() {
+  if [[ ! -f "$AGE_KEY_FILE" ]]; then
+    echo "needed"
+    return
+  fi
+  
+  local pub_key
+  pub_key=$(get_age_public_key "$AGE_KEY_FILE" 2>/dev/null)
+  
+  if [[ -n "$pub_key" ]] && grep -q "$pub_key" "$SOPS_CONFIG" 2>/dev/null; then
+    echo "done"
+  else
+    echo "needed"
+  fi
+}
+
 step_sops_base_setup() {
   info "Configuring sops-nix base setup..."
   

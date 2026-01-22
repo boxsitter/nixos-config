@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 # Playit Agent Claim Step (Server Only)
 
+get_playit_help() {
+  echo "Claim a Playit tunnel agent for Minecraft server access. WARNING: Re-running creates a"
+  echo "duplicate agent in your dashboard and loses existing tunnel configuration."
+}
+
+check_playit_status() {
+  if [[ $IS_SERVER -ne 1 ]]; then
+    echo "not-applicable"
+    return
+  fi
+  
+  if [[ -f "/var/lib/playit/playit.toml" ]]; then
+    echo "done"
+  else
+    echo "needed"
+  fi
+}
+
 step_playit_claim() {
   local playit_config="/var/lib/playit/playit.toml"
   local user_config="/home/${SUDO_USER_REAL}/.config/playit_gg/playit.toml"

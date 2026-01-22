@@ -1,6 +1,32 @@
 #!/usr/bin/env bash
 # Samba Mount Credentials Encryption Step (Client Hosts Only)
 
+get_samba_creds_help() {
+  echo "Encrypt your Samba credentials for auto-mounting server shares on boot."
+}
+
+check_samba_credentials_status() {
+  if [[ $IS_SERVER -eq 1 ]]; then
+    echo "not-applicable"
+    return
+  fi
+  
+  if [[ ! -f "$AGE_KEY_FILE" ]]; then
+    echo "needed"
+    return
+  fi
+  
+  if [[ -f "$SECRETS_FILE" ]]; then
+    export SOPS_AGE_KEY_FILE="$AGE_KEY_FILE"
+    if nix-shell -p sops --run "sops -d $SECRETS_FILE 2>/dev/null" 2>/dev/null | grep -q "samba-credentials"; then
+      echo "done"
+      return
+    fi
+  fi
+  
+  echo "needed"
+}
+
 step_sops_samba_credentials() {
   info "Encrypting Samba mount credentials..."
   

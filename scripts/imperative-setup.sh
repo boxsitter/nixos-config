@@ -61,7 +61,6 @@ SUDO_USER_REAL=${SUDO_USER:-${LOGNAME:-$(whoami)}}
 # Source library files
 source "${SCRIPT_DIR}/lib/utils.sh"
 source "${SCRIPT_DIR}/lib/sops-common.sh"
-source "${SCRIPT_DIR}/lib/status.sh"
 source "${SCRIPT_DIR}/lib/menu.sh"
 
 # Source step files
@@ -72,21 +71,42 @@ source "${SCRIPT_DIR}/steps/playit.sh"
 source "${SCRIPT_DIR}/steps/cloudflare.sh"
 source "${SCRIPT_DIR}/steps/samba-credentials.sh"
 
+# Step status tracking
+declare -A STEP_STATUS
+declare -A STEP_DESCRIPTION
+declare -A STEP_RERUN_SAFE
+
+# Initialize step metadata and check all statuses
+init_steps() {
+  # Step IDs and descriptions
+  STEP_DESCRIPTION["tailscale"]="Tailscale VPN authentication"
+  STEP_DESCRIPTION["sops_base"]="sops-nix base setup (age key + .sops.yaml)"
+  STEP_DESCRIPTION["samba_password"]="Samba password for file sharing"
+  STEP_DESCRIPTION["playit"]="Playit tunnel agent claim"
+  STEP_DESCRIPTION["cloudflare"]="Cloudflare DNS token for Caddy ACME"
+  STEP_DESCRIPTION["samba_creds"]="Samba mount credentials"
+  
+  # Mark which steps are safe to re-run (true=safe, false=caution needed)
+  STEP_RERUN_SAFE["tailscale"]="true"
+  STEP_RERUN_SAFE["sops_base"]="true"
+  STEP_RERUN_SAFE["samba_password"]="true"
+  STEP_RERUN_SAFE["playit"]="false"  # Creates duplicate agents if re-run
+  STEP_RERUN_SAFE["cloudflare"]="true"
+  STEP_RERUN_SAFE["samba_creds"]="true"
+  
+  # Check status for each step (functions defined in step files)
+  STEP_STATUS["tailscale"]=$(check_tailscale_status)
+  STEP_STATUS["sops_base"]=$(check_sops_base_status)
+  STEP_STATUS["samba_password"]=$(check_samba_password_status)
+  STEP_STATUS["playit"]=$(check_playit_status)
+  STEP_STATUS["cloudflare"]=$(check_cloudflare_token_status)
+  STEP_STATUS["samba_creds"]=$(check_samba_credentials_status)
+}
+
 # Main orchestration
 main() {
-  # Ensure whiptail is available
-  if ! command_exists whiptail; then
-    info "Installing whiptail for interactive menu..."
-    nix-shell -p whiptail --run "true"
-  fi
-  
-  info "==================================================================="
   info "NixOS Imperative Setup Script"
-  info "==================================================================="
   info "Detected host: $HOSTNAME_SHORT"
-  info "  Server: $IS_SERVER | Desktop: $IS_DESKTOP | Laptop: $IS_LAPTOP | WSL: $IS_WSL"
-  info "  User: $SUDO_USER_REAL"
-  info "==================================================================="
   
   # Initialize step status checks
   info "Checking step status..."
@@ -94,7 +114,7 @@ main() {
   
   # Show interactive menu
   local selected_steps
-  selected_steps=$(nix-shell -p whiptail --run "$(declare -f show_step_menu format_step_for_menu); $(declare -p STEP_STATUS STEP_DESCRIPTION); show_step_menu")
+  selected_steps=$(show_step_menu)
   
   # Check if user cancelled
   if [[ -z "$selected_steps" ]]; then
@@ -102,9 +122,9 @@ main() {
     exit 0
   fi
   
-  # Convert selected steps to array (whiptail returns quoted space-separated list)
+  # Convert selected steps to array
   local -a steps_to_run
-  eval "steps_to_run=($selected_steps)"
+  read -r -a steps_to_run <<< "$selected_steps"
   
   if [[ ${#steps_to_run[@]} -eq 0 ]]; then
     info "No steps selected"
@@ -112,9 +132,7 @@ main() {
   fi
   
   # Run selected steps in order
-  info "\n==================================================================="
-  info "Running selected steps..."
-  info "==================================================================="
+  info "\nRunning selected steps..."
   
   for step_id in "${steps_to_run[@]}"; do
     case "$step_id" in
@@ -139,14 +157,11 @@ main() {
     esac
   done
   
-  info "==================================================================="
   success "All selected steps completed successfully!"
-  info "==================================================================="
   info "Next steps:"
   info "  1. Review and commit any changes to .sops.yaml and secrets/"
   info "  2. Run: sudo nixos-rebuild switch"
   info "  3. Verify services are working correctly"
-  info "==================================================================="
 }
 
 main "$@"

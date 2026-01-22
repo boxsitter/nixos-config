@@ -557,7 +557,7 @@ main() {
   # Ensure whiptail is available
   if ! command_exists whiptail; then
     info "Installing whiptail for interactive menu..."
-    nix-shell -p whiptail --run "true"
+    nix-shell -p newt --run "true"
   fi
   
   info "==================================================================="
@@ -574,7 +574,7 @@ main() {
   
   # Show interactive menu
   local selected_steps
-  selected_steps=$(nix-shell -p whiptail --run "$(declare -f show_step_menu format_step_for_menu); $(declare -p STEP_STATUS STEP_DESCRIPTION); show_step_menu")
+  selected_steps=$(nix-shell -p newt --run "$(declare -f show_step_menu format_step_for_menu); $(declare -p STEP_STATUS STEP_DESCRIPTION); show_step_menu")
   
   # Check if user cancelled
   if [[ -z "$selected_steps" ]]; then

@@ -19,8 +19,8 @@
   
   # Create manga library directory
   systemd.tmpfiles.rules = [
-    "d /home/leyton/media/komga 0755 komga komga -"
-    "d /home/leyton/media/komga/data 0755 komga komga -"
+    "d /home/leyton/media/komga 0775 komga komga -"
+    "d /home/leyton/media/komga/data 0775 komga komga -"
     "d /home/leyton/media/komga/manga 0775 komga komga -"
   ];
   

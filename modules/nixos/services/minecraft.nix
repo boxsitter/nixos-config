@@ -86,6 +86,9 @@
   # Override ProtectHome to allow access to /home/leyton/media
   systemd.services.minecraft-server-main.serviceConfig.ProtectHome = lib.mkForce false;
   
+  # Add leyton to minecraft group for file access
+  users.users.leyton.extraGroups = [ "minecraft" ];
+  
   # Automatic daily backups
   systemd.services.minecraft-backup = {
     description = "Backup Minecraft world";
@@ -106,6 +109,7 @@
   };
   
   systemd.tmpfiles.rules = [
+    "d /home/leyton/media/minecraft 0775 minecraft minecraft -"
     "d /home/leyton/media/minecraft/backups 0755 minecraft minecraft -"
   ];
 }
