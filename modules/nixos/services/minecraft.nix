@@ -7,7 +7,7 @@
   services.minecraft-servers = {
     enable = true;
     eula = true;
-    dataDir = "/home/leyton/media/minecraft";
+    dataDir = "/home/leyton/minecraft";
     
     servers.main = {
       enable = true;
@@ -83,7 +83,7 @@
     };
   };
   
-  # Override ProtectHome to allow access to /home/leyton/media
+  # Override ProtectHome to allow access to /home/leyton
   systemd.services.minecraft-server-main.serviceConfig.ProtectHome = lib.mkForce false;
   
   # Add leyton to minecraft group for file access
@@ -95,7 +95,7 @@
     serviceConfig = {
       Type = "oneshot";
       User = "minecraft";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'cd /home/leyton/media/minecraft/main && ${pkgs.gnutar}/bin/tar -czf /home/leyton/media/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world'";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'cd /home/leyton/minecraft/main && ${pkgs.gnutar}/bin/tar -czf /home/leyton/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world'";
     };
   };
   
@@ -109,8 +109,8 @@
   };
   
   systemd.tmpfiles.rules = [
-    "d /home/leyton/media/minecraft 0775 minecraft minecraft -"
-    "d /home/leyton/media/minecraft/backups 0755 minecraft minecraft -"
+    "d /home/leyton/minecraft 0775 minecraft minecraft -"
+    "d /home/leyton/minecraft/backups 0755 minecraft minecraft -"
   ];
 }
 

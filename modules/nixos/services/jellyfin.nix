@@ -22,5 +22,8 @@
   # Ensure Jellyfin state directory exists with shared group
   systemd.tmpfiles.rules = [
     "d /var/lib/jellyfin 2770 jellyfin media -"
+    "d /home/leyton/media/jellyfin 2775 leyton media -"
+    "d /home/leyton/media/jellyfin/movies 2775 leyton media -"
+    "d /home/leyton/media/jellyfin/shows 2775 leyton media -"
   ];
 }

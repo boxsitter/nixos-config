@@ -9,7 +9,7 @@
     settings = {
       Address = "127.0.0.1";
       Port = 4533;
-      MusicFolder = "/home/leyton/media/music";
+      MusicFolder = "/home/leyton/media/navidrome/music";
       EnableCoverAnimation = true;
       Scanner.ExtractFullAudioMetadata = true;
       TranscodingCacheSize = "1GB";
@@ -23,4 +23,9 @@
 
   # Allow group writes to newly created files
   systemd.services.navidrome.serviceConfig.UMask = lib.mkForce "0002";
+
+  systemd.tmpfiles.rules = [
+    "d /home/leyton/media/navidrome 2775 leyton media -"
+    "d /home/leyton/media/navidrome/music 2775 leyton media -"
+  ];
 }
