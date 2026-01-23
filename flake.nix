@@ -77,6 +77,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.nixos-wsl.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
           ./hosts/wsl/configuration.nix
           home-manager.nixosModules.home-manager
           {

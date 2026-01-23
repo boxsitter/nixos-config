@@ -1,7 +1,7 @@
 # modules/nixos/secrets.nix
 # Declarative secrets management with sops-nix
 
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   # Enable sops-nix for secrets management
@@ -18,8 +18,8 @@
 
     # Define secrets and their deployment locations
     secrets = {
-      # Cloudflare API token for Caddy DNS-01 challenges
-      cloudflare-dns-token = {
+      # Cloudflare API token for Caddy DNS-01 challenges (server only)
+      cloudflare-dns-token = lib.mkIf config.services.caddy.enable {
         owner = config.services.caddy.user;
         group = config.services.caddy.group;
         mode = "0400";
