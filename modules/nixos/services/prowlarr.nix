@@ -6,7 +6,11 @@ let
   cfg = config.services.prowlarr-custom;
 in {
   options.services.prowlarr-custom = {
-    enable = mkEnableOption "Prowlarr indexer manager";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Prowlarr";
+    };
   };
 
   config = mkIf cfg.enable {

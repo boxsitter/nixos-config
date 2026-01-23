@@ -6,7 +6,11 @@ let
   cfg = config.services.radarr-custom;
 in {
   options.services.radarr-custom = {
-    enable = mkEnableOption "Radarr movie automation";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Radarr";
+    };
 
     downloadDir = mkOption {
       type = types.str;

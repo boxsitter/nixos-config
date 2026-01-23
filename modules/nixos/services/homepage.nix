@@ -6,7 +6,11 @@ let
   cfg = config.services.homepage-dashboard-custom;
 in {
   options.services.homepage-dashboard-custom = {
-    enable = mkEnableOption "Homepage dashboard";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Homepage dashboard";
+    };
 
     port = mkOption {
       type = types.int;

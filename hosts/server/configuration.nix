@@ -21,7 +21,6 @@
     ../../modules/nixos/services/homepage.nix
     ../../modules/nixos/services/cockpit.nix
     ../../modules/nixos/services/uptime-kuma.nix
-    ../../modules/nixos/services/filebrowser.nix
     ../../modules/nixos/services/prowlarr.nix
     ../../modules/nixos/services/radarr.nix
     ../../modules/nixos/services/sonarr.nix
@@ -65,25 +64,5 @@
   };
 
   # Transmission BitTorrent client
-  services.transmission-custom = {
-    enable = true;
-    downloadDir = "/home/leyton/downloads";
-  };
-
-  # Homepage dashboard
-  services.homepage-dashboard-custom.enable = true;
-
-  # Cockpit system management
-  services.cockpit-custom.enable = true;
-
-  # Uptime Kuma monitoring
-  services.uptime-kuma-custom.enable = true;
-
-  # FileBrowser
-  services.filebrowser-custom.enable = true;
-
-  # *arr stack for media automation
-  services.prowlarr-custom.enable = true;
-  services.radarr-custom.enable = true;
-  services.sonarr-custom.enable = true;
+  # (enabled via imported modules)
 }

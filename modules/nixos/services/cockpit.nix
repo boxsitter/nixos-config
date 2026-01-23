@@ -6,7 +6,11 @@ let
   cfg = config.services.cockpit-custom;
 in {
   options.services.cockpit-custom = {
-    enable = mkEnableOption "Cockpit web-based server management";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Cockpit web UI";
+    };
 
     port = mkOption {
       type = types.int;
@@ -19,7 +23,7 @@ in {
     services.cockpit = {
       enable = true;
       port = cfg.port;
-      
+
       settings = {
         WebService = {
           AllowUnencrypted = true;  # Since we're behind Caddy with TLS
@@ -29,9 +33,6 @@ in {
       };
     };
 
-    # Cockpit includes monitoring, so we don't need separate tools
-    # It provides: system stats, service management, logs, terminal, storage, networking
-    
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };
 }

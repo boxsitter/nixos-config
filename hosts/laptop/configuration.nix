@@ -25,6 +25,13 @@
 
   networking.hostName = "nixos-laptop";
 
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      nvidia.acceptLicense = true;
+    };
+  };
+
   # `auto-cpufreq` conflicts with `power-profiles-daemon`.
   # Prefer `auto-cpufreq` for laptops since it applies cpu/battery tuning
   # automatically without relying on desktop power profile integration.
@@ -46,4 +53,6 @@
   };
 
   programs.light.enable = true;
+
+  services.ratbagd.enable = true;
 }

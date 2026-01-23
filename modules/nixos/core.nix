@@ -9,11 +9,6 @@
     ./services/tailscale.nix
   ];
 
-  console = {
-    font = "${pkgs.terminus_font}/share/consolefonts/ter-v20n.psf.gz";
-    packages = with pkgs; [ terminus_font ];
-  };
-
   networking.networkmanager.enable = lib.mkDefault true;
 
   time.timeZone = "America/Los_Angeles";
@@ -72,23 +67,10 @@
     options = "--delete-older-than 7d";
   };
 
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      nvidia.acceptLicense = true;
-    };
-  };
-
   boot.kernel.sysctl = {
     "kernel.perf_event_paranoid" = 1;
     "kernel.kptr_restrict" = 0;
   };
-
-  # Fonts (system-wide)
-  # Ensures "FiraCode Nerd Font" is available for Kitty/VS Code/etc.
-  fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-  ];
 
   environment.systemPackages = with pkgs; [
     # Core utilities
@@ -125,8 +107,6 @@
     # Mouse configuration
     piper
   ];
-
-  services.ratbagd.enable = true;
 
   # DO NOT CHANGE - set once at initial install
   system.stateVersion = "24.11";

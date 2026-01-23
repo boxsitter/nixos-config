@@ -6,11 +6,15 @@ let
   cfg = config.services.transmission-custom;
 in {
   options.services.transmission-custom = {
-    enable = mkEnableOption "Transmission BitTorrent daemon";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Transmission BitTorrent daemon";
+    };
 
     downloadDir = mkOption {
       type = types.str;
-      default = "/var/lib/transmission/Downloads";
+      default = "/home/leyton/downloads";
       description = "Directory to store downloaded files";
     };
 
@@ -40,17 +44,17 @@ in {
     services.transmission = {
       enable = true;
       package = pkgs.transmission_4;
-      
+
       settings = {
         # Download settings
         download-dir = cfg.downloadDir;
         incomplete-dir-enabled = true;
         incomplete-dir = "${cfg.downloadDir}/.incomplete";
-        
+
         # Network settings
         peer-port = cfg.peerPort;
         port-forwarding-enabled = true;
-        
+
         # RPC (Remote) settings
         rpc-enabled = true;
         rpc-port = cfg.rpcPort;
@@ -58,18 +62,18 @@ in {
         rpc-whitelist-enabled = false;
         rpc-host-whitelist-enabled = false;
         rpc-authentication-required = false;
-        
+
         # Performance settings
         speed-limit-down-enabled = false;
         speed-limit-up-enabled = false;
         upload-slots-per-torrent = 14;
-        
+
         # Privacy
         dht-enabled = true;
         pex-enabled = true;
         lpd-enabled = true;
         encryption = 2; # Require encryption
-        
+
         # Misc
         umask = 2;
         message-level = 2;

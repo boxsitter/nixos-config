@@ -33,6 +33,12 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     config.common.default = "*";
   };
+
+  # Fonts (system-wide)
+  # Ensures "FiraCode Nerd Font" is available for Kitty/VS Code/etc.
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+  ];
   
   environment.systemPackages = with pkgs; [
     gnome-tweaks

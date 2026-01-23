@@ -6,7 +6,11 @@ let
   cfg = config.services.uptime-kuma-custom;
 in {
   options.services.uptime-kuma-custom = {
-    enable = mkEnableOption "Uptime Kuma service monitoring";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Uptime Kuma";
+    };
 
     port = mkOption {
       type = types.int;

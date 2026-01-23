@@ -19,8 +19,17 @@
 
   networking.hostName = "nixos-desktop";
 
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      nvidia.acceptLicense = true;
+    };
+  };
+
   powerManagement.cpuFreqGovernor = "performance";
   services.power-profiles-daemon.enable = false;
   
   boot.kernelParams = [ "preempt=none" ];
+
+  services.ratbagd.enable = true;
 }

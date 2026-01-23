@@ -6,7 +6,11 @@ let
   cfg = config.services.sonarr-custom;
 in {
   options.services.sonarr-custom = {
-    enable = mkEnableOption "Sonarr TV show automation";
+    enable = mkOption {
+      type = types.bool;
+      default = true; # enable on import
+      description = "Enable Sonarr";
+    };
 
     downloadDir = mkOption {
       type = types.str;
