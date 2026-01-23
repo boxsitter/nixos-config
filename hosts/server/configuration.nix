@@ -15,6 +15,8 @@
     ../../modules/nixos/services/immich.nix
     ../../modules/nixos/services/komga.nix
     ../../modules/nixos/services/caddy.nix
+    ../../modules/nixos/services/navidrome.nix
+    ../../modules/nixos/services/jellyfin.nix
   ];
 
   networking.hostName = "nixos-server";
@@ -33,9 +35,10 @@
   # Create media directory structure and ensure home directory is traversable
   systemd.tmpfiles.rules = [
     "d /home/leyton 0755 leyton users -"  # Allow service users to traverse into /home/leyton
-    "d /home/leyton/media 0755 leyton users -"
-    "d /home/leyton/media/movies 0755 leyton users -"
-    "d /home/leyton/media/tv 0755 leyton users -"
+    "d /home/leyton/media 2775 leyton media -"
+    "d /home/leyton/media/music 2775 leyton media -"
+    "d /home/leyton/media/movies 2775 leyton media -"
+    "d /home/leyton/media/tv 2775 leyton media -"
   ];
 
   # Server-specific configurations

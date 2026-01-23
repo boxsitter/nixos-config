@@ -29,6 +29,20 @@
         }
         reverse_proxy 127.0.0.1:8080
       '';
+
+      "music.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:4533
+      '';
+
+      "video.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:8096
+      '';
     };
   };
 
