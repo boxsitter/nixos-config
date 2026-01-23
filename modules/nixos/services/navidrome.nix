@@ -24,8 +24,8 @@
   # Allow group writes to newly created files
   systemd.services.navidrome.serviceConfig.UMask = lib.mkForce "0002";
   
-  # Allow Navidrome to access the music directory
-  systemd.services.navidrome.serviceConfig.BindReadOnlyPaths = [ "/home/leyton/media/navidrome/music" ];
+  # Disable ProtectHome so Navidrome can access /home/leyton/media
+  systemd.services.navidrome.serviceConfig.ProtectHome = lib.mkForce false;
 
   systemd.tmpfiles.rules = [
     "d /home/leyton/media/navidrome 2775 leyton media -"
