@@ -55,7 +55,7 @@
         tls {
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
-        reverse_proxy 127.0.0.1:9091
+        reverse_proxy 127.0.0.1:8081
       '';
 
       "indexer.lhsv.net".extraConfig = ''
@@ -91,13 +91,6 @@
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
         reverse_proxy 127.0.0.1:3001
-      '';
-
-      "files.lhsv.net".extraConfig = ''
-        tls {
-          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-        }
-        reverse_proxy 127.0.0.1:8082
       '';
     };
   };

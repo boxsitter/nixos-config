@@ -34,7 +34,6 @@ in {
 
     # Ensure media directories exist
     systemd.tmpfiles.rules = [
-      "d ${cfg.downloadDir} 2775 radarr media -"
       "d ${cfg.mediaDir} 2775 radarr media -"
     ];
 

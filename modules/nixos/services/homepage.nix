@@ -77,12 +77,6 @@ in {
                 icon = "uptime-kuma.png";
               };
             }
-            {
-              "FileBrowser" = {
-                href = "https://files.lhsv.net";
-                icon = "filebrowser.png";
-              };
-            }
           ];
         }
       
@@ -118,9 +112,9 @@ in {
         {
           "Downloads" = [
             {
-              "Transmission" = {
+              "qBittorrent" = {
                 href = "https://dl.lhsv.net";
-                icon = "transmission.png";
+                icon = "qbittorrent.png";
               };
             }
             {

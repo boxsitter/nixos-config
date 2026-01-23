@@ -17,7 +17,7 @@
     ../../modules/nixos/services/caddy.nix
     ../../modules/nixos/services/navidrome.nix
     ../../modules/nixos/services/jellyfin.nix
-    ../../modules/nixos/services/transmission.nix
+    ../../modules/nixos/services/qbittorrent.nix
     ../../modules/nixos/services/homepage.nix
     ../../modules/nixos/services/cockpit.nix
     ../../modules/nixos/services/uptime-kuma.nix
@@ -43,6 +43,7 @@
   systemd.tmpfiles.rules = [
     "z /home/leyton 0755 leyton users -"  # Allow service users to traverse into /home/leyton
     "d /home/leyton/media 2775 leyton media -"
+    "d /home/leyton/downloads 2775 leyton media -"
   ];
 
   # Server-specific configurations
