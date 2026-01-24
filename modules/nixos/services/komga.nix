@@ -1,57 +1,23 @@
 # modules/nixos/services/komga.nix
 # Komga manga/comic server
 
-{ pkgs, ... }:
+{ ... }:
 
 {
-  # Create komga user and group
-  users.users.komga = {
-    isSystemUser = true;
-    group = "komga";
-    home = "/home/leyton/media/komga";
-    createHome = true;
+  # Add the komga user to the shared 'media' group
+  users.users.komga.extraGroups = [ "media" ];
+
+  services.komga = {
+    enable = true;
+    settings = {}; # This empty block is now required by the module
+    # In the Komga UI, you will need to add a library pointing to /var/lib/media/manga
   };
-  
-  users.groups.komga = {};
-  
-  # Add leyton to komga group for file access
-  users.users.leyton.extraGroups = [ "komga" ];
-  
-  # Create manga library directory
-  systemd.tmpfiles.rules = [
-    "d /home/leyton/media/komga 0775 komga komga -"
-    "d /home/leyton/media/komga/data 0775 komga komga -"
-    "d /home/leyton/media/komga/manga 0775 komga komga -"
-    "d /home/leyton/media 0755 leyton leyton -"
-  ];
-  
-  # Komga systemd service
-  systemd.services.komga = {
-    description = "Komga manga/comic server";
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    
-    environment = {
-      KOMGA_CONFIGDIR = "/home/leyton/media/komga/data";
-      SERVER_PORT = "8080";
-      SERVER_SERVLET_CONTEXT_PATH = "/";
-    };
-    
-    serviceConfig = {
-      User = "komga";
-      Group = "komga";
-      WorkingDirectory = "/home/leyton/media/komga";
-      ExecStart = "${pkgs.komga}/bin/komga";
-      Restart = "on-failure";
-      RestartSec = "10s";
-      
-      # Security hardening
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      ProtectHome = "tmpfs";
-      BindReadOnlyPaths = [ "/home/leyton" ];
-      ReadWritePaths = [ "/home/leyton/media/komga" ];
-    };
+
+  # Ensure new files created by Komga are group-writable.
+  systemd.services.komga.serviceConfig = {
+    UMask = "0002";
+    # Allow Komga to read the shared media folder.
+    # It already has write access to its own state dir in /var/lib/komga.
+    ReadOnlyPaths = [ "/var/lib/media/manga" ];
   };
 }

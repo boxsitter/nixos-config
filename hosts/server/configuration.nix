@@ -39,13 +39,6 @@
     mcrcon  # Minecraft RCON client for interactive console
   ];
 
-  # Create media directory structure and ensure home directory is traversable
-  systemd.tmpfiles.rules = [
-    "z /home/leyton 0755 leyton users -"  # Allow service users to traverse into /home/leyton
-    "d /home/leyton/media 2775 leyton media -"
-    "d /home/leyton/downloads 2775 leyton media -"
-  ];
-
   # Server-specific configurations
   services.timesyncd.enable = true;  # NTP time sync
   
@@ -64,6 +57,17 @@
     allowedUDPPorts = [ ];
   };
 
-  # Transmission BitTorrent client
-  # (enabled via imported modules)
+  users.groups.media = {};
+  users.users.leyton.extraGroups = [ "media" ];
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/media 2775 root media -"
+    "d /var/lib/media/movies 2775 root media -"
+    "d /var/lib/media/shows 2775 root media -"
+    "d /var/lib/media/music 2775 root media -"
+    "d /var/lib/media/manga 2775 root media -"
+    "d /var/lib/media/photos 2775 root media -"
+    "d /var/lib/media/books 2775 root media -"
+    "d /var/lib/media/downloads 2775 root media -"
+  ];
 }

@@ -4,26 +4,14 @@
 { lib, ... }:
 
 {
+  # Add the jellyfin user to the shared 'media' group
+  users.users.jellyfin.extraGroups = [ "media" "video" "render" ];
+
   services.jellyfin = {
     enable = true;
-    user = "jellyfin";
-    group = "media";
-    openFirewall = false;
+    openFirewall = false; # Accessed via Caddy reverse proxy
   };
 
-  users.groups.media = { };
-
-  users.users.jellyfin.extraGroups = [ "media" "video" "render" ];
-  users.users.leyton.extraGroups = [ "media" ];
-
-  # Keep group write on media created by Jellyfin
+  # Ensure new files created by Jellyfin (metadata, etc.) are group-writable.
   systemd.services.jellyfin.serviceConfig.UMask = lib.mkForce "0002";
-
-  # Ensure Jellyfin state directory exists with shared group
-  systemd.tmpfiles.rules = [
-    "d /var/lib/jellyfin 2770 jellyfin media -"
-    "d /home/leyton/media/jellyfin 2775 leyton media -"
-    "d /home/leyton/media/jellyfin/movies 2775 leyton media -"
-    "d /home/leyton/media/jellyfin/shows 2775 leyton media -"
-  ];
 }

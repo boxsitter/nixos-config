@@ -14,7 +14,7 @@ in {
 
     downloadDir = mkOption {
       type = types.str;
-      default = "/home/leyton/downloads";
+      default = "/var/lib/media/downloads";
       description = "Directory to store downloaded files";
     };
 
@@ -32,15 +32,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Ensure download directories exist before service starts
-    systemd.tmpfiles.rules = [
-      "d ${cfg.downloadDir}/.incomplete 2775 leyton media -"
-      "d /var/lib/qbittorrent 0755 qbittorrent qbittorrent -"
-      "d /var/lib/qbittorrent/.config 0755 qbittorrent qbittorrent -"
-      "d /var/lib/qbittorrent/.config/qBittorrent 0755 qbittorrent qbittorrent -"
-    ];
-
-    # Create qbittorrent user and group
+    # Define the qbittorrent user and group
     users.users.qbittorrent = {
       isSystemUser = true;
       group = "qbittorrent";
@@ -48,7 +40,6 @@ in {
       home = "/var/lib/qbittorrent";
       createHome = true;
     };
-
     users.groups.qbittorrent = {};
 
     # qBittorrent service
@@ -58,19 +49,14 @@ in {
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
-        Type = "simple";
         User = "qbittorrent";
-        Group = "qbittorrent";
+        UMask = "0002"; # Create files as group-writable
         ExecStart = "${pkgs.qbittorrent-nox}/bin/qbittorrent-nox --webui-port=${toString cfg.webUIPort}";
         Restart = "on-failure";
-        UMask = "0002";
+        StateDirectory = "qbittorrent";
         
-        # Security settings
-        NoNewPrivileges = true;
-        PrivateTmp = true;
-        ProtectSystem = "strict";
+        # Security: Allow writing to its own state dir and the global downloads dir.
         ReadWritePaths = [ 
-          "/var/lib/qbittorrent"
           cfg.downloadDir
         ];
       };

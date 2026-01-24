@@ -20,7 +20,7 @@
         "map to guest" = "never";
       };
       
-      # Home directory - provides access to all media
+      # Home directory share
       home = {
         "path" = "/home/leyton";
         "browseable" = "yes";
@@ -29,6 +29,28 @@
         "create mask" = "0644";
         "directory mask" = "0755";
         "comment" = "Home Directory";
+      };
+
+      # Media library share
+      media = {
+        "path" = "/var/lib/media";
+        "browseable" = "yes";
+        "read only" = "no";
+        "valid users" = "leyton";
+        "create mask" = "0664";  # rw-rw-r--
+        "directory mask" = "2775"; # rwxrwsr-x with SetGID
+        "comment" = "Media Library";
+      };
+
+      # Minecraft server data
+      minecraft = {
+        "path" = "/var/lib/minecraft";
+        "browseable" = "yes";
+        "read only" = "no";
+        "valid users" = "leyton";
+        "create mask" = "0664";
+        "directory mask" = "0775";
+        "comment" = "Minecraft Server Data";
       };
     };
   };

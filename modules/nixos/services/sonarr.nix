@@ -1,43 +1,20 @@
-{ config, lib, ... }:
+# modules/nixos/services/sonarr.nix
+# Sonarr TV show collection manager
 
-with lib;
+{ ... }:
 
-let
-  cfg = config.services.sonarr-custom;
-in {
-  options.services.sonarr-custom = {
-    enable = mkOption {
-      type = types.bool;
-      default = true; # enable on import
-      description = "Enable Sonarr";
-    };
+{
+  # Add the sonarr user to the shared 'media' group
+  users.users.sonarr.extraGroups = [ "media" ];
 
-    downloadDir = mkOption {
-      type = types.str;
-      default = "/home/leyton/downloads";
-      description = "Directory where torrents are downloaded";
-    };
-
-    mediaDir = mkOption {
-      type = types.str;
-      default = "/home/leyton/media/jellyfin/shows";
-      description = "Directory for organized TV shows";
-    };
+  services.sonarr = {
+    enable = true;
+    openFirewall = false; # Accessed via Caddy
   };
 
-  config = mkIf cfg.enable {
-    services.sonarr = {
-      enable = true;
-      openFirewall = true;
-      dataDir = "/var/lib/sonarr";
-    };
-
-    # Ensure media directories exist
-    systemd.tmpfiles.rules = [
-      "d ${cfg.mediaDir} 2775 sonarr media -"
-    ];
-
-    # Add sonarr user to media group
-    users.users.sonarr.extraGroups = [ "media" ];
+  # Ensure any files created by Sonarr are group-writable.
+  systemd.services.sonarr.serviceConfig = {
+    UMask = "0002";
+    StateDirectory = "sonarr";
   };
 }

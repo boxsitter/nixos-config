@@ -7,8 +7,8 @@
   services.minecraft-servers = {
     enable = true;
     eula = true;
-    dataDir = "/home/leyton/minecraft";
-    
+    dataDir = "/var/lib/minecraft";
+
     servers.main = {
       enable = true;
       autoStart = true;
@@ -82,35 +82,40 @@
       };
     };
   };
-  
-  # Override ProtectHome to allow access to /home/leyton
-  systemd.services.minecraft-server-main.serviceConfig.ProtectHome = lib.mkForce false;
-  
-  # Add leyton to minecraft group for file access
+
+  # Add leyton to minecraft group for file access via Samba
   users.users.leyton.extraGroups = [ "minecraft" ];
-  
+
+  # Allow all loopback addresses (127.0.0.0/8) to connect to Minecraft
+  # This is needed because Playit connects from various 127.x.x.x addresses
+  networking.firewall.extraCommands = ''
+    iptables -w -A nixos-fw-tailscale -s 127.0.0.0/8 -p tcp -m multiport --dports 25565,25575 -j ACCEPT
+  '';
+
   # Automatic daily backups
   systemd.services.minecraft-backup = {
     description = "Backup Minecraft world";
     serviceConfig = {
       Type = "oneshot";
-      User = "minecraft";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'cd /home/leyton/minecraft/main && ${pkgs.gnutar}/bin/tar -czf /home/leyton/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world'";
+      User = "root"; # Run as root to have permissions to create the backup dir
+      ExecStart = ''
+        ${pkgs.bash}/bin/bash -c '
+          mkdir -p /var/lib/minecraft/backups
+          cd /var/lib/minecraft/main
+          ${pkgs.gnutar}/bin/tar -czf /var/lib/minecraft/backups/world-$(date +%Y%m%d-%H%M%S).tar.gz world
+          chown -R minecraft:minecraft /var/lib/minecraft/backups
+        '
+      '';
     };
   };
-  
+
+  # Timer to run the backup service daily at 3 AM
   systemd.timers.minecraft-backup = {
-    description = "Backup Minecraft world daily";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "daily";
       Persistent = true;
     };
   };
-  
-  systemd.tmpfiles.rules = [
-    "d /home/leyton/minecraft 0775 minecraft minecraft -"
-    "d /home/leyton/minecraft/backups 0755 minecraft minecraft -"
-  ];
 }
 

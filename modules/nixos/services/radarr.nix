@@ -1,43 +1,20 @@
-{ config, lib, ... }:
+# modules/nixos/services/radarr.nix
+# Radarr movie collection manager
 
-with lib;
+{ ... }:
 
-let
-  cfg = config.services.radarr-custom;
-in {
-  options.services.radarr-custom = {
-    enable = mkOption {
-      type = types.bool;
-      default = true; # enable on import
-      description = "Enable Radarr";
-    };
+{
+  # Add the radarr user to the shared 'media' group
+  users.users.radarr.extraGroups = [ "media" ];
 
-    downloadDir = mkOption {
-      type = types.str;
-      default = "/home/leyton/downloads";
-      description = "Directory where torrents are downloaded";
-    };
-
-    mediaDir = mkOption {
-      type = types.str;
-      default = "/home/leyton/media/jellyfin/movies";
-      description = "Directory for organized movies";
-    };
+  services.radarr = {
+    enable = true;
+    openFirewall = false; # Accessed via Caddy
   };
 
-  config = mkIf cfg.enable {
-    services.radarr = {
-      enable = true;
-      openFirewall = true;
-      dataDir = "/var/lib/radarr";
-    };
-
-    # Ensure media directories exist
-    systemd.tmpfiles.rules = [
-      "d ${cfg.mediaDir} 2775 radarr media -"
-    ];
-
-    # Add radarr user to media group
-    users.users.radarr.extraGroups = [ "media" ];
+  # Ensure any files created by Radarr are group-writable.
+  systemd.services.radarr.serviceConfig = {
+    UMask = "0002";
+    StateDirectory = "radarr";
   };
 }

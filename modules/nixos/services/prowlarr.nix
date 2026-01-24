@@ -1,22 +1,22 @@
-{ config, lib, ... }:
+# modules/nixos/services/prowlarr.nix
+# Prowlarr indexer manager for Radarr/Sonarr
 
-with lib;
+{ ... }:
 
-let
-  cfg = config.services.prowlarr-custom;
-in {
-  options.services.prowlarr-custom = {
-    enable = mkOption {
-      type = types.bool;
-      default = true; # enable on import
-      description = "Enable Prowlarr";
-    };
+{
+  # Define the prowlarr user and group
+  users.users.prowlarr = {
+    isSystemUser = true;
+    group = "prowlarr";
+    extraGroups = [ "media" ];
+  };
+  users.groups.prowlarr = {};
+
+  services.prowlarr = {
+    enable = true;
+    openFirewall = false; # Accessed via Caddy
   };
 
-  config = mkIf cfg.enable {
-    services.prowlarr = {
-      enable = true;
-      openFirewall = true;
-    };
-  };
+  # Ensure any files created by Prowlarr are group-writable.
+  systemd.services.prowlarr.serviceConfig.UMask = "0002";
 }
