@@ -22,6 +22,7 @@
     "d /home/leyton/media/komga 0775 komga komga -"
     "d /home/leyton/media/komga/data 0775 komga komga -"
     "d /home/leyton/media/komga/manga 0775 komga komga -"
+    "d /home/leyton/media 0755 leyton leyton -"
   ];
   
   # Komga systemd service
@@ -48,7 +49,8 @@
       NoNewPrivileges = true;
       PrivateTmp = true;
       ProtectSystem = "strict";
-      ProtectHome = false;
+      ProtectHome = "tmpfs";
+      BindReadOnlyPaths = [ "/home/leyton" ];
       ReadWritePaths = [ "/home/leyton/media/komga" ];
     };
   };
