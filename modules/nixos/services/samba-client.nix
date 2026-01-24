@@ -1,18 +1,20 @@
 # modules/nixos/services/samba-client.nix
 # Auto-mount Samba shares from server
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Install Samba client utilities
   environment.systemPackages = [ pkgs.cifs-utils ];
 
-  # Samba credentials managed via sops
+  # Samba credentials managed via sops (optional - won't fail if not set up)
   sops.secrets.samba-credentials = {
     mode = "0600";
+    restartUnits = [ ]; # Don't restart anything if secret changes
   };
 
   # Mount server's home directory via Samba
+  # This will fail gracefully if credentials aren't available yet
   fileSystems."/mnt/server" = {
     device = "//nixos-server/home";
     fsType = "cifs";
