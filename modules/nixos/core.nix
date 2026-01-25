@@ -84,7 +84,7 @@
     jq yq-go gnused gawk gnugrep
     
     # Networking tools
-    dig nmap netcat-gnu inetutils openssh rsync iftop nload vnstat speedtest-cli
+    dig nmap netcat-gnu inetutils openssh rsync iftop nload vnstat speedtest-cli nethogs
     
     # Git tools
     git git-lfs lazygit gh

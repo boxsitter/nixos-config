@@ -6,7 +6,7 @@
 {
   services.caddy = {
     enable = true;
-
+    
     # Build Caddy with the Cloudflare DNS plugin for DNS-01 challenges.
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2" ];
