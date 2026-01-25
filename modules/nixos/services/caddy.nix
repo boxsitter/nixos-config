@@ -15,6 +15,10 @@
 
     email = "admin@lhsv.net";  # ACME contact email
 
+    globalConfig = ''
+      acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    '';
+
     virtualHosts = {
       "lhsv.net".extraConfig = ''
         tls {
@@ -91,6 +95,36 @@
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
         reverse_proxy 127.0.0.1:3001
+      '';
+
+      "audio.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:8686
+      '';
+
+      "books.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:8787
+      '';
+
+      "recipes.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:9925
+      '';
+
+      "monitor.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:19999 {
+          header_up Host {http.reverse_proxy.upstream.hostport}
+        }
       '';
     };
   };

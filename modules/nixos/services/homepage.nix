@@ -59,6 +59,12 @@ in {
               columns = 1;
             };
           }
+          {
+            Other = {
+              style = "column";
+              columns = 1;
+            };
+          }
         ];
       };
 
@@ -69,6 +75,12 @@ in {
               "Cockpit" = {
                 href = "https://system.lhsv.net";
                 icon = "cockpit.png";
+              };
+            }
+            {
+              "Netdata" = {
+                href = "https://monitor.lhsv.net";
+                icon = "netdata.png";
               };
             }
             {
@@ -130,9 +142,32 @@ in {
               };
             }
             {
+              "Lidarr" = {
+                href = "https://audio.lhsv.net";
+                icon = "lidarr.png";
+              };
+            }
+            {
+              "Readarr" = {
+                href = "https://books.lhsv.net";
+                icon = "readarr.png";
+              };
+            }
+            {
               "Prowlarr" = {
                 href = "https://indexer.lhsv.net";
                 icon = "prowlarr.png";
+              };
+            }
+          ];
+        }
+
+        {
+          "Other" = [
+            {
+              "Mealie" = {
+                href = "https://recipes.lhsv.net";
+                icon = "mealie.png";
               };
             }
           ];
