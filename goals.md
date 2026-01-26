@@ -1,18 +1,10 @@
 My goals for this config that I haven't yet implemented
 
-- [ ] Global, robust catppuccin machiato theming
-  - [ ] Cattpuccin just to start, I want to implement a theme switcher with various
-    themes eventually
-    - Notes / approach:
-      - Start with one theme module (Catppuccin Macchiato) and make everything read from it.
-      - For switching later, simplest robust approach is NixOS `specialisation` (multiple pre-built variants you can boot/switch to).
-        Alternative: multiple HM “profiles” and a small wrapper script that activates a chosen generation.
-  - [ ] Wallpaper switcher (package wallpapers in config repo)
-    - Notes / approach:
-      - Put wallpapers under a repo folder (e.g. `wallpapers/…`) and deploy via `home.file` (HM) to `~/Pictures/Wallpapers`.
-      - GNOME: set wallpaper with `dconf.settings` keys under `org.gnome.desktop.background`.
-      - Hyprland: use `swww`/`hyprpaper` and wire a small script + keybind; keep the “selected wallpaper” path in one variable.
-
+- [ ] Wallpaper switcher (package wallpapers in config repo)
+  - Notes / approach:
+    - Put wallpapers under a repo folder (e.g. `wallpapers/…`) and deploy via `home.file` (HM) to `~/Pictures/Wallpapers`.
+    - GNOME: set wallpaper with `dconf.settings` keys under `org.gnome.desktop.background`.
+    - Hyprland: use `swww`/`hyprpaper` and wire a small script + keybind; keep the “selected wallpaper” path in one variable.
 - [ ] Fix missing icons across os
   - Notes / approach:
     - Ensure a baseline icon theme is installed everywhere you expect a GUI (e.g. `adwaita-icon-theme`, `hicolor-icon-theme`).
@@ -92,22 +84,7 @@ My goals for this config that I haven't yet implemented
         - Touchpad: tune `services.libinput` and verify gestures if desired.
         - Make a “hardware smoke test” doc: what to click/run after a rebuild.
 
-- [ ] High-Performance Windows VM for Adobe CC (GPU) & FL Studio (ASIO)
-  - Notes / approach:
-    - **Architecture:** KVM/QEMU on NixOS + Windows 11 IoT Enterprise LTSC 2024 (Guest).
-    - **Hardware Isolation (Host):**
-      - Use `vfio-pci` kernel modules in NixOS to isolate the secondary GPU and the specific USB controller for audio.
-      - Configure `libvirtd` and `looking-glass-client` permissions declaratively.
-    - **Video (Looking Glass):**
-      - Setup Looking Glass for low-latency, shared-memory frame buffering (seamless window on Linux desktop).
-      - Pass through secondary GPU to VM for native Photoshop/Lightroom AI performance.
-    - **Audio (Focusrite/ASIO):**
-      - Do not use generic USB passthrough. Identify and pass through the entire PCI USB Controller that the Focusrite connects to.
-      - Ensures native ASIO driver performance with zero virtualization crackle/latency.
-    - **Windows Installation:**
-      - Generate `autounattend.xml` (via Schneegans) to automate install, bypass TPM/OOBE, and inject Generic Key.
-      - Use "Emulated TPM 2.0" in `virt-manager` (do not pass through host TPM).
-      - Install `virtio` drivers for disk/network and specific drivers for GPU/Looking Glass manually post-install.
+- [ ] Fast dual boot switch hotkey
 
 - [ ] Organize, simplify, and consolidate entire config. Need to make sure all AI
   artifacts and vibe coding slop is removed to get a truly simplified, modular,

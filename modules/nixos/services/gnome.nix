@@ -49,7 +49,28 @@
     pavucontrol
     networkmanagerapplet
 
-    # Stable GTK3 theme that matches GNOME’s look; avoids oversized buttons
+    # Stable GTK3 theme that matches GNOME's look; avoids oversized buttons
     adw-gtk3
+
+    # Desktop applications
+    vscode
+    insync
+    legcord
   ];
+
+  # Auto-start Insync on login
+  systemd.user.services.insync = {
+    description = "Insync - Google Drive sync";
+    after = [ "graphical-session-pre.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.insync}/bin/insync start";
+      Restart = "on-failure";
+      Environment = [
+        "PATH=${pkgs.nautilus}/bin:${pkgs.xdg-utils}/bin"
+        "XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+      ];
+    };
+  };
 }

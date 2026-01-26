@@ -35,7 +35,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
       # Desktop with NVIDIA RTX 5080 and GNOME
       desktop = nixpkgs.lib.nixosSystem {

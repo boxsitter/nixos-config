@@ -4,6 +4,10 @@
 { pkgs, lib, ... }:
 
 {
+  environment.systemPackages = with pkgs; [
+    mcrcon  # Minecraft RCON client for interactive console
+  ];
+  
   services.minecraft-servers = {
     enable = true;
     eula = true;

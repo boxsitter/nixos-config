@@ -9,7 +9,6 @@
     ./programs/fish.nix
     ./programs/git.nix
     ./programs/direnv.nix
-    ./programs/starship.nix
     ./programs/fastfetch.nix
   ];
 }

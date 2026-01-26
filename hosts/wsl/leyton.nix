@@ -16,7 +16,7 @@
     end
   '';
 
-  # VS Code via Windows (Remote-WSL)
+  # VS Code via Windows
   programs.fish.shellAliases = {
     code = "/mnt/c/Users/leyton/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
   };

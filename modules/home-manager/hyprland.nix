@@ -1,4 +1,4 @@
-# modules/home-manager/programs/hyprland.nix
+# modules/home-manager/hyprland.nix
 # Hyprland (Wayland compositor) user session configuration
 # Nix-native translation of Symphony's Hyprland config.
 
