@@ -29,7 +29,8 @@
   powerManagement.cpuFreqGovernor = "performance";
   services.power-profiles-daemon.enable = false;
   
-  boot.kernelParams = [ "preempt=none" ];
+  # Use full preemption for desktop responsiveness
+  boot.kernelParams = [ "preempt=full" ];
 
   services.ratbagd.enable = true;
 }

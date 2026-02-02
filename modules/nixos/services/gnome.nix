@@ -27,6 +27,9 @@
   hardware.bluetooth.powerOnBoot = true;
   services.gnome.gnome-keyring.enable = true;
   
+  # Enable dconf for fast GTK app startup (prevents runtime schema compilation)
+  programs.dconf.enable = true;
+  
   # Enable xdg-desktop-portal for file pickers and other integrations
   xdg.portal = {
     enable = true;

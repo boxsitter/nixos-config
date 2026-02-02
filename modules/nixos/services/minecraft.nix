@@ -93,7 +93,7 @@
   # Allow all loopback addresses (127.0.0.0/8) to connect to Minecraft
   # This is needed because Playit connects from various 127.x.x.x addresses
   networking.firewall.extraCommands = ''
-    iptables -w -A nixos-fw-tailscale -s 127.0.0.0/8 -p tcp -m multiport --dports 25565,25575 -j ACCEPT
+    iptables -w -A nixos-fw -s 127.0.0.0/8 -p tcp -m multiport --dports 25565,25575 -j nixos-fw-accept
   '';
 
   # Automatic daily backups

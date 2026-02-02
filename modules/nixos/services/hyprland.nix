@@ -25,6 +25,9 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
+  # Enable dconf for fast GTK app startup (prevents runtime schema compilation)
+  programs.dconf.enable = true;
+
   # Portals for Wayland (screenshare, file pickers, etc.)
   xdg.portal = {
     enable = true;
