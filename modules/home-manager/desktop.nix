@@ -9,8 +9,5 @@
     ./theming.nix
     ./gnome.nix
     ./programs/kitty.nix
-    ./programs/hyprland.nix
-    ./programs/waybar.nix
-    ./programs/swaync.nix
   ];
 }

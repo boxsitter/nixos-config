@@ -42,6 +42,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
+          inputs.sops-nix.nixosModules.sops
           ./hosts/desktop/configuration.nix
           home-manager.nixosModules.home-manager
           {
@@ -59,6 +60,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
+          inputs.sops-nix.nixosModules.sops
           ./hosts/laptop/configuration.nix
           home-manager.nixosModules.home-manager
           {

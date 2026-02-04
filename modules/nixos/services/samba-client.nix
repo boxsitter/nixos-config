@@ -1,7 +1,7 @@
 # modules/nixos/services/samba-client.nix
 # Auto-mount Samba shares from server
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   # Install Samba client utilities

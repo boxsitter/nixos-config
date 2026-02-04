@@ -59,6 +59,8 @@
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
+    # Optimize nix store
+    auto-optimise-store = true;  # Automatically deduplicate
   };
 
   nix.gc = {
@@ -71,6 +73,12 @@
     "kernel.perf_event_paranoid" = 1;
     "kernel.kptr_restrict" = 0;
   };
+
+  # Performance: Use systemd in initrd for faster parallel boot
+  boot.initrd.systemd.enable = lib.mkDefault true;
+
+  # Performance: Don't wait for all devices during boot
+  systemd.services.systemd-udev-settle.enable = false;
 
   environment.systemPackages = with pkgs; [
     # Core utilities

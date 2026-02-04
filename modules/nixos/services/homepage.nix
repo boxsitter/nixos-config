@@ -148,12 +148,6 @@ in {
               };
             }
             {
-              "Readarr" = {
-                href = "https://books.lhsv.net";
-                icon = "readarr.png";
-              };
-            }
-            {
               "Prowlarr" = {
                 href = "https://indexer.lhsv.net";
                 icon = "prowlarr.png";

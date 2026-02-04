@@ -104,13 +104,6 @@
         reverse_proxy 127.0.0.1:8686
       '';
 
-      "books.lhsv.net".extraConfig = ''
-        tls {
-          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-        }
-        reverse_proxy 127.0.0.1:8787
-      '';
-
       "recipes.lhsv.net".extraConfig = ''
         tls {
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}

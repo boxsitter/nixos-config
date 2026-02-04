@@ -1,6 +1,26 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
+  # Desktop performance optimizations
+  boot.kernel.sysctl = {
+    # Reduce swappiness for better desktop responsiveness
+    "vm.swappiness" = 10;
+    # Better file cache behavior for SSD
+    "vm.vfs_cache_pressure" = 50;
+  };
+
+  # Use zram for better memory management on desktop
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
+
+  # Clear LD_LIBRARY_PATH to reduce GUI app startup overhead
+  # NixOS packages have proper RPATHs and don't need this
+  environment.sessionVariables = {
+    LD_LIBRARY_PATH = lib.mkForce "";
+  };
   services.xserver = {
     enable = true;
   };
@@ -46,6 +66,7 @@
   environment.systemPackages = with pkgs; [
     gnome-tweaks
     gnomeExtensions.appindicator
+    nautilus  # GNOME Files (file manager)
     firefox
     vlc
     wl-clipboard
