@@ -25,7 +25,6 @@
     ../../modules/nixos/services/radarr.nix
     ../../modules/nixos/services/sonarr.nix
     ../../modules/nixos/services/lidarr.nix
-    ../../modules/nixos/services/readarr.nix
     ../../modules/nixos/services/mealie.nix
     ../../modules/nixos/services/netdata.nix
   ];
