@@ -6,7 +6,7 @@
 {
   programs.starship = {
     enable = true;
-    # Use the custom TOML configuration
+    enableFishIntegration = true;
   };
 
   # Reference the custom starship.toml dotfile
