@@ -124,6 +124,12 @@ in {
         {
           "Downloads" = [
             {
+              "SABnzbd" = {
+                href = "https://usenet.lhsv.net";
+                icon = "sabnzbd.png";
+              };
+            }
+            {
               "qBittorrent" = {
                 href = "https://dl.lhsv.net";
                 icon = "qbittorrent.png";

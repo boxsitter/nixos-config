@@ -80,7 +80,10 @@
         tls {
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
-        reverse_proxy 127.0.0.1:8989
+        reverse_proxy 127.0.0.1:8989 {
+          header_up X-Forwarded-Host {host}
+          header_up X-Forwarded-Proto {scheme}
+        }
       '';
 
       "system.lhsv.net".extraConfig = ''
@@ -102,6 +105,13 @@
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
         reverse_proxy 127.0.0.1:8686
+      '';
+
+      "usenet.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:8085
       '';
 
       "recipes.lhsv.net".extraConfig = ''
