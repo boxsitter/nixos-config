@@ -14,13 +14,11 @@
         button-layout = ":minimize,maximize,close";
       };
 
-      # Enable user extensions and ensure Blur My Shell is enabled.
+      # Enable user extensions
       "org/gnome/shell" = {
         disable-user-extensions = false;
-        # Include AppIndicator so tray icons keep working.
         enabled-extensions = [
           "appindicatorsupport@rgcjonas.gmail.com"
-          "blur-my-shell@aunetx"
           "gSnap@micahosborne"
         ];
       };
@@ -30,12 +28,17 @@
         font-antialiasing = "rgba";
         font-hinting = "slight";
       };
+
+      # Prevent screen from turning off on AC power
+      "org/gnome/settings-daemon/plugins/power" = {
+        sleep-inactive-ac-type = "nothing";
+        sleep-inactive-ac-timeout = 0;
+      };
     };
   };
 
-  # Install the extension so GNOME can load it.
+  # Install GNOME extensions
   home.packages = [
-    pkgs.gnomeExtensions.blur-my-shell
     pkgs.gnomeExtensions.gsnap
   ];
 }
