@@ -11,9 +11,14 @@
     "nvidia-drm.modeset=1"
     "nvidia-drm.fbdev=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"  # Required for suspend/resume
+    "quiet"         # Suppress most kernel messages
+    "splash"        # Enable boot splash (if available)
+    "loglevel=3"    # Only show errors and critical messages
+    "rd.udev.log_level=3"  # Reduce udev logging
+    "vt.global_cursor_default=0"  # Hide blinking cursor
   ];
 
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.blacklistedKernelModules = [ "nouveau" "spd5118" ];  # Blacklist nouveau and DDR5 temp sensor
   services.xserver.videoDrivers = [ "nvidia" ];
   
   hardware.graphics = {

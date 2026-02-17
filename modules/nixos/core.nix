@@ -49,9 +49,9 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    # Speed up builds
-    max-jobs = "auto";  # Use all CPU cores
-    cores = 0;  # Use all cores per job
+    # Speed up builds - with 20 cores, limit to avoid memory pressure
+    max-jobs = 12;  # Parallel package builds
+    cores = 4;      # Cores per build job (12 * 4 = 48 effective, uses hyperthreading)
     # Enable binary cache
     substituters = [
       "https://cache.nixos.org"
@@ -61,6 +61,14 @@
     ];
     # Optimize nix store
     auto-optimise-store = true;  # Automatically deduplicate
+    # Use new experimental fetcher for faster downloads
+    use-xdg-base-directories = true;
+    # Download in parallel
+    http-connections = 128;
+    # Trust your user to use flake config settings
+    trusted-users = [ "root" "@wheel" ];
+    # Suppress dirty tree warnings system-wide
+    warn-dirty = false;
   };
 
   nix.gc = {
@@ -80,10 +88,17 @@
   # Performance: Don't wait for all devices during boot
   systemd.services.systemd-udev-settle.enable = false;
 
+  # Disable slow man page cache generation (only needed for man -k / apropos)
+  documentation.man.generateCaches = false;
+
   environment.systemPackages = with pkgs; [
     # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
     strace lsof tcpdump sysprof
+    
+    # Nix tools
+    nix-output-monitor  # Beautiful progress for nix builds (use: nom build)
+    nix-fast-build      # Parallel builds for faster rebuilds
     
     # Shell and CLI enhancements
     fish fastfetch eza starship direnv nnn fzf ripgrep fd bat tmux

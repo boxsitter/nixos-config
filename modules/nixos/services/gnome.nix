@@ -23,10 +23,20 @@
   };
   services.xserver = {
     enable = true;
+    # Disable screen blanking and DPMS to prevent black screen during startup
+    serverFlagsSection = ''
+      Option "BlankTime" "0"
+      Option "StandbyTime" "0"
+      Option "SuspendTime" "0"
+      Option "OffTime" "0"
+    '';
   };
 
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+
+  # Prevent screen blanking during login/startup
+  services.displayManager.gdm.autoSuspend = false;
 
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour epiphany geary gnome-music gnome-photos totem

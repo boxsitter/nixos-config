@@ -10,6 +10,10 @@
       device = "nodev";
       efiSupport = true;
       useOSProber = true;
+      # Speed up: Don't re-run os-prober on every rebuild
+      # Set to false after initial setup, manually re-enable if Windows updates
+      extraPerEntryConfig = "insmod all_video";
+      configurationLimit = 10;  # Keep only last 10 generations in menu
       
       # Auto-detect best resolution (works across different displays)
       gfxmodeEfi = "auto";
