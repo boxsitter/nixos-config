@@ -11,6 +11,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -110,6 +114,23 @@
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
+          }
+        ];
+      };
+    };
+
+    # macOS configuration using nix-darwin
+    darwinConfigurations = {
+      mac = inputs.darwin.lib.darwinSystem {
+        system = "aarch64-darwin"; # Change to "x86_64-darwin" for Intel Macs
+        modules = [
+          ./hosts/mac/configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.leyton = import ./hosts/mac/leyton.nix;
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
