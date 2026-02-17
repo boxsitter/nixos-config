@@ -23,6 +23,9 @@
     acpi
   ];
 
+  # Suppress ACPI BIOS errors related to WiFi device
+  boot.kernelParams = [ "acpi_osi=" ];
+
   networking.hostName = "nixos-laptop";
 
   nixpkgs = {

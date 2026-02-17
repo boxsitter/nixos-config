@@ -55,7 +55,16 @@
   services.printing.enable = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  # Fix bluetooth wake_allowed error
+  hardware.bluetooth.settings = {
+    General = {
+      Experimental = true;
+    };
+  };
   services.gnome.gnome-keyring.enable = true;
+  
+  # Enable PAM integration for GNOME Keyring to fix gkr-pam errors
+  security.pam.services.gdm.enableGnomeKeyring = true;
   
   # Enable dconf for fast GTK app startup (prevents runtime schema compilation)
   programs.dconf.enable = true;
