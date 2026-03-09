@@ -23,8 +23,11 @@
     acpi
   ];
 
-  # Suppress ACPI BIOS errors related to WiFi device
-  boot.kernelParams = [ "acpi_osi=" ];
+  # The XPS 15 9530 has no physical PS/2 port. Blacklisting psmouse
+  # prevents it from claiming the Synaptics I2C touchpad (VEN_06CB)
+  # as a generic PS/2 mouse if the ACPI/I2C stack ever initialises
+  # out of order (e.g. after a BIOS update changes _OSI behaviour).
+  boot.blacklistedKernelModules = [ "psmouse" ];
 
   networking.hostName = "nixos-laptop";
 
@@ -58,4 +61,27 @@
   programs.light.enable = true;
 
   services.ratbagd.enable = true;
+
+  # Explicitly configure libinput so the touchpad is recognised as a touchpad
+  # (not a generic mouse) and the keyboard behaves correctly.
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      tapping            = true;          # tap-to-click
+      naturalScrolling   = true;
+      scrollMethod       = "twofinger";   # explicit two-finger scroll
+      clickMethod        = "buttonareas"; # reliable bottom-zone left/right click
+      disableWhileTyping = true;
+      accelProfile       = "adaptive";
+      sendEventsMode     = "enabled";     # ensure events are never suppressed
+    };
+  };
+
+  # Pin keyboard layout so it survives reboots.
+  # NOTE: do NOT add acpi_osi= (blank) to kernelParams to suppress WiFi
+  # ACPI log spam. It prevents the BIOS from exposing the I2C touchpad.
+  # Use boot.consoleLogLevel = 3 instead if log spam becomes an issue.
+  services.xserver.xkb = {
+    layout = "us";
+  };
 }

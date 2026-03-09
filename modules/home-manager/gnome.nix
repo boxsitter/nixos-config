@@ -34,6 +34,17 @@
         sleep-inactive-ac-type = "nothing";
         sleep-inactive-ac-timeout = 0;
       };
+
+      # Disable accessibility keyboard features that can be accidentally
+      # triggered during a bad shutdown (e.g. Shift+NumLock activates
+      # Mouse Keys, causing keyboard input to move the cursor).
+      "org/gnome/desktop/a11y/keyboard" = {
+        mousekeys-enable    = false; # numpad/arrow keys must not move the cursor
+        stickykeys-enable   = false; # modifier keys must not latch
+        bouncekeys-enable   = false; # repeated key filter off
+        slowkeys-enable     = false; # delayed key acceptance off
+        enable              = false; # master accessibility keyboard toggle off
+      };
     };
   };
 
