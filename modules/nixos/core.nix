@@ -82,6 +82,18 @@
     "kernel.kptr_restrict" = 0;
   };
 
+  # Suppress cosmetic ACPI/firmware log spam on the console without blanking
+  # acpi_osi (which breaks device detection on Dell/ASUS hardware).
+  # Errors are still fully recorded in journalctl, just not shown on screen.
+  boot.consoleLogLevel = 4; # 4 = WARNING; default is 7 (DEBUG)
+
+  # Capture crash dumps so you can diagnose what killed a process or the kernel.
+  systemd.coredump = {
+    enable = true;
+    extraConfig = ''ProcessSizeMax=2G
+ExternalSizeMax=2G'';
+  };
+
   # Performance: Use systemd in initrd for faster parallel boot
   boot.initrd.systemd.enable = lib.mkDefault true;
 
@@ -120,6 +132,11 @@
     
     # Nix development tools
     nixd nixpkgs-fmt nix-tree nix-index
+
+    # System health & diagnostics
+    nvme-cli      # SSD health: sudo nvme smart-log /dev/nvme0
+    smartmontools # Disk health: sudo smartctl -a /dev/nvme0
+    lm_sensors    # CPU/GPU temps: sensors
     
     # Archive utilities
     unzip zip gzip bzip2 xz p7zip

@@ -53,6 +53,13 @@
   };
 
   services.printing.enable = true;
+
+  # Enable mDNS (.local hostname resolution) via NSS.
+  # Fixes: avahi-daemon: WARNING: No NSS support for mDNS detected
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   # Fix bluetooth wake_allowed error
