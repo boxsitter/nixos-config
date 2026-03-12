@@ -125,10 +125,7 @@ ExternalSizeMax=2G'';
     git git-lfs lazygit gh
     
     # Container and cluster management
-    docker docker-compose lazydocker kubectl k9s helm
-    
-    # Databases
-    postgresql sqlite
+    lazydocker
     
     # Nix development tools
     nixd nixpkgs-fmt nix-tree nix-index

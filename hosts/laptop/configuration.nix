@@ -60,6 +60,9 @@
 
   programs.light.enable = true;
 
+  # Docker
+  virtualisation.docker.enable = true;
+
   services.ratbagd.enable = true;
 
   # Explicitly configure libinput so the touchpad is recognised as a touchpad
