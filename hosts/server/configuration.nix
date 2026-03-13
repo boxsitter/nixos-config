@@ -28,6 +28,7 @@
     ../../modules/nixos/services/lidarr.nix
     ../../modules/nixos/services/mealie.nix
     ../../modules/nixos/services/netdata.nix
+    ../../modules/nixos/services/hydra-server.nix
   ];
 
   networking.hostName = "nixos-server";

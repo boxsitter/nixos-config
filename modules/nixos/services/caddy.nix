@@ -129,9 +129,21 @@
           header_up Host {http.reverse_proxy.upstream.hostport}
         }
       '';
+
+      "hydra.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:3002
+      '';
     };
   };
 
   # Load Cloudflare API token from sops-managed secret
   systemd.services.caddy.serviceConfig.EnvironmentFile = config.sops.secrets.cloudflare-dns-token.path;
+  
+  # Clean up stale lock files on start to prevent stuck cert acquisitions
+  systemd.services.caddy.preStart = ''
+    rm -f /var/lib/caddy/.local/share/caddy/locks/*.lock
+  '';
 }
