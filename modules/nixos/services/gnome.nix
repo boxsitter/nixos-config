@@ -23,10 +23,20 @@
   };
   services.xserver = {
     enable = true;
+    # Disable screen blanking and DPMS to prevent black screen during startup
+    serverFlagsSection = ''
+      Option "BlankTime" "0"
+      Option "StandbyTime" "0"
+      Option "SuspendTime" "0"
+      Option "OffTime" "0"
+    '';
   };
 
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+
+  # Prevent screen blanking during login/startup
+  services.displayManager.gdm.autoSuspend = false;
 
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour epiphany geary gnome-music gnome-photos totem
@@ -43,9 +53,25 @@
   };
 
   services.printing.enable = true;
+
+  # Enable mDNS (.local hostname resolution) via NSS.
+  # Fixes: avahi-daemon: WARNING: No NSS support for mDNS detected
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  # Fix bluetooth wake_allowed error
+  hardware.bluetooth.settings = {
+    General = {
+      Experimental = true;
+    };
+  };
   services.gnome.gnome-keyring.enable = true;
+  
+  # Enable PAM integration for GNOME Keyring to fix gkr-pam errors
+  security.pam.services.gdm.enableGnomeKeyring = true;
   
   # Enable dconf for fast GTK app startup (prevents runtime schema compilation)
   programs.dconf.enable = true;

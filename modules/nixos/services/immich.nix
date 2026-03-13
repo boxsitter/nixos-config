@@ -14,6 +14,8 @@
     settings = {
       storage.uploadLocation = "/var/lib/media/photos";
     };
+
+    host = "0.0.0.0";
   };
 
   # Ensure new files created by Immich (thumbnails, etc.) are group-writable

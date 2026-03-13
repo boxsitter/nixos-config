@@ -32,5 +32,8 @@
   # Use full preemption for desktop responsiveness
   boot.kernelParams = [ "preempt=full" ];
 
+  # Docker
+  virtualisation.docker.enable = true;
+
   services.ratbagd.enable = true;
 }

@@ -49,9 +49,9 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    # Speed up builds
-    max-jobs = "auto";  # Use all CPU cores
-    cores = 0;  # Use all cores per job
+    # Speed up builds - with 20 cores, limit to avoid memory pressure
+    max-jobs = 12;  # Parallel package builds
+    cores = 4;      # Cores per build job (12 * 4 = 48 effective, uses hyperthreading)
     # Enable binary cache
     substituters = [
       "https://cache.nixos.org"
@@ -61,6 +61,14 @@
     ];
     # Optimize nix store
     auto-optimise-store = true;  # Automatically deduplicate
+    # Use new experimental fetcher for faster downloads
+    use-xdg-base-directories = true;
+    # Download in parallel
+    http-connections = 128;
+    # Trust your user to use flake config settings
+    trusted-users = [ "root" "@wheel" ];
+    # Suppress dirty tree warnings system-wide
+    warn-dirty = false;
   };
 
   nix.gc = {
@@ -74,16 +82,35 @@
     "kernel.kptr_restrict" = 0;
   };
 
+  # Suppress cosmetic ACPI/firmware log spam on the console without blanking
+  # acpi_osi (which breaks device detection on Dell/ASUS hardware).
+  # Errors are still fully recorded in journalctl, just not shown on screen.
+  boot.consoleLogLevel = 4; # 4 = WARNING; default is 7 (DEBUG)
+
+  # Capture crash dumps so you can diagnose what killed a process or the kernel.
+  systemd.coredump = {
+    enable = true;
+    extraConfig = ''ProcessSizeMax=2G
+ExternalSizeMax=2G'';
+  };
+
   # Performance: Use systemd in initrd for faster parallel boot
   boot.initrd.systemd.enable = lib.mkDefault true;
 
   # Performance: Don't wait for all devices during boot
   systemd.services.systemd-udev-settle.enable = false;
 
+  # Disable slow man page cache generation (only needed for man -k / apropos)
+  documentation.man.generateCaches = false;
+
   environment.systemPackages = with pkgs; [
     # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
     strace lsof tcpdump sysprof
+    
+    # Nix tools
+    nix-output-monitor  # Beautiful progress for nix builds (use: nom build)
+    nix-fast-build      # Parallel builds for faster rebuilds
     
     # Shell and CLI enhancements
     fish fastfetch eza starship direnv nnn fzf ripgrep fd bat tmux
@@ -98,13 +125,15 @@
     git git-lfs lazygit gh
     
     # Container and cluster management
-    docker docker-compose lazydocker kubectl k9s helm
-    
-    # Databases
-    postgresql sqlite
+    lazydocker
     
     # Nix development tools
     nixd nixpkgs-fmt nix-tree nix-index
+
+    # System health & diagnostics
+    nvme-cli      # SSD health: sudo nvme smart-log /dev/nvme0
+    smartmontools # Disk health: sudo smartctl -a /dev/nvme0
+    lm_sensors    # CPU/GPU temps: sensors
     
     # Archive utilities
     unzip zip gzip bzip2 xz p7zip

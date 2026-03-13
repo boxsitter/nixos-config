@@ -18,7 +18,6 @@
       lt = "eza --tree";
       tree = "eza --tree";
       cat = "bat";
-      grep = "rg";
       find = "fd";
       top = "htop";
       ff = "fastfetch";

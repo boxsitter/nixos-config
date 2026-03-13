@@ -11,9 +11,23 @@
     "nvidia-drm.modeset=1"
     "nvidia-drm.fbdev=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"  # Required for suspend/resume
+    "quiet"         # Suppress most kernel messages
+    "splash"        # Enable boot splash (if available)
+    "loglevel=3"    # Only show errors and critical messages
+    "rd.udev.log_level=3"  # Reduce udev logging
+    "vt.global_cursor_default=0"  # Hide blinking cursor
+    # Samsung PM9A1 on s2idle miscounts autonomous power state exits as unsafe
+    # shutdowns. Disabling APST stops the drive entering those states on its
+    # own, so the counter stops incrementing. Negligible real-world impact.
+    "nvme_core.default_ps_max_latency_us=0"
   ];
 
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  # Load NVIDIA modules early so udev device nodes (/dev/nvidiactl etc.) are
+  # created before userspace services start. Without this, udev fires before
+  # the module is ready and mknod fails.
+  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+
+  boot.blacklistedKernelModules = [ "nouveau" "spd5118" ];  # Blacklist nouveau and DDR5 temp sensor
   services.xserver.videoDrivers = [ "nvidia" ];
   
   hardware.graphics = {
