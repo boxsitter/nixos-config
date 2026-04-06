@@ -41,6 +41,7 @@
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour epiphany geary gnome-music gnome-photos totem
     gnome-contacts gnome-maps gnome-weather simple-scan cheese yelp
+    gnome-connections  # Poor NLA/RDP support; replaced by Remmina
   ];
 
   security.rtkit.enable = true;
@@ -106,6 +107,14 @@
     vscode
     insync
     legcord
+    remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
+
+    # JetBrains IDEs & tooling
+    jetbrains.idea
+    jetbrains.pycharm
+    jetbrains.webstorm
+    jetbrains.gateway
+    jetbrains-toolbox
   ];
 
   # Auto-start Insync on login
