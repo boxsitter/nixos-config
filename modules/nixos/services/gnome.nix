@@ -110,10 +110,6 @@
     remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
 
     # JetBrains IDEs & tooling
-    jetbrains.idea
-    jetbrains.pycharm
-    jetbrains.webstorm
-    jetbrains.gateway
     jetbrains-toolbox
   ];
 
