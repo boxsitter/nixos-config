@@ -123,6 +123,9 @@ ExternalSizeMax=2G'';
     
     # Git tools
     git git-lfs lazygit gh
+
+    # AI tools
+    claude-code claude-mergetool claude-monitor
     
     # Container and cluster management
     lazydocker
@@ -143,6 +146,10 @@ ExternalSizeMax=2G'';
 
     # Mouse configuration
     piper
+  ];
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "claude-code"
   ];
 
   # DO NOT CHANGE - set once at initial install
