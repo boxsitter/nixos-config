@@ -95,6 +95,7 @@
     gnomeExtensions.appindicator
     nautilus  # GNOME Files (file manager)
     firefox
+    chromium
     vlc
     wl-clipboard
     pavucontrol
