@@ -21,16 +21,7 @@
   environment.sessionVariables = {
     LD_LIBRARY_PATH = lib.mkForce "";
   };
-  services.xserver = {
-    enable = true;
-    # Disable screen blanking and DPMS to prevent black screen during startup
-    serverFlagsSection = ''
-      Option "BlankTime" "0"
-      Option "StandbyTime" "0"
-      Option "SuspendTime" "0"
-      Option "OffTime" "0"
-    '';
-  };
+  services.xserver.enable = true;
 
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;

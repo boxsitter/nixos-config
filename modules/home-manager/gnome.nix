@@ -1,7 +1,7 @@
 # modules/home-manager/gnome.nix
 # GNOME preferences managed via Home Manager (dconf).
 
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   dconf = {
@@ -29,10 +29,23 @@
         font-hinting = "slight";
       };
 
-      # Prevent screen from turning off on AC power
+      # Prevent screen from blanking or sleeping.
+      # NOTE: serverFlagsSection in gnome.nix configures the X server and has no
+      # effect on Wayland sessions. These dconf keys are the correct Wayland controls.
+      #
+      # idle-delay: 0 = never blank. Set to e.g. 300 if you want a 5-min blank.
+      "org/gnome/desktop/session" = {
+        idle-delay = lib.hm.gvariant.mkUint32 300; # seconds before screen blanks (0 = never)
+      };
+
       "org/gnome/settings-daemon/plugins/power" = {
+        # Prevent screen from dimming before blanking
+        idle-dim = false;
+        # Prevent suspend on AC and battery (laptop-relevant: both must be set)
         sleep-inactive-ac-type = "nothing";
         sleep-inactive-ac-timeout = 0;
+        sleep-inactive-battery-type = "nothing";
+        sleep-inactive-battery-timeout = 0;
       };
 
       # Disable accessibility keyboard features that can be accidentally

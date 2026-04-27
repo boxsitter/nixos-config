@@ -29,6 +29,15 @@
   # out of order (e.g. after a BIOS update changes _OSI behaviour).
   boot.blacklistedKernelModules = [ "psmouse" ];
 
+  # Use PSR1 (Panel Self Refresh level 1) instead of PSR2 to fix the black
+  # screen bug on the XPS 15 9530. The i915 driver enables PSR2 by default
+  # on Raptor Lake-H, but PSR2's selective update path has a known bug where
+  # the panel enters a bad self-refresh state and goes black ~5-10 seconds
+  # after the display becomes static (recovers on any input).
+  # PSR1 retains most of the panel power savings without the PSR2 state
+  # machine bugs. Use enable_psr=0 only if PSR1 still causes issues.
+  boot.kernelParams = [ "i915.enable_psr=1" ];
+
   networking.hostName = "nixos-laptop";
 
   nixpkgs = {
