@@ -9,26 +9,26 @@
     ../../modules/nixos/core.nix
     ../../modules/nixos/secrets.nix
     ../../modules/nixos/boot/systemd-boot.nix
-    ../../modules/nixos/services/minecraft.nix
-    ../../modules/nixos/services/samba.nix
-    ../../modules/nixos/services/playit.nix
-    ../../modules/nixos/services/immich.nix
-    ../../modules/nixos/services/komga.nix
-    ../../modules/nixos/services/caddy.nix
-    ../../modules/nixos/services/navidrome.nix
-    ../../modules/nixos/services/jellyfin.nix
-    ../../modules/nixos/services/qbittorrent.nix
-    ../../modules/nixos/services/homepage.nix
-    ../../modules/nixos/services/cockpit.nix
-    ../../modules/nixos/services/uptime-kuma.nix
-    ../../modules/nixos/services/prowlarr.nix
-    ../../modules/nixos/services/radarr.nix
-    ../../modules/nixos/services/sonarr.nix
-    ../../modules/nixos/services/sabnzbd.nix
-    ../../modules/nixos/services/lidarr.nix
-    ../../modules/nixos/services/mealie.nix
-    ../../modules/nixos/services/netdata.nix
-    ../../modules/nixos/services/hydra-server.nix
+    ../../modules/nixos/services/server/minecraft.nix
+    ../../modules/nixos/services/server/samba.nix
+    ../../modules/nixos/services/server/playit.nix
+    ../../modules/nixos/services/server/immich.nix
+    ../../modules/nixos/services/server/komga.nix
+    ../../modules/nixos/services/server/caddy.nix
+    ../../modules/nixos/services/server/navidrome.nix
+    ../../modules/nixos/services/server/jellyfin.nix
+    ../../modules/nixos/services/server/qbittorrent.nix
+    ../../modules/nixos/services/server/homepage.nix
+    ../../modules/nixos/services/server/cockpit.nix
+    ../../modules/nixos/services/server/uptime-kuma.nix
+    ../../modules/nixos/services/server/prowlarr.nix
+    ../../modules/nixos/services/server/radarr.nix
+    ../../modules/nixos/services/server/sonarr.nix
+    ../../modules/nixos/services/server/sabnzbd.nix
+    ../../modules/nixos/services/server/lidarr.nix
+    ../../modules/nixos/services/server/mealie.nix
+    ../../modules/nixos/services/server/netdata.nix
+    ../../modules/nixos/services/server/hydra-server.nix
   ];
 
   networking.hostName = "nixos-server";

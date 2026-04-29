@@ -77,8 +77,13 @@
 
   # Fonts (system-wide)
   # Ensures "FiraCode Nerd Font" is available for Kitty/VS Code/etc.
+  # Noto fonts provide coverage for non-Latin scripts and emoji, preventing
+  # missing glyph boxes (□) in browsers, terminals, and documents.
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
   ];
   
   environment.systemPackages = with pkgs; [
@@ -103,6 +108,30 @@
 
     # JetBrains IDEs & tooling
     jetbrains-toolbox
+
+    # Office & productivity
+    onlyoffice-desktopeditors  # Microsoft Office format compatible suite (.docx/.xlsx/.pptx)
+    copyq           # Searchable clipboard history (GNOME has no built-in clipboard manager)
+
+    # Image editing
+    gimp            # Full-featured raster image editor
+    gpick           # Screen color picker (hex/RGB output)
+
+    # Video editing & recording
+    kdePackages.kdenlive  # Non-linear video editor
+    obs-studio      # Screen recording and streaming
+
+    # Screenshot & annotation
+    flameshot       # Screenshot tool with built-in annotation (arrows, boxes, blur)
+
+    # Download managers
+    persepolis      # GUI download manager (aria2 frontend, queued/batch downloads)
+    parabolic       # GNOME-native GUI for yt-dlp (YouTube, Twitch, etc.)
+    yt-dlp          # CLI video/audio downloader
+    aria2           # CLI multi-connection downloader
+
+    # Torrent client (desktop GUI; separate from the headless server qbittorrent-nox)
+    qbittorrent
   ];
 
   # Auto-start Insync on login
