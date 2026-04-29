@@ -20,6 +20,8 @@
   # NixOS packages have proper RPATHs and don't need this
   environment.sessionVariables = {
     LD_LIBRARY_PATH = lib.mkForce "";
+    GTK_THEME = "adw-gtk3";
+    KITTY_ENABLE_WAYLAND = "1";
   };
   services.xserver.enable = true;
 
@@ -99,6 +101,8 @@
 
     # Stable GTK3 theme that matches GNOME's look; avoids oversized buttons
     adw-gtk3
+    papirus-icon-theme  # Icon theme set in home-manager dconf
+    dconf-editor        # GSettings/dconf tree browser
 
     # Desktop applications
     vscode

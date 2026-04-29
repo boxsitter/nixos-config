@@ -1,16 +1,48 @@
 # modules/home-manager/gnome.nix
-# GNOME preferences managed via Home Manager (dconf).
+# GNOME preferences and desktop theming managed via Home Manager.
 
-{ ... }:
+{ pkgs, catppuccin, ... }:
 
 {
+  imports = [
+    catppuccin.homeModules.catppuccin
+  ];
+
+  # Catppuccin base settings (flavor/accent inherited by all opted-in programs)
+  catppuccin = {
+    flavor = "macchiato";
+    accent = "blue";
+    starship.enable = false;  # Using custom starship.toml
+  };
+
+  # GTK theming
+  gtk = {
+    enable = true;
+
+    theme = {
+      name = "adw-gtk3";
+      package = pkgs.adw-gtk3;
+    };
+
+    cursorTheme = {
+      name = "Bibata-Modern-Ice";
+      size = 24;
+      package = pkgs.bibata-cursors;
+    };
+
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+  };
+
+  # Prevent catppuccin from injecting CSS into GTK4 (avoids mismatched headerbars)
+  xdg.configFile."gtk-4.0/gtk.css".text = "";
+
   dconf = {
     enable = true;
 
     settings = {
       "org/gnome/desktop/wm/preferences" = {
-        # Buttons on the right in the order requested.
-        # Left side is empty (before the ':').
+        # Buttons on the right; left side empty (before the ':').
         button-layout = ":minimize,maximize,close";
       };
 
@@ -26,30 +58,19 @@
         ];
       };
 
-      # Legacy applications theme support
       "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        gtk-theme = "adw-gtk3";
+        icon-theme = "Papirus-Dark";
         font-antialiasing = "rgba";
         font-hinting = "slight";
       };
 
-      # Prevent screen from turning off on AC power
-      "org/gnome/settings-daemon/plugins/power" = {
-        sleep-inactive-ac-type = "nothing";
-        sleep-inactive-ac-timeout = 0;
-      };
-
-      # Disable accessibility keyboard features that can be accidentally
-      # triggered during a bad shutdown (e.g. Shift+NumLock activates
-      # Mouse Keys, causing keyboard input to move the cursor).
-      "org/gnome/desktop/a11y/keyboard" = {
-        mousekeys-enable    = false; # numpad/arrow keys must not move the cursor
-        stickykeys-enable   = false; # modifier keys must not latch
-        bouncekeys-enable   = false; # repeated key filter off
-        slowkeys-enable     = false; # delayed key acceptance off
-        enable              = false; # master accessibility keyboard toggle off
+      # Background (Catppuccin Macchiato base/mantle)
+      "org/gnome/desktop/background" = {
+        primary-color = "#24273a";
+        secondary-color = "#1e2030";
       };
     };
   };
-
-
 }

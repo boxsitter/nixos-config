@@ -25,6 +25,11 @@
 
   programs.fish.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   security.sudo = {
     wheelNeedsPassword = true;
     extraRules = [{
@@ -99,9 +104,6 @@ ExternalSizeMax=2G'';
 
   # Performance: Don't wait for all devices during boot
   systemd.services.systemd-udev-settle.enable = false;
-
-  # Disable slow man page cache generation (only needed for man -k / apropos)
-  documentation.man.generateCaches = false;
 
   environment.systemPackages = with pkgs; [
     # Core utilities

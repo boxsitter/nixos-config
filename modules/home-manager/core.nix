@@ -8,7 +8,6 @@
   imports = [
     ./programs/fish.nix
     ./programs/git.nix
-    ./programs/direnv.nix
     ./programs/fastfetch.nix
   ];
 }
