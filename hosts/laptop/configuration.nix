@@ -13,7 +13,6 @@
     ../../modules/nixos/hardware/dual-boot.nix
     ../../modules/nixos/hardware/intel-wifi.nix
     ../../modules/nixos/services/gnome.nix
-    # ../../modules/nixos/services/samba-client.nix  # TODO: Re-enable after running setup script
     ../../modules/nixos/programs/1password-gui.nix
   ];
 

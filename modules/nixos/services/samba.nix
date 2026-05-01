@@ -37,6 +37,7 @@
         "browseable" = "yes";
         "read only" = "no";
         "valid users" = "leyton";
+        "force group" = "media";  # Ensure all files/dirs are owned by media group
         "create mask" = "0664";  # rw-rw-r--
         "directory mask" = "2775"; # rwxrwsr-x with SetGID
         "comment" = "Media Library";

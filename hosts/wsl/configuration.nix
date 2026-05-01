@@ -7,7 +7,6 @@
   imports = [
     ../../modules/nixos/core.nix
     ../../modules/nixos/secrets.nix
-    # ../../modules/nixos/services/samba-client.nix  # TODO: Re-enable after running setup script
     ../../modules/nixos/services/immich.nix
     ../../modules/nixos/services/tailscale.nix
   ];

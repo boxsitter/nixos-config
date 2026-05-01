@@ -94,64 +94,7 @@ After the initial rebuild, some imperative setup steps are required for specific
 
 ### Setup for All Hosts
 
-#### 1. Generate Age Keys
-
-Each host needs an age key for encrypting/decrypting secrets. This is auto-generated on first rebuild:
-
-```bash
-sudo nixos-rebuild switch --flake .#<hostname>
-```
-
-**Verify:**
-```bash
-sudo test -f /var/lib/sops-nix/key.txt && echo "✓ Age key exists" || echo "✗ Age key missing"
-```
-
-#### 2. Get Public Key
-
-Extract the public key from each host:
-
-```bash
-nix-shell -p ssh-to-age --run 'sudo cat /var/lib/sops-nix/key.txt | ssh-to-age -public-key'
-```
-
-**Example output:** `age1uypa94r4vz7e2jrmruyu6857a6hxyntzxhnsfw2n5eq4n2lfy96qtjc7hq`
-
-**Verify:**
-```bash
-# Should output an age public key starting with "age1"
-nix-shell -p ssh-to-age --run 'sudo cat /var/lib/sops-nix/key.txt | ssh-to-age -public-key' | grep -q "^age1" && echo "✓ Valid public key" || echo "✗ Invalid key"
-```
-
-#### 3. Create `.sops.yaml`
-
-From any host, create or update `.sops.yaml` with all host public keys:
-
-```yaml
-keys:
-  - &server age1uypa94r4vz7e2jrmruyu6857a6hxyntzxhnsfw2n5eq4n2lfy96qtjc7hq
-  - &desktop age1k7ktnh8ccl6gj3zc4mtmrt9anhxlnx02l8cnxxdys6uq5re33fas4hhz29
-  - &laptop age1psmeqgs6q7v2d8ynqyrss4uvzx5we4khqffa62ech6u7xzw9ysls69pwa8
-  - &wsl age1yntm4skd29yc52hlku2gk3te4a9ws2hynqn8wqwkksc4tvv8l98ql4lm4q
-
-creation_rules:
-  - path_regex: secrets/secrets.yaml$
-    key_groups:
-      - age:
-        - *server
-        - *desktop
-        - *laptop
-        - *wsl
-```
-
-**Verify:**
-```bash
-# Check .sops.yaml exists and contains this host's key
-PUB_KEY=$(nix-shell -p ssh-to-age --run 'sudo cat /var/lib/sops-nix/key.txt | ssh-to-age -public-key')
-grep -q "$PUB_KEY" .sops.yaml && echo "✓ This host is in .sops.yaml" || echo "✗ This host missing from .sops.yaml"
-```
-
-#### 4. Configure Tailscale
+#### 1. Configure Tailscale
 
 Authenticate the Tailscale VPN connection:
 
@@ -169,18 +112,57 @@ sudo tailscale status | head -1
 
 ### Setup for Server Only
 
-#### 5. Add Cloudflare DNS Token (Server)
+#### 2. Generate Age Key (Server)
 
-Edit secrets to add the Cloudflare API token for Caddy DNS-01 ACME challenges:
+The secrets system uses an age key to decrypt secrets at runtime. It is auto-generated on first rebuild:
 
 ```bash
-export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
+sudo nixos-rebuild switch --flake .#server
+```
+
+**Verify:**
+```bash
+sudo test -f /var/lib/sops-nix/key.txt && echo "✓ Age key exists" || echo "✗ Age key missing"
+```
+
+The server's public key is already in `.sops.yaml`. If you ever need to extract it (e.g. after reimaging):
+
+```bash
+nix-shell -p ssh-to-age --run 'sudo cat /var/lib/sops-nix/key.txt | ssh-to-age -public-key'
+```
+
+If the key changes, update `.sops.yaml` and re-encrypt from another authorized machine with:
+
+```bash
+export SOPS_AGE_KEY=$(sudo cat /var/lib/sops-nix/key.txt)
+nix-shell -p sops --run 'sops updatekeys secrets/secrets.yaml'
+```
+
+#### 3. Add Cloudflare DNS Token (Server)
+
+Caddy uses Cloudflare's DNS API to complete ACME DNS-01 challenges for TLS certificates. You need a Cloudflare API token with the correct permissions.
+
+**Create the token:**
+
+1. Go to [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+2. Click **Create Token**
+3. Use the **Edit zone DNS** template, or create a custom token with:
+   - **Permissions:** `Zone` → `DNS` → `Edit`
+   - **Zone Resources:** `Include` → `Specific zone` → `lhsv.net`
+4. Set an expiry if desired (note: if it expires, certs will fail to renew — use "no expiry" for a server)
+5. Copy the token value
+
+**Add the token to secrets:**
+
+```bash
+export SOPS_AGE_KEY=$(sudo cat /var/lib/sops-nix/key.txt)
 nix-shell -p sops --run 'sops secrets/secrets.yaml'
 ```
 
-Add in the editor:
-```yaml
-cloudflare-dns-token: your-cloudflare-api-token-here
+The token must be in the format Caddy's environment file expects (a `KEY=VALUE` line):
+
+```
+CLOUDFLARE_API_TOKEN=your-token-here
 ```
 
 Save and exit.
@@ -198,7 +180,7 @@ nix-shell -p sops --run 'sops -d secrets/secrets.yaml' | grep -q "cloudflare-dns
 sudo test -f /run/secrets/cloudflare-dns-token && echo "✓ Token deployed" || echo "✗ Token not deployed"
 ```
 
-#### 6. Set Samba Password (Server)
+#### 4. Set Samba Password (Server)
 
 Configure Samba password for file sharing:
 
@@ -214,7 +196,7 @@ Enter password when prompted.
 sudo pdbedit -L | grep -q "^leyton:" && echo "✓ Samba user configured" || echo "✗ Samba user not found"
 ```
 
-#### 7. Claim Playit Tunnel (Server)
+#### 5. Claim Playit Tunnel (Server)
 
 Start the playit service and claim the tunnel:
 
@@ -237,61 +219,9 @@ sudo systemctl is-active playit && echo "✓ Playit service running" || echo "�
 sudo journalctl -u playit -n 20 | grep -qi "claimed\|connected" && echo "✓ Tunnel claimed" || echo "? Check playit logs manually"
 ```
 
-### Setup for Client Hosts (Desktop, Laptop, WSL)
-
-#### 8. Add Samba Credentials (Client Hosts)
-
-Edit secrets to add Samba mount credentials:
-
-```bash
-export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
-nix-shell -p sops --run 'sops secrets/secrets.yaml'
-```
-
-Add in the editor:
-```yaml
-samba-credentials: |
-  username=leyton
-  password=your-samba-password
-  domain=WORKGROUP
-```
-
-Save and exit.
-
-**Verify:**
-```bash
-# Check secret is encrypted
-grep -q "samba-credentials.*ENC\[" secrets/secrets.yaml && echo "✓ Samba credentials encrypted" || echo "✗ Credentials not encrypted"
-
-# Check can decrypt
-export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
-nix-shell -p sops --run 'sops -d secrets/secrets.yaml' | grep -q "samba-credentials" && echo "✓ Can decrypt credentials" || echo "✗ Cannot decrypt"
-
-# After rebuild with samba-client enabled, check mount point exists
-test -d /mnt/server && echo "✓ Samba mount point created" || echo "✗ Mount point missing"
-
-# Try to access the mount (will auto-mount via systemd)
-ls /mnt/server >/dev/null 2>&1 && echo "✓ Can access Samba share" || echo "✗ Cannot access share"
-```
-
 ### Final Steps
 
-#### 9. Re-encrypt After Adding New Host
-
-If you add a new host's key to `.sops.yaml`, re-encrypt the secrets file:
-
-```bash
-export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
-nix-shell -p sops --run 'sops updatekeys secrets/secrets.yaml'
-```
-
-**Verify:**
-```bash
-# Check last modified timestamp updated
-stat -c %y secrets/secrets.yaml
-```
-
-#### 10. Commit and Deploy
+#### 6. Commit and Deploy
 
 ```bash
 git add .sops.yaml secrets/secrets.yaml
@@ -311,28 +241,23 @@ git status | grep -q "nothing to commit" && echo "✓ All changes committed" || 
 
 ### Complete Verification Checklist
 
-Run on each host to verify full setup:
-
+**All hosts:**
 ```bash
-echo "=== Age Key Setup ==="
-sudo test -f /var/lib/sops-nix/key.txt && echo "✓ Age key exists" || echo "✗ Age key missing"
-
-echo "=== SOPS Configuration ==="
-PUB_KEY=$(nix-shell -p ssh-to-age --run 'sudo cat /var/lib/sops-nix/key.txt | ssh-to-age -public-key')
-grep -q "$PUB_KEY" .sops.yaml && echo "✓ In .sops.yaml" || echo "✗ Missing from .sops.yaml"
-
-echo "=== Secrets Decryption ==="
-export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
-nix-shell -p sops --run 'sops -d secrets/secrets.yaml' >/dev/null 2>&1 && echo "✓ Can decrypt" || echo "✗ Cannot decrypt"
-
 echo "=== Tailscale ==="
 sudo tailscale status >/dev/null 2>&1 && echo "✓ Tailscale configured" || echo "✗ Tailscale not configured"
+```
 
-echo "=== Secrets Deployment (after rebuild) ==="
-sudo test -f /run/secrets/cloudflare-dns-token && echo "✓ Cloudflare token (server)" || echo "- Cloudflare token (not server or not deployed)"
-sudo test -f /run/secrets/samba-credentials && echo "✓ Samba credentials (client)" || echo "- Samba credentials (not client or not deployed)"
+**Server only:**
+```bash
+echo "=== Age Key ==="
+sudo test -f /var/lib/sops-nix/key.txt && echo "✓ Age key exists" || echo "✗ Age key missing"
 
-echo "=== Server-Specific ==="
-sudo pdbedit -L 2>/dev/null | grep -q "^leyton:" && echo "✓ Samba user (server)" || echo "- Samba user (not server or not configured)"
-sudo systemctl is-active playit >/dev/null 2>&1 && echo "✓ Playit tunnel (server)" || echo "- Playit tunnel (not server or not running)"
+echo "=== Cloudflare Token ==="
+sudo test -f /run/secrets/cloudflare-dns-token && echo "✓ Token deployed" || echo "✗ Token not deployed"
+
+echo "=== Samba ==="
+sudo pdbedit -L 2>/dev/null | grep -q "^leyton:" && echo "✓ Samba user configured" || echo "✗ Samba user not found"
+
+echo "=== Playit ==="
+sudo systemctl is-active playit >/dev/null 2>&1 && echo "✓ Playit tunnel running" || echo "✗ Playit not running"
 ```

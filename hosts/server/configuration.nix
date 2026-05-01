@@ -74,6 +74,7 @@
     "d /var/lib/media/shows 2775 root media -"
     "d /var/lib/media/music 2775 root media -"
     "d /var/lib/media/manga 2775 root media -"
+    "Z /var/lib/media/manga 2775 root media -"  # Recursively fix permissions on subdirectories
     "d /var/lib/media/photos 2775 root media -"
     "d /var/lib/media/books 2775 root media -"
     "d /var/lib/media/downloads 2775 root media -"
