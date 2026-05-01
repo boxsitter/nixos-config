@@ -25,6 +25,11 @@
 
   programs.fish.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   security.sudo = {
     wheelNeedsPassword = true;
     extraRules = [{
@@ -100,9 +105,6 @@ ExternalSizeMax=2G'';
   # Performance: Don't wait for all devices during boot
   systemd.services.systemd-udev-settle.enable = false;
 
-  # Disable slow man page cache generation (only needed for man -k / apropos)
-  documentation.man.generateCaches = false;
-
   environment.systemPackages = with pkgs; [
     # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
@@ -123,6 +125,9 @@ ExternalSizeMax=2G'';
     
     # Git tools
     git git-lfs lazygit gh
+
+    # AI tools
+    claude-code claude-mergetool claude-monitor
     
     # Container and cluster management
     lazydocker
@@ -143,6 +148,10 @@ ExternalSizeMax=2G'';
 
     # Mouse configuration
     piper
+  ];
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "claude-code"
   ];
 
   # DO NOT CHANGE - set once at initial install

@@ -20,17 +20,10 @@
   # NixOS packages have proper RPATHs and don't need this
   environment.sessionVariables = {
     LD_LIBRARY_PATH = lib.mkForce "";
+    GTK_THEME = "adw-gtk3";
+    KITTY_ENABLE_WAYLAND = "1";
   };
-  services.xserver = {
-    enable = true;
-    # Disable screen blanking and DPMS to prevent black screen during startup
-    serverFlagsSection = ''
-      Option "BlankTime" "0"
-      Option "StandbyTime" "0"
-      Option "SuspendTime" "0"
-      Option "OffTime" "0"
-    '';
-  };
+  services.xserver.enable = true;
 
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
@@ -41,6 +34,7 @@
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour epiphany geary gnome-music gnome-photos totem
     gnome-contacts gnome-maps gnome-weather simple-scan cheese yelp
+    gnome-connections  # Poor NLA/RDP support; replaced by Remmina
   ];
 
   security.rtkit.enable = true;
@@ -85,8 +79,13 @@
 
   # Fonts (system-wide)
   # Ensures "FiraCode Nerd Font" is available for Kitty/VS Code/etc.
+  # Noto fonts provide coverage for non-Latin scripts and emoji, preventing
+  # missing glyph boxes (□) in browsers, terminals, and documents.
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
   ];
   
   environment.systemPackages = with pkgs; [
@@ -94,6 +93,7 @@
     gnomeExtensions.appindicator
     nautilus  # GNOME Files (file manager)
     firefox
+    chromium
     vlc
     wl-clipboard
     pavucontrol
@@ -101,11 +101,41 @@
 
     # Stable GTK3 theme that matches GNOME's look; avoids oversized buttons
     adw-gtk3
+    papirus-icon-theme  # Icon theme set in home-manager dconf
+    dconf-editor        # GSettings/dconf tree browser
 
     # Desktop applications
     vscode
     insync
     legcord
+    remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
+
+    # JetBrains IDEs & tooling
+    jetbrains-toolbox
+
+    # Office & productivity
+    onlyoffice-desktopeditors  # Microsoft Office format compatible suite (.docx/.xlsx/.pptx)
+    copyq           # Searchable clipboard history (GNOME has no built-in clipboard manager)
+
+    # Image editing
+    gimp            # Full-featured raster image editor
+    gpick           # Screen color picker (hex/RGB output)
+
+    # Video editing & recording
+    kdePackages.kdenlive  # Non-linear video editor
+    obs-studio      # Screen recording and streaming
+
+    # Screenshot & annotation
+    flameshot       # Screenshot tool with built-in annotation (arrows, boxes, blur)
+
+    # Download managers
+    persepolis      # GUI download manager (aria2 frontend, queued/batch downloads)
+    parabolic       # GNOME-native GUI for yt-dlp (YouTube, Twitch, etc.)
+    yt-dlp          # CLI video/audio downloader
+    aria2           # CLI multi-connection downloader
+
+    # Torrent client (desktop GUI; separate from the headless server qbittorrent-nox)
+    qbittorrent
   ];
 
   # Auto-start Insync on login

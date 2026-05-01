@@ -4,6 +4,8 @@
 { ... }:
 
 {
+  catppuccin.kitty.enable = true;
+
   programs.kitty = {
     enable = true;
     font = {
@@ -33,10 +35,5 @@
       linux_display_server = "wayland";
       wayland_titlebar_color = "background";
     };
-  };
-
-  # Kitty environment variables
-  home.sessionVariables = {
-    KITTY_ENABLE_WAYLAND = "1";
   };
 }

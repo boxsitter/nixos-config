@@ -7,7 +7,7 @@ with lib;
 
 let
   cfg = config.services.hydra-server-custom;
-  hydra-server = pkgs.callPackage ../../../pkgs/hydra-server { };
+  hydra-server = pkgs.callPackage ../../../../pkgs/hydra-server { };
 in {
   options.services.hydra-server-custom = {
     enable = mkOption {
@@ -84,7 +84,7 @@ in {
 
     # Configure sops secret
     sops.secrets.hydra-server-env = {
-      sopsFile = ../../../secrets/secrets.yaml;
+      sopsFile = ../../../../secrets/secrets.yaml;
       owner = "hydra-server";
       group = "hydra-server";
       mode = "0400";

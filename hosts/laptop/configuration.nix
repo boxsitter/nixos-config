@@ -57,8 +57,6 @@
     };
   };
 
-  programs.light.enable = true;
-
   # Docker
   virtualisation.docker.enable = true;
 
