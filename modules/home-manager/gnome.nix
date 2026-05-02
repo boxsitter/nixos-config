@@ -8,13 +8,6 @@
     catppuccin.homeModules.catppuccin
   ];
 
-  # Catppuccin base settings (flavor/accent inherited by all opted-in programs)
-  catppuccin = {
-    flavor = "macchiato";
-    accent = "blue";
-    starship.enable = false;  # Using custom starship.toml
-  };
-
   # GTK theming
   gtk = {
     enable = true;

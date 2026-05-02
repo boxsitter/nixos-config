@@ -1,7 +1,7 @@
 # modules/nixos/services/sabnzbd.nix
 # SABnzbd usenet client
 
-{ ... }:
+{ lib, ... }:
 
 {
   # Add the sabnzbd user to the shared 'media' group
@@ -22,7 +22,7 @@
 
   # Ensure any files created by SABnzbd are group-writable.
   systemd.services.sabnzbd.serviceConfig = {
-    UMask = "0002";
+    UMask = lib.mkForce "0002";
     # Allow writing to the shared downloads directory
     ReadWritePaths = [ "/var/lib/media/downloads" ];
   };

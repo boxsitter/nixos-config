@@ -113,7 +113,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/server/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
             home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
           }

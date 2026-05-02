@@ -24,9 +24,9 @@ in {
       enable = true;
       listenPort = cfg.port;
       
-      environmentFile = "${pkgs.writeText "homepage-env" ''
+      environmentFiles = [ "${pkgs.writeText "homepage-env" ''
         HOMEPAGE_ALLOWED_HOSTS=lhsv.net
-      ''}";
+      ''}" ];
 
       settings = {
         title = "Home";
@@ -75,12 +75,6 @@ in {
               "Cockpit" = {
                 href = "https://system.lhsv.net";
                 icon = "cockpit.png";
-              };
-            }
-            {
-              "Netdata" = {
-                href = "https://monitor.lhsv.net";
-                icon = "netdata.png";
               };
             }
             {

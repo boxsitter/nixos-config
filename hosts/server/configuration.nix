@@ -1,7 +1,7 @@
 # hosts/server/configuration.nix
 # Headless server configuration
 
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -27,14 +27,16 @@
     ../../modules/nixos/services/server/sabnzbd.nix
     ../../modules/nixos/services/server/lidarr.nix
     ../../modules/nixos/services/server/mealie.nix
-    ../../modules/nixos/services/server/netdata.nix
     ../../modules/nixos/services/server/hydra-server.nix
   ];
 
   networking.hostName = "nixos-server";
 
-  # Allow unfree packages (needed for Netdata Cloud UI)
   nixpkgs.config.allowUnfree = true;
+
+  # Allow derivations that set __noChroot = true to bypass the sandbox.
+  # Required for hydra-server. All other derivations remain sandboxed.
+  nix.settings.sandbox = "relaxed";
 
   # Performance settings
   powerManagement.cpuFreqGovernor = "performance";
