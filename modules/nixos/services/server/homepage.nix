@@ -24,9 +24,9 @@ in {
       enable = true;
       listenPort = cfg.port;
       
-      environmentFile = "${pkgs.writeText "homepage-env" ''
+      environmentFiles = [ "${pkgs.writeText "homepage-env" ''
         HOMEPAGE_ALLOWED_HOSTS=lhsv.net
-      ''}";
+      ''}" ];
 
       settings = {
         title = "Home";
@@ -42,12 +42,6 @@ in {
         
         layout = [
           {
-            System = {
-              style = "column";
-              columns = 1;
-            };
-          }
-          {
             Downloads = {
               style = "column";
               columns = 1;
@@ -55,6 +49,12 @@ in {
           }
           {
             Media = {
+              style = "column";
+              columns = 1;
+            };
+          }
+          {
+            Monitoring = {
               style = "column";
               columns = 1;
             };
@@ -69,29 +69,6 @@ in {
       };
 
       services = [
-        {
-          "System" = [
-            {
-              "Cockpit" = {
-                href = "https://system.lhsv.net";
-                icon = "cockpit.png";
-              };
-            }
-            {
-              "Netdata" = {
-                href = "https://monitor.lhsv.net";
-                icon = "netdata.png";
-              };
-            }
-            {
-              "Uptime Kuma" = {
-                href = "https://status.lhsv.net";
-                icon = "uptime-kuma.png";
-              };
-            }
-          ];
-        }
-      
         {
           "Media" = [
             {
@@ -157,6 +134,23 @@ in {
               "Prowlarr" = {
                 href = "https://indexer.lhsv.net";
                 icon = "prowlarr.png";
+              };
+            }
+          ];
+        }
+
+        {
+          "Monitoring" = [
+            {
+              "Grafana" = {
+                href = "https://status.lhsv.net";
+                icon = "grafana.png";
+              };
+            }
+            {
+              "Prometheus" = {
+                href = "https://system.lhsv.net";
+                icon = "prometheus.png";
               };
             }
           ];

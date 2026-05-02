@@ -1,7 +1,7 @@
 # modules/nixos/services/komga.nix
 # Komga manga/comic server
 
-{ ... }:
+{ lib, ... }:
 
 {
   # Add the komga user to the shared 'media' group
@@ -15,7 +15,7 @@
 
   # Ensure new files created by Komga are group-writable.
   systemd.services.komga.serviceConfig = {
-    UMask = "0002";
+    UMask = lib.mkForce "0002";
     # Allow Komga to read the shared media folder.
     # It already has write access to its own state dir in /var/lib/komga.
     ReadOnlyPaths = [ "/var/lib/media/manga" ];

@@ -9,14 +9,16 @@
     
     # Build Caddy with the Cloudflare DNS plugin for DNS-01 challenges.
     package = pkgs.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2" ];
-      hash = "sha256-dnhEjopeA0UiI+XVYHYpsjcEI6Y1Hacbi28hVKYQURg=";
+      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
+      hash = "sha256-J0HWjCPoOoARAxDpG2bS9c0x5Wv4Q23qWZbTjd8nW84=";
     };
 
     email = "admin@lhsv.net";  # ACME contact email
 
     globalConfig = ''
       acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+
+      debug
     '';
 
     virtualHosts = {
@@ -119,15 +121,6 @@
           dns cloudflare {env.CLOUDFLARE_API_TOKEN}
         }
         reverse_proxy 127.0.0.1:9925
-      '';
-
-      "monitor.lhsv.net".extraConfig = ''
-        tls {
-          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-        }
-        reverse_proxy 127.0.0.1:19999 {
-          header_up Host {http.reverse_proxy.upstream.hostport}
-        }
       '';
 
       "hydra.lhsv.net".extraConfig = ''

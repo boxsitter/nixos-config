@@ -1,7 +1,7 @@
 # modules/nixos/services/prowlarr.nix
 # Prowlarr indexer manager for Radarr/Sonarr
 
-{ ... }:
+{ lib, ... }:
 
 {
   # Define the prowlarr user and group
@@ -18,5 +18,5 @@
   };
 
   # Ensure any files created by Prowlarr are group-writable.
-  systemd.services.prowlarr.serviceConfig.UMask = "0002";
+  systemd.services.prowlarr.serviceConfig.UMask = lib.mkForce "0002";
 }

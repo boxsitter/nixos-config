@@ -1,7 +1,7 @@
 # hosts/server/configuration.nix
 # Headless server configuration
 
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -19,22 +19,23 @@
     ../../modules/nixos/services/server/jellyfin.nix
     ../../modules/nixos/services/server/qbittorrent.nix
     ../../modules/nixos/services/server/homepage.nix
-    ../../modules/nixos/services/server/cockpit.nix
-    ../../modules/nixos/services/server/uptime-kuma.nix
     ../../modules/nixos/services/server/prowlarr.nix
     ../../modules/nixos/services/server/radarr.nix
     ../../modules/nixos/services/server/sonarr.nix
     ../../modules/nixos/services/server/sabnzbd.nix
     ../../modules/nixos/services/server/lidarr.nix
     ../../modules/nixos/services/server/mealie.nix
-    ../../modules/nixos/services/server/netdata.nix
     ../../modules/nixos/services/server/hydra-server.nix
+    ../../modules/nixos/services/server/monitoring.nix
   ];
 
   networking.hostName = "nixos-server";
 
-  # Allow unfree packages (needed for Netdata Cloud UI)
   nixpkgs.config.allowUnfree = true;
+
+  # Allow derivations that set __noChroot = true to bypass the sandbox.
+  # Required for hydra-server. All other derivations remain sandboxed.
+  nix.settings.sandbox = "relaxed";
 
   # Performance settings
   powerManagement.cpuFreqGovernor = "performance";
@@ -74,6 +75,7 @@
     "d /var/lib/media/shows 2775 root media -"
     "d /var/lib/media/music 2775 root media -"
     "d /var/lib/media/manga 2775 root media -"
+    "Z /var/lib/media/manga 2775 root media -"  # Recursively fix permissions on subdirectories
     "d /var/lib/media/photos 2775 root media -"
     "d /var/lib/media/books 2775 root media -"
     "d /var/lib/media/downloads 2775 root media -"

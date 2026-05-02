@@ -1,7 +1,7 @@
 # modules/nixos/services/lidarr.nix
 # Lidarr music collection manager
 
-{ ... }:
+{ lib, ... }:
 
 {
   # Add the lidarr user to the shared 'media' group
@@ -14,7 +14,7 @@
 
   # Ensure any files created by Lidarr are group-writable.
   systemd.services.lidarr.serviceConfig = {
-    UMask = "0002";
+    UMask = lib.mkForce "0002";
     StateDirectory = "lidarr";
   };
 }

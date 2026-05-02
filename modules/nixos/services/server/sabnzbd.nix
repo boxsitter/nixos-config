@@ -1,7 +1,7 @@
 # modules/nixos/services/sabnzbd.nix
 # SABnzbd usenet client
 
-{ ... }:
+{ lib, ... }:
 
 {
   # Add the sabnzbd user to the shared 'media' group
@@ -9,6 +9,7 @@
 
   services.sabnzbd = {
     enable = true;
+    configFile = null;  # Use settings instead (suppresses deprecation warning on stateVersion < 26.05)
     settings.misc = {
       port = 8085; # Default 8080 is used by Komga
       host_whitelist = "usenet.lhsv.net";
@@ -22,7 +23,7 @@
 
   # Ensure any files created by SABnzbd are group-writable.
   systemd.services.sabnzbd.serviceConfig = {
-    UMask = "0002";
+    UMask = lib.mkForce "0002";
     # Allow writing to the shared downloads directory
     ReadWritePaths = [ "/var/lib/media/downloads" ];
   };

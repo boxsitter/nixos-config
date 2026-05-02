@@ -24,6 +24,30 @@
         group = config.services.caddy.group;
         mode = "0400";
       };
+
+      # Grafana admin password (read at startup via Grafana's $__file{...} syntax)
+      grafana-admin-password = lib.mkIf config.services.grafana.enable {
+        owner = "grafana";
+        group = "grafana";
+        mode = "0400";
+      };
+
+      # Grafana secret_key — encrypts datasource credentials and other DB-stored
+      # secrets. No longer has a default in nixpkgs 26.05+.
+      grafana-secret-key = lib.mkIf config.services.grafana.enable {
+        owner = "grafana";
+        group = "grafana";
+        mode = "0400";
+      };
+
+      # *arr API keys consumed by exportarr-* exporters via systemd LoadCredential.
+      # Mode 0444 is fine: each exporter runs as its own DynamicUser and the file
+      # is loaded into the unit's credentials store, not read directly by clients.
+      sonarr-api-key   = lib.mkIf config.services.prometheus.exporters.exportarr-sonarr.enable   { mode = "0444"; };
+      radarr-api-key   = lib.mkIf config.services.prometheus.exporters.exportarr-radarr.enable   { mode = "0444"; };
+      lidarr-api-key   = lib.mkIf config.services.prometheus.exporters.exportarr-lidarr.enable   { mode = "0444"; };
+      prowlarr-api-key = lib.mkIf config.services.prometheus.exporters.exportarr-prowlarr.enable { mode = "0444"; };
+      sabnzbd-api-key  = lib.mkIf config.services.prometheus.exporters.sabnzbd.enable            { mode = "0444"; };
     };
   };
 }
