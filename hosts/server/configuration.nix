@@ -19,8 +19,6 @@
     ../../modules/nixos/services/server/jellyfin.nix
     ../../modules/nixos/services/server/qbittorrent.nix
     ../../modules/nixos/services/server/homepage.nix
-    ../../modules/nixos/services/server/cockpit.nix
-    ../../modules/nixos/services/server/uptime-kuma.nix
     ../../modules/nixos/services/server/prowlarr.nix
     ../../modules/nixos/services/server/radarr.nix
     ../../modules/nixos/services/server/sonarr.nix
@@ -28,6 +26,7 @@
     ../../modules/nixos/services/server/lidarr.nix
     ../../modules/nixos/services/server/mealie.nix
     ../../modules/nixos/services/server/hydra-server.nix
+    ../../modules/nixos/services/server/monitoring.nix
   ];
 
   networking.hostName = "nixos-server";

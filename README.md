@@ -219,9 +219,122 @@ sudo systemctl is-active playit && echo "✓ Playit service running" || echo "�
 sudo journalctl -u playit -n 20 | grep -qi "claimed\|connected" && echo "✓ Tunnel claimed" || echo "? Check playit logs manually"
 ```
 
+#### 6. Configure Monitoring — Prometheus + Grafana (Server)
+
+The monitoring stack (`modules/nixos/services/server/monitoring.nix`) provides:
+
+- **Prometheus** at `https://system.lhsv.net` — metrics store
+- **Grafana** at `https://status.lhsv.net` — dashboards (Node Exporter Full, Systemd per-service CPU/network, Process Exporter, smartctl, Loki logs, Exportarr *arr metrics)
+- **Loki + Alloy** — log aggregation from systemd journal
+- **Per-service network metrics** via `DefaultIPAccounting=yes` (requires one reboot after first deploy)
+
+Setup happens in two phases.
+
+##### Phase A — Before first deploy: add Grafana secrets
+
+```bash
+export SOPS_AGE_KEY=$(sudo cat /var/lib/sops-nix/key.txt)
+nix-shell -p sops --run 'sops secrets/secrets.yaml'
+```
+
+Add the following keys (raw values, **not** `KEY=VALUE` format):
+
+```yaml
+grafana-admin-password: <choose a strong password>
+grafana-secret-key: <output of: openssl rand -base64 32>
+sonarr-api-key: ""
+radarr-api-key: ""
+lidarr-api-key: ""
+prowlarr-api-key: ""
+sabnzbd-api-key: ""
+```
+
+The five `*-api-key` entries can be left empty for now — their exporter units will stay in a restart loop until backfilled (step B), but the rest of the stack will work.
+
+Save and exit sops, then rebuild and **reboot once**:
+
+```bash
+sudo nixos-rebuild switch --flake .#server
+sudo reboot
+```
+
+The reboot is required for `DefaultIPAccounting=yes` to apply to every systemd unit. Without it, the Systemd Services dashboard's per-service network panels will be empty.
+
+**Verify:**
+```bash
+# All core services running
+for svc in prometheus grafana loki alloy \
+  prometheus-node-exporter \
+  prometheus-systemd-exporter \
+  prometheus-process-exporter \
+  prometheus-smartctl-exporter; do
+  systemctl is-active --quiet $svc \
+    && echo "✓ $svc" || echo "✗ $svc"
+done
+
+# Per-service IP accounting flowing (should show non-zero byte counts)
+curl -s 127.0.0.1:9558/metrics | grep -m 3 systemd_unit_ip_ingress_bytes
+
+# All Prometheus scrape targets healthy (open in browser over Tailscale)
+# https://system.lhsv.net/targets
+```
+
+Log in to `https://status.lhsv.net` with `admin` and the password you set above. Both datasources (Prometheus, Loki) should be green and six dashboards should appear.
+
+##### Phase B — After first deploy: backfill *arr and SABnzbd API keys
+
+The five app exporters require each service's API key. Extract them from the running services:
+
+```bash
+# *arr keys (look for the <ApiKey> element in each config file)
+sudo grep -h "<ApiKey>" \
+  /var/lib/sonarr/.config/NzbDrone/config.xml \
+  /var/lib/radarr/.config/Radarr/config.xml \
+  /var/lib/lidarr/.config/Lidarr/config.xml \
+  /var/lib/prowlarr/.config/Prowlarr/config.xml
+
+# SABnzbd key: Settings → General → API Key in the web UI at https://usenet.lhsv.net
+```
+
+Then re-open sops and paste each raw key string (no XML tags, no quotes) into the corresponding entry:
+
+```bash
+export SOPS_AGE_KEY=$(sudo cat /var/lib/sops-nix/key.txt)
+nix-shell -p sops --run 'sops secrets/secrets.yaml'
+```
+
+Rebuild (no reboot needed this time):
+
+```bash
+sudo nixos-rebuild switch --flake .#server
+```
+
+**Verify:**
+```bash
+# All five app exporters now running
+for svc in \
+  prometheus-exportarr-sonarr-exporter \
+  prometheus-exportarr-radarr-exporter \
+  prometheus-exportarr-lidarr-exporter \
+  prometheus-exportarr-prowlarr-exporter \
+  prometheus-sabnzbd-exporter; do
+  systemctl is-active --quiet $svc \
+    && echo "✓ $svc" || echo "✗ $svc"
+done
+
+# All Prometheus targets UP including exportarr and sabnzbd
+# https://system.lhsv.net/targets
+```
+
+##### Notes
+
+- **smartctl device list** defaults to `/dev/nvme0` and `/dev/sda`. Confirm with `lsblk -d -o NAME,TYPE,MODEL,TRAN` and adjust the `devices` list in `monitoring.nix` if your drives differ.
+- **Caddy metrics** (request rates, latency, status codes per virtualhost) are scraped automatically — no extra steps required.
+- **Alerting** is not configured. Prometheus and Grafana support Alertmanager if you want to add it later.
+
 ### Final Steps
 
-#### 6. Commit and Deploy
+#### 7. Commit and Deploy
 
 ```bash
 git add .sops.yaml secrets/secrets.yaml
@@ -260,4 +373,30 @@ sudo pdbedit -L 2>/dev/null | grep -q "^leyton:" && echo "✓ Samba user configu
 
 echo "=== Playit ==="
 sudo systemctl is-active playit >/dev/null 2>&1 && echo "✓ Playit tunnel running" || echo "✗ Playit not running"
+
+echo "=== Monitoring (core) ==="
+for svc in prometheus grafana loki alloy \
+  prometheus-node-exporter \
+  prometheus-systemd-exporter \
+  prometheus-process-exporter \
+  prometheus-smartctl-exporter; do
+  systemctl is-active --quiet $svc 2>/dev/null \
+    && echo "✓ $svc" || echo "✗ $svc"
+done
+
+echo "=== Monitoring (app exporters — requires Phase B secrets) ==="
+for svc in \
+  prometheus-exportarr-sonarr-exporter \
+  prometheus-exportarr-radarr-exporter \
+  prometheus-exportarr-lidarr-exporter \
+  prometheus-exportarr-prowlarr-exporter \
+  prometheus-sabnzbd-exporter; do
+  systemctl is-active --quiet $svc 2>/dev/null \
+    && echo "✓ $svc" || echo "✗ $svc (needs API key)"
+done
+
+echo "=== IPAccounting (per-service network metrics) ==="
+curl -s 127.0.0.1:9558/metrics 2>/dev/null | grep -qm1 systemd_unit_ip_ingress_bytes \
+  && echo "✓ IPAccounting metrics present" \
+  || echo "✗ IPAccounting metrics missing — reboot required"
 ```

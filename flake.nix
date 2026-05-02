@@ -2,15 +2,6 @@
 {
   description = "NixOS configurations for desktop, laptop, and WSL";
 
-  # Optional: Binary cache for faster builds
-  nixConfig = {
-    extra-substituters = [ "https://playit-nixos-module.cachix.org" ];
-    extra-trusted-public-keys = [ "playit-nixos-module.cachix.org-1:22hBXWXBbd/7o1cOnh+p0hpFUVk9lPdRLX3p5YSfRz4=" ];
-    # Allow hydra-server to fetch dependencies during build
-    sandbox = "relaxed";
-    warn-dirty = false;  # Disable dirty git tree warnings
-  };
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     darwin = {

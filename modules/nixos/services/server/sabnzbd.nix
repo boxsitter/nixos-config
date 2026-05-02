@@ -9,6 +9,7 @@
 
   services.sabnzbd = {
     enable = true;
+    configFile = null;  # Use settings instead (suppresses deprecation warning on stateVersion < 26.05)
     settings.misc = {
       port = 8085; # Default 8080 is used by Komga
       host_whitelist = "usenet.lhsv.net";

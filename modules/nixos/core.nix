@@ -54,15 +54,14 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    # Speed up builds - with 20 cores, limit to avoid memory pressure
-    max-jobs = 12;  # Parallel package builds
-    cores = 4;      # Cores per build job (12 * 4 = 48 effective, uses hyperthreading)
     # Enable binary cache
     substituters = [
       "https://cache.nixos.org"
+      "https://playit-nixos-module.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "playit-nixos-module.cachix.org-1:22hBXWXBbd/7o1cOnh+p0hpFUVk9lPdRLX3p5YSfRz4="
     ];
     # Optimize nix store
     auto-optimise-store = true;  # Automatically deduplicate
