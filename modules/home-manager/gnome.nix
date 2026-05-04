@@ -1,13 +1,9 @@
 # modules/home-manager/gnome.nix
 # GNOME preferences and desktop theming managed via Home Manager.
 
-{ pkgs, catppuccin, ... }:
+{ pkgs, ... }:
 
 {
-  imports = [
-    catppuccin.homeModules.catppuccin
-  ];
-
   # GTK theming
   gtk = {
     enable = true;

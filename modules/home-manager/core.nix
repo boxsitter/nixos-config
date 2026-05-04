@@ -2,11 +2,10 @@
 # Base home-manager configuration - reusable across any user
 # User-specific settings (username, home directory) belong in home/username/ files
 
-{ catppuccin, ... }:
+{ ... }:
 
 {
   imports = [
-    catppuccin.homeModules.catppuccin
     ./programs/fish.nix
     ./programs/git.nix
     ./programs/fastfetch.nix

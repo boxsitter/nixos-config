@@ -39,6 +39,12 @@
     open = false;  # Proprietary is more stable for RTX 30 mobile
     modesetting.enable = true;
     powerManagement.enable = true;
+    # RTD3 (D3cold) is enabled for battery life, but the default 5-second
+    # autosuspend delay causes a race: the idle timer fires during GNOME's
+    # post-resume compositor startup, producing drmModeAtomicCommit failures
+    # on the cursor plane and blacking the screen until input wakes the GPU.
+    # 60 seconds is long enough that GNOME always finishes initializing first,
+    # while still allowing the GPU to reach D3cold during genuine idle periods.
     powerManagement.finegrained = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -56,4 +62,15 @@
   };
 
   nixpkgs.config.nvidia.acceptLicense = true;
+
+  # Increase NVIDIA RTD3 autosuspend delay from the default 5s to 60s.
+  # This ensures the GPU stays awake long enough for GNOME's post-resume
+  # compositor initialization to complete before D3cold entry is attempted.
+  # Without this, drmModeAtomicCommit fails on the cursor plane mid-transition
+  # and the display goes black until the next input event.
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="pci", \
+      ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9][0-9][0-9]", \
+      ATTR{power/autosuspend_delay_ms}="60000"
+  '';
 }

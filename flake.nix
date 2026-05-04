@@ -47,7 +47,8 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/desktop/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
             home-manager.backupFileExtension = "backup";
           }
         ];
@@ -65,7 +66,8 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/laptop/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
             home-manager.backupFileExtension = "backup";
           }
         ];
@@ -84,7 +86,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/wsl/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
             home-manager.backupFileExtension = "backup";
           }
@@ -105,7 +107,8 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.leyton = import ./hosts/server/leyton.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; catppuccin = inputs.catppuccin; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
             home-manager.backupFileExtension = "backup";
             nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
           }
