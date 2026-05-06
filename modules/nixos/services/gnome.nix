@@ -91,6 +91,8 @@
   environment.systemPackages = with pkgs; [
     gnome-tweaks
     gnomeExtensions.appindicator
+    gnomeExtensions.dash-to-dock
+    gnomeExtensions.tactile
     nautilus  # GNOME Files (file manager)
     firefox
     chromium
