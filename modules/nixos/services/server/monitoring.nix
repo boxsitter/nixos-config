@@ -264,12 +264,8 @@ in
     }
   '';
 
-  # Pass secrets via GF_*__FILE env vars — the only mechanism Grafana reliably
-  # processes before writing the initial admin user to the DB. The $__file{}
-  # ini syntax only works in datasource provisioning, not in grafana.ini.
   systemd.services.grafana.environment = {
     GF_SECURITY_ADMIN_PASSWORD__FILE = config.sops.secrets.grafana-admin-password.path;
-    GF_SECURITY_SECRET_KEY__FILE     = config.sops.secrets.grafana-secret-key.path;
   };
 
   # --- Grafana ---
@@ -282,7 +278,10 @@ in
         domain = "status.lhsv.net";
         root_url = "https://status.lhsv.net/";
       };
-      security.admin_user = "admin";
+      security = {
+        admin_user = "admin";
+        secret_key = "$__file{${config.sops.secrets.grafana-secret-key.path}}";
+      };
       analytics.reporting_enabled = false;
       "auth.anonymous".enabled = false;
     };
