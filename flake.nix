@@ -33,7 +33,15 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+    # Test suite — see tests/default.nix.
+    # Run all tests with `nix flake check`, or a single one with
+    # `nix build .#checks.x86_64-linux.<name>`.
+    checks.x86_64-linux = import ./tests {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      inherit self inputs;
+    };
+
     nixosConfigurations = {
       # Desktop with NVIDIA RTX 5080 and GNOME
       desktop = nixpkgs.lib.nixosSystem {

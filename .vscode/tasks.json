@@ -36,6 +36,114 @@
       }
     },
     {
+      "label": "Tests: Run All (nix flake check)",
+      "type": "shell",
+      "command": "nix flake check --no-warn-dirty -L",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Tests: Eval Only (fast)",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.eval-assertions .#checks.x86_64-linux.eval-boot-loaders .#checks.x86_64-linux.eval-hosts && cat result",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Tests: Assertions",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.eval-assertions && cat result",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Tests: Boot Loaders",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.eval-boot-loaders && cat result",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Tests: Host Evaluation",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.eval-hosts && cat result",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Tests: VM core-module (slow)",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.core-module",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Tests: VM ssh-tailscale (slow)",
+      "type": "shell",
+      "command": "nix build --no-warn-dirty -L .#checks.x86_64-linux.ssh-tailscale",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "group": "test"
+    },
+    {
       "label": "NixOS: Update Flake Lock",
       "type": "shell",
       "command": "sudo nix flake update",
