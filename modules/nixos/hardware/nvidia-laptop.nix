@@ -20,6 +20,11 @@
     # shutdowns. Disabling APST stops the drive entering those states on its
     # own, so the counter stops incrementing. Negligible real-world impact.
     "nvme_core.default_ps_max_latency_us=0"
+    # Intel PSR (Panel Self Refresh) causes a brief blank on resume on
+    # Raptor Lake-H. Using psr_safest_params forces conservative timing
+    # to avoid the glitch while keeping PSR active for battery life.
+    "i915.enable_psr=1"
+    "i915.psr_safest_params=1"
   ];
 
   # Load NVIDIA modules early so udev device nodes (/dev/nvidiactl etc.) are
@@ -69,8 +74,8 @@
   # Without this, drmModeAtomicCommit fails on the cursor plane mid-transition
   # and the display goes black until the next input event.
   services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="pci", \
-      ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9][0-9][0-9]", \
+    ACTION=="bind", SUBSYSTEM=="pci", \
+      ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", \
       ATTR{power/autosuspend_delay_ms}="60000"
   '';
 }
