@@ -86,7 +86,7 @@
       # Folder order in the drawer matches folder-children order.
       "org/gnome/desktop/app-folders" = {
         folder-children = [
-          "Internet" "Media" "Graphics" "Office" "Development" "System" "Downloads"
+          "Internet" "Media" "Graphics" "Office" "Development" "JetBrains" "System" "Downloads"
         ];
       };
 
@@ -118,6 +118,7 @@
           "org.gnome.Loupe.desktop"
           "org.flameshot.Flameshot.desktop"
           "org.gpick.gpick.desktop"
+          "org.gnome.font-viewer.desktop"
         ];
       };
 
@@ -139,8 +140,11 @@
         apps = [
           "code.desktop"
           "jetbrains-toolbox.desktop"
-          "ca.desrt.dconf-editor.desktop"
-          "com.github.hluk.copyq.desktop"
+          "jetbrains-gateway.desktop"
+          "jetbrains-gateway-9c96fff4-8719-4a32-9593-7ce23fe0456a.desktop"
+          "jetbrains-idea-8071b81d-daf8-4629-8123-aa31cc369fbd.desktop"
+          "jetbrains-pycharm-1019cb7a-7ecd-423c-9348-ed67bde31ef9.desktop"
+          "jetbrains-webstorm-c087f98f-0936-449a-81c0-5d7561016237.desktop"
         ];
       };
 
@@ -167,6 +171,8 @@
           "btop.desktop"
           "insync.desktop"
           "1password.desktop"
+          "ca.desrt.dconf-editor.desktop"
+          "com.github.hluk.copyq.desktop"
         ];
       };
 
@@ -233,5 +239,18 @@
     "org.gnome.RemoteDesktop.Handover"          = { name = "Remote Desktop Handover";       noDisplay = true; };
     "org.gnome.Shell.Extensions"               = { name = "Shell Extensions";              noDisplay = true; };
     "org.gnome.Shell.PortalHelper"             = { name = "Portal Helper";                 noDisplay = true; };
+
+    # Passwords and Keys (Seahorse) — see xdg.dataFile below for the actual override
+    "org.gnome.seahorse.Application"            = { name = "Passwords and Keys";            noDisplay = true; };
   };
+
+  # xdg.desktopEntries lands in the nix profile path, which GNOME's app cache
+  # doesn't always treat as an override. Writing directly to ~/.local/share/
+  # (XDG_DATA_HOME) guarantees the highest-priority shadow entry.
+  xdg.dataFile."applications/org.gnome.seahorse.Application.desktop".text = ''
+    [Desktop Entry]
+    Name=Passwords and Keys
+    NoDisplay=true
+    Type=Application
+  '';
 }
