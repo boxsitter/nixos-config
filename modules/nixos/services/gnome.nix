@@ -138,6 +138,15 @@
 
     # Torrent client (desktop GUI; separate from the headless server qbittorrent-nox)
     qbittorrent
+
+    # Prism Launcher for Minecraft
+    (prismlauncher.override {
+      jdks = [
+        jdk21
+        jdk17
+        jdk8
+      ];
+    })
   ];
 
   # Auto-start Insync on login
