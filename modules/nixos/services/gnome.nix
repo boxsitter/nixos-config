@@ -139,13 +139,22 @@
     # Torrent client (desktop GUI; separate from the headless server qbittorrent-nox)
     qbittorrent
 
-    # Prism Launcher for Minecraft
-    (prismlauncher.override {
-      jdks = [
-        jdk21
-        jdk17
-        jdk8
+    # Prism Launcher for Minecraft — wrapped to force NVIDIA via PRIME offload
+    (pkgs.symlinkJoin {
+      name = "prismlauncher";
+      paths = [
+        (prismlauncher.override {
+          jdks = [ jdk21 jdk17 jdk8 ];
+        })
       ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/prismlauncher \
+          --set __NV_PRIME_RENDER_OFFLOAD 1 \
+          --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
+          --set __GLX_VENDOR_LIBRARY_NAME nvidia \
+          --set __VK_LAYER_NV_optimus NVIDIA_only
+      '';
     })
   ];
 
