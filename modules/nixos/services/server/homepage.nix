@@ -95,6 +95,12 @@ in {
                 icon = "immich.png";
               };
             }
+            {
+              "Audiobookshelf" = {
+                href = "https://books.lhsv.net";
+                icon = "audiobookshelf.png";
+              };
+            }
           ];
         }
 

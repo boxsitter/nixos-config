@@ -129,6 +129,13 @@
         }
         reverse_proxy 127.0.0.1:3002
       '';
+
+      "books.lhsv.net".extraConfig = ''
+        tls {
+          dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        reverse_proxy 127.0.0.1:13378
+      '';
     };
   };
 

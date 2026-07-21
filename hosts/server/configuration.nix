@@ -27,6 +27,7 @@
     ../../modules/nixos/services/server/mealie.nix
     ../../modules/nixos/services/server/hydra-server.nix
     ../../modules/nixos/services/server/monitoring.nix
+    ../../modules/nixos/services/server/audiobookshelf.nix
   ];
 
   networking.hostName = "nixos-server";
@@ -78,6 +79,7 @@
     "Z /var/lib/media/manga 2775 root media -"  # Recursively fix permissions on subdirectories
     "d /var/lib/media/photos 2775 root media -"
     "d /var/lib/media/books 2775 root media -"
+    "d /var/lib/media/audiobooks 2775 root media -"
     "d /var/lib/media/downloads 2775 root media -"
   ];
 }
