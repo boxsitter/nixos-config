@@ -9,6 +9,7 @@
     ./programs/fish.nix
     ./programs/git.nix
     ./programs/fastfetch.nix
+    ./programs/neovim.nix
   ];
 
   catppuccin = {
