@@ -68,6 +68,13 @@
 
   nixpkgs.config.nvidia.acceptLicense = true;
 
+  # Enable btop's GPU tab for the NVIDIA card.
+  nixpkgs.overlays = [
+    (final: prev: {
+      btop = prev.btop.override { cudaSupport = true; };
+    })
+  ];
+
   # Increase NVIDIA RTD3 autosuspend delay from the default 5s to 60s.
   # This ensures the GPU stays awake long enough for GNOME's post-resume
   # compositor initialization to complete before D3cold entry is attempted.
