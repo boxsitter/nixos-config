@@ -122,6 +122,13 @@
         ];
       };
 
+      "org/gnome/desktop/app-folders/folders/Games" = {
+        name = "Games";
+        apps = [
+          "prism.desktop"
+        ];
+      };
+
       "org/gnome/desktop/app-folders/folders/Office" = {
         name = "Office";
         apps = [
