@@ -57,6 +57,8 @@
     };
   };
 
+  programs.nix-ld.enable = true;
+
   # Docker
   virtualisation.docker.enable = true;
 
