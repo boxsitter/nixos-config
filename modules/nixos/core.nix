@@ -108,6 +108,7 @@ ExternalSizeMax=2G'';
     # Core utilities
     git nano vim wget curl pciutils usbutils lshw htop btop tree file which
     strace lsof tcpdump sysprof
+    nixfmt-rfc-style  # `nixfmt` binary (RFC 166 style) — used by nixd/VS Code formatting
     
     # Nix tools
     nix-output-monitor  # Beautiful progress for nix builds (use: nom build)
