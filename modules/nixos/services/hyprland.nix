@@ -36,6 +36,17 @@
   # home-manager.
   programs.hyprlock.enable = true;
 
+  # nixpkgs' programs.hyprlock module implicitly does `services.hypridle.enable
+  # = true`, and the system hypridle module hard-wires its user unit to
+  # graphical-session.target. That collides with our home-manager hypridle unit
+  # (scoped to hyprland-session.target via wayland.systemd.target): the merged
+  # unit ends up wanted by BOTH targets, so hypridle also starts — and
+  # crash-loops, since there's no wlroots compositor — inside the GNOME session.
+  # Re-scope the system unit to the Hyprland session. We keep the system module
+  # (not mkForce-disable it) because it also supplies hypridle's runtime PATH
+  # (hyprland/hyprlock/procps); only the target is wrong.
+  systemd.user.services.hypridle.wantedBy = lib.mkForce [ "hyprland-session.target" ];
+
   # D-Bus backend for blueman-applet. The applet itself only runs inside the
   # Hyprland session (scoped in home-manager); nothing blueman autostarts under
   # GNOME, so gnome-bluetooth is unaffected.

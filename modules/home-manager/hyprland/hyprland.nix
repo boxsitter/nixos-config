@@ -37,6 +37,13 @@
       # Wayland inside Hyprland.
       env = [ "NIXOS_OZONE_WL,1" ];
 
+      # TEMPORARY (Phase 1 bring-up): Hyprland suppresses stdout/file logs by
+      # default, which hid the aquamarine backend error behind a bare
+      # `CBackend::create() failed!`. Keep logging on until the session is
+      # confirmed to launch cleanly, then remove — it writes
+      # ~/.local/share/hyprland/hyprland.log every session.
+      debug.disable_logs = false;
+
       input = {
         follow_mouse = 1;
         touchpad.natural_scroll = true;
