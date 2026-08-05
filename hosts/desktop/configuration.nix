@@ -15,6 +15,7 @@
     ../../modules/nixos/services/gnome.nix
     ../../modules/nixos/services/hyprland.nix
     ../../modules/nixos/programs/1password-gui.nix
+    ../../modules/nixos/programs/steam.nix
   ];
 
   networking.hostName = "nixos-desktop";
