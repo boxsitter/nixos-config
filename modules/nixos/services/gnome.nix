@@ -123,6 +123,11 @@
     gimp            # Full-featured raster image editor
     gpick           # Screen color picker (hex/RGB output)
 
+    # Audio
+    lingot          # Precise graphical instrument tuner (FFT-based, selectable
+                    #   input device — pick the Focusrite 2i2 in its settings;
+                    #   configurable sample rate/FFT/oversampling + spectrum view)
+
     # Video editing & recording
     kdePackages.kdenlive  # Non-linear video editor
     obs-studio      # Screen recording and streaming

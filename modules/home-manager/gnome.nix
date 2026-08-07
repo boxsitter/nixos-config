@@ -106,6 +106,7 @@
           "vlc.desktop"
           "org.gnome.Showtime.desktop"
           "org.gnome.Decibels.desktop"
+          "org.nongnu.lingot.desktop"
           "com.obsproject.Studio.desktop"
           "org.kde.kdenlive.desktop"
         ];

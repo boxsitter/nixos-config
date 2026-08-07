@@ -32,6 +32,9 @@
 
   networking.hostName = "nixos-laptop";
 
+  # Claude Desktop (community flake packaging Anthropic's official Linux build)
+  programs.claude-desktop.enable = true;
+
   nixpkgs = {
     config = {
       allowUnfree = true;

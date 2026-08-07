@@ -33,6 +33,9 @@
   # Use full preemption for desktop responsiveness
   boot.kernelParams = [ "preempt=full" ];
 
+  # Claude Desktop (community flake packaging Anthropic's official Linux build)
+  programs.claude-desktop.enable = true;
+
   # Docker
   virtualisation.docker.enable = true;
 

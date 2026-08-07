@@ -31,6 +31,10 @@
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-desktop = {
+      url = "github:poeck/claude-desktop-nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
@@ -49,6 +53,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.sops-nix.nixosModules.sops
+          inputs.claude-desktop.nixosModules.default
           ./hosts/desktop/configuration.nix
           home-manager.nixosModules.home-manager
           {
@@ -68,6 +73,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.sops-nix.nixosModules.sops
+          inputs.claude-desktop.nixosModules.default
           ./hosts/laptop/configuration.nix
           home-manager.nixosModules.home-manager
           {
