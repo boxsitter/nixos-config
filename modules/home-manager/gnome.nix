@@ -26,6 +26,30 @@
   # Prevent catppuccin from injecting CSS into GTK4 (avoids mismatched headerbars)
   xdg.configFile."gtk-4.0/gtk.css".text = "";
 
+  # ── GNOME Shell top-bar color ──────────────────────────────────────────────
+  # The top bar (panel) is part of the GNOME *Shell* theme, not GTK, and has no
+  # dconf key. Rather than ship a full shell theme, this minimal theme @imports
+  # the stock dark stylesheet (so everything else is untouched) and overrides
+  # only the panel background. Loaded via the User Themes extension, which is
+  # pointed at "custom-panel" by the dconf setting above.
+  home.file.".themes/custom-panel/gnome-shell/gnome-shell.css".text = ''
+    @import url("resource:///org/gnome/shell/theme/gnome-shell-dark.css");
+
+    #panel {
+      background-color: #181825;
+    }
+
+    /* Match the panel color on the dropdowns it opens:
+       .popup-menu-content  — classic status/right-click menus
+       .quick-settings      — the top-right quick settings / system menu
+       .datemenu-popover    — the clock/calendar + notifications popover */
+    .popup-menu-content,
+    .quick-settings,
+    .datemenu-popover {
+      background-color: #181825;
+    }
+  '';
+
   dconf = {
     enable = true;
 
@@ -35,6 +59,15 @@
         button-layout = ":minimize,maximize,close";
       };
 
+      # Never auto-suspend on AC power.
+      # Laptop: stays awake while plugged in (battery suspend left at the GNOME
+      # default so it still sleeps when unplugged and idle).
+      # Desktop: only ever runs on AC, so this disables automatic suspend
+      # entirely.
+      "org/gnome/settings-daemon/plugins/power" = {
+        sleep-inactive-ac-type = "nothing";
+      };
+
       # Enable user extensions
       "org/gnome/shell" = {
         disable-user-extensions = false;
@@ -42,11 +75,17 @@
           "appindicatorsupport@rgcjonas.gmail.com"
           "dash-to-dock@micxgx.gmail.com"
           "tactile@lundal.io"
+          "user-theme@gnome-shell-extensions.gcampax.github.com"
           # gSnap removed: crashes GNOME Shell on login with:
           # JS ERROR: TypeError: can't access property Symbol.iterator,
           # this.connected.changed is undefined (extension.js:1580)
           # The extension is abandoned and incompatible with current GNOME.
         ];
+      };
+
+      # User Themes: load our minimal custom shell theme (top-bar color override).
+      "org/gnome/shell/extensions/user-theme" = {
+        name = "custom-panel";
       };
 
       # Dash to Dock: auto-hide enabled
@@ -146,6 +185,7 @@
       "org/gnome/desktop/app-folders/folders/Development" = {
         name = "Development";
         apps = [
+          "claude-desktop.desktop"
           "code.desktop"
           "jetbrains-toolbox.desktop"
           "jetbrains-gateway.desktop"

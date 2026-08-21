@@ -93,6 +93,7 @@
     gnomeExtensions.appindicator
     gnomeExtensions.dash-to-dock
     gnomeExtensions.tactile
+    gnomeExtensions.user-themes  # Loads a custom GNOME Shell theme (see gnome.nix top-bar override)
     nautilus  # GNOME Files (file manager)
     firefox
     chromium
