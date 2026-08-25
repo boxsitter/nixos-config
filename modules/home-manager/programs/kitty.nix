@@ -1,7 +1,7 @@
 # modules/home-manager/programs/kitty.nix
 # Kitty terminal configuration
 
-{ ... }:
+{ lib, ... }:
 
 {
   catppuccin.kitty.enable = true;
@@ -10,7 +10,7 @@
     enable = true;
     font = {
       name = "FiraCode Nerd Font";
-      size = 13;
+      size = lib.mkDefault 13;  # baseline; hosts may override (e.g. laptop = 11)
     };
     settings = {
       # Behavior

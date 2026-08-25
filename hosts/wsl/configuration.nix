@@ -19,7 +19,6 @@
     wslConf.user.default = "leyton";
   };
 
-  programs.nix-ld.enable = true;
   networking.hostName = "nixos-wsl";
   networking.networkmanager.enable = false;
   security.polkit.enable = false;

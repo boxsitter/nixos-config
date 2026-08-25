@@ -30,6 +30,12 @@
     nix-direnv.enable = true;
   };
 
+  # Run non-Nix prebuilt binaries (uv-downloaded pythons, npm native addons,
+  # editor-downloaded language servers/debuggers, curl|sh tools) that expect a
+  # standard FHS dynamic loader. Needed on every host now that toolchains are
+  # global and projects lean less on per-project flake shells.
+  programs.nix-ld.enable = true;
+
   security.sudo = {
     wheelNeedsPassword = true;
     extraRules = [{
@@ -106,48 +112,121 @@ ExternalSizeMax=2G'';
 
   environment.systemPackages = with pkgs; [
     # Core utilities
-    git nano vim wget curl pciutils usbutils lshw htop btop tree file which
-    strace lsof tcpdump sysprof
-    nixfmt-rfc-style  # `nixfmt` binary (RFC 166 style) — used by nixd/VS Code formatting
-    
-    # Nix tools
-    nix-output-monitor  # Beautiful progress for nix builds (use: nom build)
-    nix-fast-build      # Parallel builds for faster rebuilds
-    
-    # Shell and CLI enhancements
-    fish fastfetch eza starship direnv nnn fzf ripgrep fd bat tmux
-    
-    # Text processing
-    jq yq-go gnused gawk gnugrep
-    
-    # Networking tools
-    dig nmap netcat-gnu inetutils openssh rsync iftop nload vnstat speedtest-cli nethogs
-    
-    # Git tools
-    git git-lfs lazygit gh
+    nano # terminal editor
+    vim # terminal editor
+    wget # file downloader
+    curl # http client
+    pciutils # lspci
+    usbutils # lsusb
+    lshw # hardware lister
+    htop # process viewer
+    btop # process viewer
+    tree # directory tree
+    file # file type detector
+    which # locate a command
+    strace # syscall tracer
+    lsof # open-file lister
+    tcpdump # packet capture
+    sysprof # system profiler
 
-    # AI tools
-    claude-code claude-mergetool claude-monitor
-    
-    # Container and cluster management
-    lazydocker
-    
-    # Nix development tools
-    nixd nixpkgs-fmt nix-tree nix-index
+    # Shell and CLI enhancements
+    fish # shell
+    fastfetch # system info
+    eza # ls replacement
+    starship # shell prompt
+    direnv # per-directory env
+    nnn # file manager
+    fzf # fuzzy finder
+    ripgrep # fast grep
+    fd # fast find
+    bat # cat with syntax
+    tmux # terminal multiplexer
+
+    # Text processing
+    jq # json processor
+    yq-go # yaml processor
+    gnused # sed
+    gawk # awk
+    gnugrep # grep
+
+    # Version control
+    git # version control
+    git-lfs # large-file storage
+    lazygit # git tui
+    gh # github cli
+
+    # Networking
+    dig # dns lookup
+    nmap # port scanner
+    netcat-gnu # netcat
+    inetutils # basic net tools
+    openssh # ssh client/server
+    rsync # file sync
+    iftop # bandwidth by connection
+    nload # bandwidth monitor
+    vnstat # traffic stats
+    speedtest-cli # speed test
+    nethogs # bandwidth by process
+
+    # Archives
+    unzip # unzip
+    zip # zip
+    gzip # gzip
+    bzip2 # bzip2
+    xz # xz
+    p7zip # 7-zip
 
     # System health & diagnostics
-    nvme-cli      # SSD health: sudo nvme smart-log /dev/nvme0
-    smartmontools # Disk health: sudo smartctl -a /dev/nvme0
-    lm_sensors    # CPU/GPU temps: sensors
-    
-    # Archive utilities
-    unzip zip gzip bzip2 xz p7zip
-    
-    # Documentation and utilities
-    bc man-pages man-pages-posix tldr entr watchexec
+    nvme-cli # nvme ssd health
+    smartmontools # disk health
+    lm_sensors # temperature sensors
 
-    # Mouse configuration
-    piper
+    # Documentation
+    bc # calculator
+    man-pages # man pages
+    man-pages-posix # posix man pages
+    tldr # simplified man pages
+    entr # run on file change
+    watchexec # run on file change
+
+    # Nix tools
+    nix-output-monitor # pretty build output
+    nix-fast-build # parallel builds
+    nixd # nix language server
+    nixfmt # nix formatter (rfc style)
+    nixpkgs-fmt # nix formatter
+    nix-tree # dependency explorer
+    nix-index # file-to-package search
+
+    # AI tools
+    claude-code # claude cli
+    claude-mergetool # claude merge driver
+    claude-monitor # claude usage monitor
+
+    # Containers
+    lazydocker # docker tui
+
+    # Language toolchains (interpreters/managers only; libraries stay per-project)
+    python3 # python interpreter
+    uv # python env/dependency manager
+    nodejs_22 # node + npm
+    jdk # java (current lts)
+    maven # java build tool
+    gradle # java build tool
+    dart # dart sdk
+
+    # Build toolchain (compiles native pip/npm extensions and c/c++ sources)
+    gcc # c/c++ compiler
+    gnumake # make
+    pkg-config # build-flag helper
+    cmake # build system
+
+    # Databases — client tools only. Actual servers run per-project (docker or
+    # services.postgresql), not as a global stateful daemon.
+    # (pgcli/litecli omitted: their shared dep `cli-helpers` has failing tests
+    #  in the current nixpkgs. psql and sqlite3 provide REPLs in the meantime.)
+    sqlite # embedded db + sqlite3 cli
+    postgresql # psql, pg_dump, pg_restore, createdb
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [

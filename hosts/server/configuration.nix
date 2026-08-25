@@ -41,9 +41,6 @@
   # Performance settings
   powerManagement.cpuFreqGovernor = "performance";
 
-  # Enable VS Code Server for Remote-SSH
-  programs.nix-ld.enable = true;
-  
   # Server-specific packages
   environment.systemPackages = with pkgs; [
     mcrcon  # Minecraft RCON client for interactive console

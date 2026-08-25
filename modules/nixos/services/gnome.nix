@@ -101,6 +101,7 @@
     wl-clipboard
     pavucontrol
     networkmanagerapplet
+    piper # gaming-mouse config gui (ratbagd frontend)
 
     # Stable GTK3 theme that matches GNOME's look; avoids oversized buttons
     adw-gtk3
@@ -109,6 +110,7 @@
 
     # Desktop applications
     vscode
+    warp-terminal  # GPU-accelerated terminal (trying it out)
     insync
     legcord
     remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
@@ -126,8 +128,6 @@
 
     # Audio
     lingot          # Precise graphical instrument tuner (FFT-based, selectable
-                    #   input device — pick the Focusrite 2i2 in its settings;
-                    #   configurable sample rate/FFT/oversampling + spectrum view)
 
     # Video editing & recording
     kdePackages.kdenlive  # Non-linear video editor

@@ -16,7 +16,7 @@
   };
 
   # Laptop-specific overrides
-  programs.kitty.font.size = 13;  # Slightly smaller for laptop screen
+  programs.kitty.font.size = 11;  # Slightly smaller for laptop screen
 
   # Laptop Hyprland: XPS 15 9530, Intel iGPU + NVIDIA (PRIME offload, RTD3).
   # We deliberately do NOT set AQ_DRM_DEVICES. aquamarine's own device

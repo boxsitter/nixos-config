@@ -20,11 +20,6 @@
     # shutdowns. Disabling APST stops the drive entering those states on its
     # own, so the counter stops incrementing. Negligible real-world impact.
     "nvme_core.default_ps_max_latency_us=0"
-    # Intel PSR (Panel Self Refresh) causes a brief blank on resume on
-    # Raptor Lake-H. Using psr_safest_params forces conservative timing
-    # to avoid the glitch while keeping PSR active for battery life.
-    "i915.enable_psr=1"
-    "i915.psr_safest_params=1"
   ];
 
   # Load NVIDIA modules early so udev device nodes (/dev/nvidiactl etc.) are
