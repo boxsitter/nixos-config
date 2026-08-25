@@ -110,7 +110,6 @@
 
     # Desktop applications
     vscode
-    warp-terminal  # GPU-accelerated terminal (trying it out)
     insync
     legcord
     remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
