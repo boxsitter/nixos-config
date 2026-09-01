@@ -114,6 +114,8 @@ ExternalSizeMax=2G'';
     # Core utilities
     nano # terminal editor
     vim # terminal editor
+    micro # terminal editor (nano-like, modern keybinds)
+    slap # terminal editor (Sublimetext-like)
     wget # file downloader
     curl # http client
     pciutils # lspci
@@ -185,7 +187,7 @@ ExternalSizeMax=2G'';
     bc # calculator
     man-pages # man pages
     man-pages-posix # posix man pages
-    tldr # simplified man pages
+    tealdeer # simplified man pages (fast rust `tldr`, local cache)
     entr # run on file change
     watchexec # run on file change
 
