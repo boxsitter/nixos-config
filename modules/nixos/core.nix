@@ -162,6 +162,7 @@ ExternalSizeMax=2G'';
     netcat-gnu # netcat
     inetutils # basic net tools
     openssh # ssh client/server
+    sshfs # ssh filesystem
     rsync # file sync
     iftop # bandwidth by connection
     nload # bandwidth monitor
