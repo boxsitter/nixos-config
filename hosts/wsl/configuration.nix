@@ -46,6 +46,22 @@
   # Man pages still work; the database is just rebuilt on first use.
   systemd.services.mandb.wantedBy = lib.mkForce [];
 
+  environment.sessionVariables = {
+    # WSL exposes the GPU via /dev/dxg and mounts the Windows NVIDIA driver
+    # userspace libs (libcuda.so.1, libnvidia-ml.so.1, ...) at /usr/lib/wsl/lib.
+    # NixOS doesn't put that on the loader path, so CUDA apps and nvidia-smi
+    # can't find those libs and torch.cuda.is_available() returns false.
+    # Adding it here makes the GPU work in every shell (RTX 5080 passthrough).
+    LD_LIBRARY_PATH = [ "/usr/lib/wsl/lib" ];
+
+    # Foreign (non-Nix) Python interpreters — e.g. uv's standalone CPython —
+    # are compiled to look for CA certs at /etc/ssl/cert.pem, which doesn't
+    # exist on NixOS (the bundle lives at /etc/ssl/certs/ca-bundle.crt). Without
+    # this, stdlib ssl / urllib fail with CERTIFICATE_VERIFY_FAILED on every
+    # HTTPS request. Pointing SSL_CERT_FILE at the real bundle fixes it globally.
+    SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+  };
+
   console.font = null;
   console.packages = [ ];
 }

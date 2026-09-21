@@ -115,7 +115,6 @@ ExternalSizeMax=2G'';
     nano # terminal editor
     vim # terminal editor
     micro # terminal editor (nano-like, modern keybinds)
-    slap # terminal editor (Sublimetext-like)
     wget # file downloader
     curl # http client
     pciutils # lspci
