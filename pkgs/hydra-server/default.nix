@@ -12,8 +12,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "dmilin1";
     repo = "hydra-server";
-    rev = "main";
-    hash = "sha256-dPUQ2H+I/kvhqjqZr16siJTE6DKeEZ1aindrotEohG8=";
+    rev = "08fd57bd91ca40dcf61c870090af359f7db5d704";
+    hash = "sha256-ict80JEuUN6MbGsbY4UDyRb0yFvlj/coleQGnpIGags=";
   };
 
   nativeBuildInputs = [ bun nodejs ];

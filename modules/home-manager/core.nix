@@ -13,6 +13,9 @@
   ];
 
   catppuccin = {
+    # Global toggle stays on; ports are opted into individually (fish, kitty, ...)
+    enable = true;
+    autoEnable = false;
     flavor = "macchiato";
     accent = "blue";
     starship.enable = false;

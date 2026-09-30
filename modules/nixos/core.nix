@@ -100,8 +100,10 @@
   # Capture crash dumps so you can diagnose what killed a process or the kernel.
   systemd.coredump = {
     enable = true;
-    extraConfig = ''ProcessSizeMax=2G
-ExternalSizeMax=2G'';
+    settings.Coredump = {
+      ProcessSizeMax = "2G";
+      ExternalSizeMax = "2G";
+    };
   };
 
   # Performance: Use systemd in initrd for faster parallel boot

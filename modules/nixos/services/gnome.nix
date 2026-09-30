@@ -32,7 +32,7 @@
   services.displayManager.gdm.autoSuspend = false;
 
   environment.gnome.excludePackages = with pkgs; [
-    gnome-tour epiphany geary gnome-music gnome-photos totem
+    gnome-tour epiphany geary gnome-music totem
     gnome-contacts gnome-maps gnome-weather simple-scan cheese yelp
     gnome-connections  # Poor NLA/RDP support; replaced by Remmina
   ];

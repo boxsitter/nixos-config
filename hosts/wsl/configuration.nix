@@ -39,7 +39,7 @@
   # always leaves the on-disk journal in a "corrupted" state. Using
   # volatile (RAM-only) journal avoids the rename-and-replace noise
   # on every startup and eliminates the slight I/O overhead.
-  services.journald.extraConfig = "Storage=volatile";
+  services.journald.settings.Journal.Storage = "volatile";
 
   # mandb re-indexes every man page on each boot — 4 seconds and
   # 147 MB of disk reads for a dev environment that rarely needs it.
