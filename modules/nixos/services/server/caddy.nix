@@ -10,7 +10,7 @@
     # Build Caddy with the Cloudflare DNS plugin for DNS-01 challenges.
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-      hash = "sha256-J0HWjCPoOoARAxDpG2bS9c0x5Wv4Q23qWZbTjd8nW84=";
+      hash = "sha256-dQvk6ezY6TQ1J7PjhCXnThF/SqVgPwBO8/RXzHCY+js=";
     };
 
     email = "admin@lhsv.net";  # ACME contact email

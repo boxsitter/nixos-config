@@ -4,7 +4,9 @@
 { config, pkgs, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Default (LTS) kernel: linuxPackages_latest often outpaces the NVIDIA driver
+  # (e.g. 7.2 broke nvidia-open 595), leaving the desktop unbuildable.
+  boot.kernelPackages = pkgs.linuxPackages;
   
   boot.kernelParams = [
     "nvidia-drm.modeset=1"

@@ -9,7 +9,7 @@
 {
   programs.rofi = {
     enable = true;
-    terminal = "kitty";
+    settings.terminal = "kitty";
     theme = "gruvbox-dark"; # placeholder built-in theme; replaced in Phase 2
   };
 }

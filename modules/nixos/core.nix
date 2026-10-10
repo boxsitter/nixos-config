@@ -100,8 +100,10 @@
   # Capture crash dumps so you can diagnose what killed a process or the kernel.
   systemd.coredump = {
     enable = true;
-    extraConfig = ''ProcessSizeMax=2G
-ExternalSizeMax=2G'';
+    settings.Coredump = {
+      ProcessSizeMax = "2G";
+      ExternalSizeMax = "2G";
+    };
   };
 
   # Performance: Use systemd in initrd for faster parallel boot
@@ -114,6 +116,7 @@ ExternalSizeMax=2G'';
     # Core utilities
     nano # terminal editor
     vim # terminal editor
+    micro # terminal editor (nano-like, modern keybinds)
     wget # file downloader
     curl # http client
     pciutils # lspci
@@ -161,6 +164,7 @@ ExternalSizeMax=2G'';
     netcat-gnu # netcat
     inetutils # basic net tools
     openssh # ssh client/server
+    sshfs # ssh filesystem
     rsync # file sync
     iftop # bandwidth by connection
     nload # bandwidth monitor
@@ -185,7 +189,7 @@ ExternalSizeMax=2G'';
     bc # calculator
     man-pages # man pages
     man-pages-posix # posix man pages
-    tldr # simplified man pages
+    tealdeer # simplified man pages (fast rust `tldr`, local cache)
     entr # run on file change
     watchexec # run on file change
 
