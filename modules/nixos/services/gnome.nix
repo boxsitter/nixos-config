@@ -114,8 +114,12 @@
     legcord
     remmina  # RDP/VNC client with full NLA support (replaces gnome-connections)
 
-    # JetBrains IDEs & tooling
-    jetbrains-toolbox
+    # JetBrains IDEs — declarative via nixpkgs (replaces imperative Toolbox).
+    # IDEA/PyCharm are the unified builds; paid features unlock with a license.
+    jetbrains.idea      # IntelliJ IDEA
+    jetbrains.pycharm   # PyCharm
+    jetbrains.webstorm  # WebStorm
+    jetbrains.gateway   # Gateway (remote development)
 
     # Office & productivity
     onlyoffice-desktopeditors  # Microsoft Office format compatible suite (.docx/.xlsx/.pptx)
