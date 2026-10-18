@@ -11,25 +11,25 @@
     ../../modules/home-manager/hyprland
   ];
 
-  # Desktop Hyprland: RTX 5080, single all-NVIDIA render path (no iGPU).
-  wayland.windowManager.hyprland.settings = {
-    # Placeholder until confirmed with `hyprctl monitors`; ",preferred,auto,1.5"
-    # is a safe default for a 4K display. Adjust connector/refresh after first login.
-    monitor = [ ",preferred,auto,1.5" ];
+  # Desktop Hyprland: RTX 5080, single all-NVIDIA render path (no iGPU). Loaded
+  # last, after the shared modules (see hyprland.nix).
+  wayland.windowManager.hyprland.extraLuaFiles."90-host" = ''
+    -- Placeholder until confirmed with `hyprctl monitors`: scale 1.5 suits a 4K
+    -- panel. Set the real connector/refresh rate after the first login.
+    hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.5 })
 
-    env = [
-      "LIBVA_DRIVER_NAME,nvidia"
-      "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-      "NVD_BACKEND,direct"
-    ];
+    hl.env("LIBVA_DRIVER_NAME", "nvidia")
+    hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+    hl.env("NVD_BACKEND", "direct")
 
-    # Start safe on NVIDIA; software cursors avoid the well-known cursor
-    # disappearing/flicker. Trial-remove once explicit sync is confirmed stable.
-    cursor.no_hardware_cursors = true;
-
-    # Crisp XWayland apps under fractional scaling.
-    xwayland.force_zero_scaling = true;
-  };
+    hl.config({
+      -- Software cursor sidesteps the NVIDIA cursor glitches; try removing this
+      -- once the session has proven stable.
+      cursor = { no_hardware_cursors = true },
+      -- Same flat pointer acceleration the GNOME session uses on this machine.
+      input = { accel_profile = "flat", sensitivity = 0 },
+    })
+  '';
 
   dconf.settings = {
     # "org/gnome/desktop/interface" = {

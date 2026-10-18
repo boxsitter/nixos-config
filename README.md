@@ -4,8 +4,8 @@ My modular, multi-host NixOS configuration with home-manager integration.
 
 ## Hosts
 
-- **desktop** - Gaming/workstation with NVIDIA RTX 5080, GNOME, dual-boot
-- **laptop** - Portable machine with NVIDIA RTX 3050 Mobile, GNOME, battery optimization
+- **desktop** - Gaming/workstation with NVIDIA RTX 5080, GNOME + Hyprland, dual-boot
+- **laptop** - Portable machine with NVIDIA RTX 3050 Mobile, GNOME + Hyprland, battery optimization
 - **server** - Headless server with SSH and Tailscale
 - **wsl** - Windows Subsystem for Linux development environment
 
@@ -30,12 +30,30 @@ nixos-config/
     │   └── services/           # System services (SSH, Tailscale, etc.)
     └── home-manager/           # User-level modules
         ├── core.nix            # Base user config
-        ├── desktop.nix         # GUI additions
+        ├── desktop.nix         # GUI additions (GNOME)
+        ├── hyprland/           # The Hyprland session (see docs/hyprland.md)
         ├── programs/           # Program configs (fish, git, etc.)
         ├── dotfiles/           # Configuration files
         └── users/              # User identity configs
             └── user.nix
+docs/                            # Design docs (Hyprland)
+resources/wallpapers/            # Wallpapers, one folder per theme
+tests/                           # Eval tests + VM tests (nix flake check)
 ```
+
+## Desktop sessions
+
+`desktop` and `laptop` offer two sessions at the GDM login screen:
+
+- **GNOME**: the reliable daily driver, unchanged.
+- **Hyprland**: a minimal tiling session themed from one palette (Catppuccin
+  Macchiato for now), with a wallpaper picker, lock screen, notification center
+  and on-screen display. It is fully separate from GNOME: nothing it needs runs
+  inside GNOME, and tests enforce that.
+
+Press `Super + /` in Hyprland for every keybind. Design, keybinds, theming,
+adding wallpapers or a new theme, first-login checklist and troubleshooting are
+in [docs/hyprland.md](docs/hyprland.md).
 
 ## Design Principles
 

@@ -13,7 +13,7 @@
     ../../modules/nixos/hardware/dual-boot.nix
     ../../modules/nixos/hardware/intel-wifi.nix
     ../../modules/nixos/services/gnome.nix
-    #../../modules/nixos/services/hyprland.nix
+    ../../modules/nixos/services/hyprland.nix
     ../../modules/nixos/programs/1password-gui.nix
     ../../modules/nixos/programs/steam.nix
   ];
@@ -31,6 +31,16 @@
   boot.blacklistedKernelModules = [ "psmouse" ];
 
   networking.hostName = "nixos-laptop";
+
+  # Stable, colon-free name for the Intel iGPU (/dev/dri/igpu). Hyprland's
+  # AQ_DRM_DEVICES uses ':' as its list separator, so the usual PCI by-path
+  # names cannot be used, and /dev/dri/cardN numbering changes between boots.
+  # Only consulted if the Hyprland host override opts into iGPU-only rendering
+  # (see hosts/laptop/leyton.nix); harmless otherwise. KERNEL is matched as a
+  # single digit so the per-connector nodes (card0-eDP-1) are not caught.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]", SUBSYSTEMS=="pci", ATTRS{vendor}=="0x8086", SYMLINK+="dri/igpu"
+  '';
 
   # Claude Desktop (community flake packaging Anthropic's official Linux build)
   programs.claude-desktop.enable = true;

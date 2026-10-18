@@ -250,14 +250,22 @@ let
     ]
 
     # ---- Hyprland + GNOME coexistence (desktop & laptop) ----------------
-    # Hyprland is a *second* session; it must never displace GNOME/GDM, and the
-    # GNOME portal fallback must survive alongside the Hyprland-specific pick.
+    # Hyprland is a *second* session. It must never displace GNOME/GDM, nothing
+    # it adds may run inside GNOME, and the GNOME portal fallback must survive
+    # next to the Hyprland-specific pick. See docs/hyprland.md.
     ++ lib.flatten (
       map
         (
           name:
           let
             cfg = hosts.${name};
+            home = cfg.home-manager.users.leyton;
+            hmUnits = home.systemd.user.services // home.systemd.user.sockets // home.systemd.user.timers;
+            sessionTarget = "hyprland-session.target";
+            # Wanted by something other than the Hyprland session target?
+            leaked = lib.filterAttrs (
+              _: u: (u.Install.WantedBy or [ ]) != [ sessionTarget ]
+            ) hmUnits;
           in
           [
             {
@@ -266,7 +274,7 @@ let
             }
             {
               check = !cfg.programs.hyprland.withUWSM;
-              msg = "${name}: hyprland withUWSM must stay false (UWSM would flip system dbus, altering GNOME)";
+              msg = "${name}: hyprland withUWSM must stay false (the session is scoped by hyprland-session.target; UWSM would compete for graphical-session.target)";
             }
             {
               check = cfg.services.displayManager.gdm.enable;
@@ -277,8 +285,20 @@ let
               msg = "${name}: GNOME must remain enabled (Hyprland is additive)";
             }
             {
-              check = cfg.programs.hyprlock.enable;
-              msg = "${name}: programs.hyprlock.enable must be true (provides the PAM unlock service)";
+              # nixpkgs' Hyprland also advertises a "uwsm-managed" session that
+              # cannot work here; it must not show up in the GDM session list.
+              check = cfg.services.displayManager.sessionData.sessionNames == [ "gnome" "hyprland" ];
+              msg = "${name}: GDM sessions should be exactly gnome + hyprland (got ${toString cfg.services.displayManager.sessionData.sessionNames})";
+            }
+            {
+              check = cfg.security.pam.services ? hyprlock;
+              msg = "${name}: PAM service for hyprlock must exist (or the lock screen can never unlock)";
+            }
+            {
+              # programs.hyprlock/services.hypridle at system level would add a
+              # hypridle unit wired to graphical-session.target, i.e. GNOME.
+              check = !cfg.services.hypridle.enable && !cfg.programs.hyprlock.enable;
+              msg = "${name}: system-level hypridle/hyprlock must stay off (their unit would start inside GNOME); use the home-manager ones";
             }
             {
               check = cfg.services.blueman.enable;
@@ -294,8 +314,30 @@ let
               msg = "${name}: GNOME portal fallback (common.default = \"*\") must be preserved";
             }
             {
-              check = cfg.security.pam.services ? hyprlock;
-              msg = "${name}: PAM service for hyprlock must exist";
+              check = home.wayland.systemd.target == sessionTarget;
+              msg = "${name}: wayland.systemd.target must be ${sessionTarget} so Home Manager wayland services stay out of GNOME";
+            }
+            {
+              # The core isolation guarantee. Every Home Manager user unit on a
+              # GUI host belongs to the Hyprland session; one that is also (or
+              # instead) wanted by graphical-session.target, default.target or
+              # tray.target would start inside GNOME. Several Home Manager
+              # modules do exactly that (udiskie, playerctld, nm-applet); we
+              # write those by hand. Add a unit outside the session? Give it an
+              # explicit exemption here.
+              check = leaked == { };
+              msg = "${name}: home-manager user units not scoped to ${sessionTarget} (would run inside GNOME): ${toString (lib.attrNames leaked)}";
+            }
+            {
+              check = home.systemd.user.targets ? hyprland-session;
+              msg = "${name}: hyprland-session.target must be defined (nixpkgs does not ship it)";
+            }
+            {
+              # Hyprland 0.56 imports its environment but does not start the
+              # session target; Home Manager's hook does. Without it none of the
+              # session's services (bar, notifications, wallpaper, ...) start.
+              check = home.wayland.windowManager.hyprland.systemd.enable;
+              msg = "${name}: wayland.windowManager.hyprland.systemd.enable must be true (it starts hyprland-session.target)";
             }
           ]
         )

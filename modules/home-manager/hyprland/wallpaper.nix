@@ -1,33 +1,51 @@
 # modules/home-manager/hyprland/wallpaper.nix
-# Wallpaper via hyprpaper (fully declarative — the config is a static file; no
-# imperative `swww img` calls). Phase 1 ships a wallpaper generated at build
-# time from Catppuccin Macchiato colors, so no binary asset needs committing.
-# Phase 2 points this at config.theme.wallpaper (a committed image).
+# Wallpapers with animated transitions (awww). The images are committed under
+# resources/wallpapers/<theme> and live in the Nix store; only the *choice* is
+# runtime state (see scripts/wallpaper.sh). Pick with Super+W, random with
+# Super+Shift+W.
+#
+# The daemon is a Hyprland-session user service. A oneshot re-applies the saved
+# choice at login, and a monitor hotplug does the same (a new output starts
+# blank).
 
-{ pkgs, ... }:
+{ config, lib, ... }:
 
 let
-  # Diagonal gradient between macchiato `base` and `crust`. Pure and
-  # reproducible: the PNG is built in the Nix store from imagemagick.
-  wallpaper =
-    pkgs.runCommand "macchiato-gradient.png"
-      {
-        nativeBuildInputs = [ pkgs.imagemagick ];
-      }
-      ''
-        magick -size 3840x2160 -define gradient:angle=135 \
-          gradient:'#24273a'-'#181926' "$out"
-      '';
+  wallpaper = lib.getExe config.session.scripts.wallpaper;
 in
 {
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      splash = false;
-      ipc = "off";
-      preload = [ "${wallpaper}" ];
-      # ",<path>" applies to every monitor.
-      wallpaper = [ ",${wallpaper}" ];
+  services.awww.enable = true;
+
+  # The module restarts a crashed daemon only after 10s, which shows as a blank
+  # desktop. Come back quickly.
+  systemd.user.services.awww.Service.RestartSec = lib.mkForce 2;
+
+  systemd.user.services.wallpaper-restore = {
+    Unit = {
+      Description = "Apply the saved wallpaper";
+      Wants = [ "awww.service" ];
+      # Ordered after the session target *explicitly*, like every other unit
+      # here. Without it, systemd implicitly orders the target after this unit
+      # (it wants it), which closes a cycle through awww.service (itself ordered
+      # after the target); systemd then deletes a job to break it, sometimes
+      # awww's, and the wallpaper daemon never starts.
+      After = [
+        "awww.service"
+        "hyprland-session.target"
+      ];
+      PartOf = [ "hyprland-session.target" ];
     };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${wallpaper} restore";
+    };
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
+
+  wayland.windowManager.hyprland.extraLuaFiles."60-wallpaper" = ''
+    -- A newly connected monitor starts blank; give it the saved wallpaper.
+    hl.on("monitor.added", function()
+      hl.exec_cmd("wallpaper restore")
+    end)
+  '';
 }

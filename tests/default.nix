@@ -29,9 +29,11 @@ in
   # --- VM tests (modules in isolation) ------------------------------------
   core-module    = callTest ./vm/core-module.nix;
   ssh-tailscale  = callTest ./vm/ssh-tailscale.nix;
+  hyprland-session = callTest ./vm/hyprland-session.nix;
 
   # --- Eval tests (no VM, fast) -------------------------------------------
   eval-hosts        = callTest ./eval/hosts.nix;
   eval-assertions   = callTest ./eval/assertions.nix;
   eval-boot-loaders = callTest ./eval/boot-loaders.nix;
+  hyprland-config   = callTest ./eval/hyprland-config.nix;
 }

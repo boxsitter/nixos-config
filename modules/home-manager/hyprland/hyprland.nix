@@ -1,149 +1,191 @@
 # modules/home-manager/hyprland/hyprland.nix
-# The Hyprland compositor itself: session scoping, environment, input, and
-# keybinds. Per-host settings (monitor layout, GPU env vars) are appended in
-# each host's leyton.nix and merge into settings via the module system.
+# The compositor itself: environment, look and feel, input. Keybinds and window
+# rules live in binds.nix and rules.nix; per-host settings (monitors, GPU
+# quirks, lid handling) are added from hosts/*/leyton.nix as an extra Lua file.
+#
+# Hyprland 0.55+ is configured in Lua. Each `extraLuaFiles` entry becomes
+# ~/.config/hypr/<name>.lua and is require()d from the generated hyprland.lua in
+# name order, so the numeric prefixes below are the load order:
+#   10 env · 20 look · 30 input · 40 binds · 50 rules · 90 host overrides
+#
+# GNOME isolation: everything here is read only by Hyprland, and every user
+# service in this tree hangs off hyprland-session.target, which only exists
+# while a Hyprland session runs. Nothing is added to graphical-session.target's
+# wants, nothing is exported globally.
 
-{ pkgs, lib, ... }:
+{ config, ... }:
 
+let
+  t = config.theme.lib;
+in
 {
-  # Master scoping switch. Every home-manager wayland service that follows
-  # wayland.systemd.target (waybar, swaync, hypridle, hyprpaper,
-  # hyprpolkitagent, cliphist) now rallies on hyprland-session.target, which
-  # only exists while a Hyprland session runs. GNOME drives
-  # graphical-session.target itself and must not pull these units in.
+  # Master scoping switch: Home Manager modules that honour it (swaync, swayosd,
+  # hypridle, awww, cliphist, hyprpolkitagent, hyprsunset, ...) rally on
+  # hyprland-session.target instead of graphical-session.target.
   wayland.systemd.target = "hyprland-session.target";
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "lua";
 
-    # The compositor binary and its portal come from the NixOS
-    # programs.hyprland module; null here avoids installing a second copy.
+    # Binary and portal come from the NixOS programs.hyprland module.
     package = null;
     portalPackage = null;
 
-    # Creates hyprland-session.target and imports WAYLAND_DISPLAY etc. into the
-    # systemd/D-Bus user environment at session start.
-    systemd.enable = true;
-
-    settings = {
-      "$mod" = "SUPER";
-      "$terminal" = "kitty";
-
-      # Fallback monitor rule; each host overrides with real connectors.
-      monitor = lib.mkDefault [ ",preferred,auto,1" ];
-
-      # Session-scoped only (not a global environment.sessionVariables), so it
-      # never touches the GNOME session. Makes Electron/Chromium apps run native
-      # Wayland inside Hyprland.
-      env = [ "NIXOS_OZONE_WL,1" ];
-
-      # TEMPORARY (Phase 1 bring-up): Hyprland suppresses stdout/file logs by
-      # default, which hid the aquamarine backend error behind a bare
-      # `CBackend::create() failed!`. Keep logging on until the session is
-      # confirmed to launch cleanly, then remove — it writes
-      # ~/.local/share/hyprland/hyprland.log every session.
-      debug.disable_logs = false;
-
-      input = {
-        follow_mouse = 1;
-        touchpad.natural_scroll = true;
-      };
-
-      general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        layout = "dwindle";
-      };
-
-      decoration = {
-        rounding = 8;
-      };
-
-      bind = [
-        # Core
-        "$mod, Return, exec, $terminal"
-        "$mod, Space, exec, rofi -show drun"
-        "$mod, Q, killactive"
-        "$mod, M, exit"
-        "$mod, E, exec, nautilus"
-        "$mod, F, fullscreen"
-        "$mod, V, togglefloating"
-        "$mod, L, exec, loginctl lock-session"
-        "$mod SHIFT, E, exec, rofi -show power-menu -modi power-menu:rofi-power-menu"
-
-        # Clipboard history picker
-        "$mod, C, exec, cliphist list | rofi -dmenu -p clip | cliphist decode | wl-copy"
-
-        # Screenshots (hyprshot)
-        ", Print, exec, hyprshot -m region --freeze"
-        "SHIFT, Print, exec, hyprshot -m window --freeze"
-        "CTRL, Print, exec, hyprshot -m output"
-
-        # Focus movement
-        "$mod, left, movefocus, l"
-        "$mod, right, movefocus, r"
-        "$mod, up, movefocus, u"
-        "$mod, down, movefocus, d"
-
-        # Move windows
-        "$mod SHIFT, left, movewindow, l"
-        "$mod SHIFT, right, movewindow, r"
-        "$mod SHIFT, up, movewindow, u"
-        "$mod SHIFT, down, movewindow, d"
-
-        # Workspaces 1-9,0
-        "$mod, 1, workspace, 1"
-        "$mod, 2, workspace, 2"
-        "$mod, 3, workspace, 3"
-        "$mod, 4, workspace, 4"
-        "$mod, 5, workspace, 5"
-        "$mod, 6, workspace, 6"
-        "$mod, 7, workspace, 7"
-        "$mod, 8, workspace, 8"
-        "$mod, 9, workspace, 9"
-        "$mod, 0, workspace, 10"
-
-        # Move active window to workspace
-        "$mod SHIFT, 1, movetoworkspace, 1"
-        "$mod SHIFT, 2, movetoworkspace, 2"
-        "$mod SHIFT, 3, movetoworkspace, 3"
-        "$mod SHIFT, 4, movetoworkspace, 4"
-        "$mod SHIFT, 5, movetoworkspace, 5"
-        "$mod SHIFT, 6, movetoworkspace, 6"
-        "$mod SHIFT, 7, movetoworkspace, 7"
-        "$mod SHIFT, 8, movetoworkspace, 8"
-        "$mod SHIFT, 9, movetoworkspace, 9"
-        "$mod SHIFT, 0, movetoworkspace, 10"
-      ];
-
-      # Mouse drag move/resize.
-      bindm = [
-        "$mod, mouse:272, movewindow"
-        "$mod, mouse:273, resizewindow"
-      ];
-
-      # Repeatable while held (volume/brightness).
-      bindel = [
-        ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
-        ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ",XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 5%+"
-        ",XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 5%-"
-      ];
-
-      # Work even while locked (mute/media keys).
-      bindl = [
-        ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
-        ",XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
-        ",XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+    # Home Manager creates hyprland-session.target and, at compositor start,
+    # imports the Wayland environment into systemd/D-Bus and (re)starts the
+    # target. The stop-then-start matters: after a compositor crash/restart in
+    # the same login, services come back with the new instance's environment
+    # instead of a stale HYPRLAND_INSTANCE_SIGNATURE. (Hyprland 0.56 only
+    # imports the environment itself; upstream main also starts the target, so a
+    # later nixpkgs bump merely makes this hook redundant, not wrong.)
+    systemd = {
+      enable = true;
+      # Besides the defaults, hand the session-scoped theming variables from
+      # appearance.nix to services and D-Bus-activated apps, which Hyprland's
+      # own `hl.env` does not reach.
+      variables = [
+        "DISPLAY"
+        "HYPRLAND_INSTANCE_SIGNATURE"
+        "WAYLAND_DISPLAY"
+        "XDG_CURRENT_DESKTOP"
+        "XDG_SESSION_TYPE"
+        "GTK_THEME"
+        "XCURSOR_THEME"
+        "XCURSOR_SIZE"
+        "QT_QPA_PLATFORMTHEME"
+        "QT_PLUGIN_PATH"
       ];
     };
-  };
 
-  home.packages = with pkgs; [
-    hyprshot
-    rofi-power-menu # `power-menu` modi used by the $mod+SHIFT+E bind
-  ];
+    extraLuaFiles = {
+      "10-env" = ''
+        -- Session-scoped environment: set only inside Hyprland, never globally,
+        -- so the GNOME session is unaffected.
+        hl.env("NIXOS_OZONE_WL", "1") -- Electron/Chromium: native Wayland
+        hl.env("QT_QPA_PLATFORM", "wayland;xcb")
+        hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
+        hl.env("GDK_BACKEND", "wayland,x11,*")
+        hl.env("XDG_SESSION_TYPE", "wayland")
+      '';
+
+      "20-look" = ''
+        hl.config({
+          general = {
+            gaps_in = 5,
+            gaps_out = 10,
+            border_size = 2,
+            col = {
+              active_border = { colors = { "${t.hyprA "accent" 1}", "${t.hyprA "purple" 1}" }, angle = 45 },
+              inactive_border = "${t.hyprA "surfaceAlt" 0.7}",
+            },
+            resize_on_border = true,
+            allow_tearing = false,
+            layout = "dwindle",
+          },
+
+          decoration = {
+            rounding = 12,
+            rounding_power = 3,
+            active_opacity = 1.0,
+            inactive_opacity = 1.0,
+
+            shadow = {
+              enabled = true,
+              range = 18,
+              render_power = 3,
+              color = "${t.hyprA "bgDeep" 0.55}",
+            },
+
+            blur = {
+              enabled = true,
+              size = 6,
+              passes = 3,
+              vibrancy = 0.17,
+              noise = 0.015,
+              new_optimizations = true,
+            },
+          },
+
+          dwindle = {
+            preserve_split = true,
+          },
+
+          misc = {
+            -- Never show the stock Hyprland wallpaper/logo; the wallpaper daemon
+            -- paints the real one and this is the color underneath until it does.
+            force_default_wallpaper = 0,
+            disable_hyprland_logo = true,
+            disable_splash_rendering = true,
+            background_color = 0xff${config.theme.colors.bgDeep},
+            -- Do not let background apps yank focus.
+            focus_on_activate = false,
+            mouse_move_enables_dpms = true,
+            key_press_enables_dpms = true,
+          },
+
+          cursor = {
+            hide_on_key_press = true,
+            inactive_timeout = 8,
+            -- Hyprland would otherwise write the cursor theme into dconf, which
+            -- GNOME shares. Keep the two sessions' settings independent.
+            sync_gsettings_theme = false,
+          },
+
+          ecosystem = {
+            no_update_news = true,
+            no_donation_nag = true,
+          },
+
+          animations = { enabled = true },
+        })
+
+        -- Curves and animations: the upstream defaults, with workspaces sliding
+        -- (spatial, matches the swipe gesture) instead of fading.
+        hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1} } })
+        hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
+        hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1} } })
+        hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1} } })
+        hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1} } })
+        hl.curve("easy",           { type = "spring", mass = 1, stiffness = 238.1191, dampening = 24.21279333 })
+
+        hl.animation({ leaf = "global",        enabled = true, speed = 10,   bezier = "default" })
+        hl.animation({ leaf = "border",        enabled = true, speed = 5.39, bezier = "easeOutQuint" })
+        hl.animation({ leaf = "windows",       enabled = true, speed = 4.79, spring = "easy" })
+        hl.animation({ leaf = "windowsIn",     enabled = true, speed = 4.1,  spring = "easy", style = "popin 90%" })
+        hl.animation({ leaf = "windowsOut",    enabled = true, speed = 1.49, bezier = "linear", style = "popin 90%" })
+        hl.animation({ leaf = "fadeIn",        enabled = true, speed = 1.73, bezier = "almostLinear" })
+        hl.animation({ leaf = "fadeOut",       enabled = true, speed = 1.46, bezier = "almostLinear" })
+        hl.animation({ leaf = "fade",          enabled = true, speed = 3.03, bezier = "quick" })
+        hl.animation({ leaf = "layers",        enabled = true, speed = 3.81, bezier = "easeOutQuint" })
+        hl.animation({ leaf = "layersIn",      enabled = true, speed = 4,    bezier = "easeOutQuint", style = "fade" })
+        hl.animation({ leaf = "layersOut",     enabled = true, speed = 1.5,  bezier = "linear", style = "fade" })
+        hl.animation({ leaf = "fadeLayersIn",  enabled = true, speed = 1.79, bezier = "almostLinear" })
+        hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
+        hl.animation({ leaf = "workspaces",    enabled = true, speed = 3,    bezier = "easeOutQuint", style = "slide" })
+      '';
+
+      "30-input" = ''
+        hl.config({
+          input = {
+            kb_layout = "us",
+            follow_mouse = 1,
+            sensitivity = 0,
+            repeat_rate = 40,
+            repeat_delay = 250,
+            numlock_by_default = true,
+
+            touchpad = {
+              natural_scroll = true,
+              tap_to_click = true,
+              disable_while_typing = true,
+            },
+          },
+        })
+
+        -- Three-finger horizontal swipe switches workspaces.
+        hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+      '';
+    };
+  };
 }
