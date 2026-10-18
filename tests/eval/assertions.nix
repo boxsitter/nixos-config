@@ -11,7 +11,6 @@
 {
   pkgs,
   self,
-  inputs,
   lib,
 }:
 

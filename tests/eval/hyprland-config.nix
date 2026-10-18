@@ -6,7 +6,7 @@
 # login does. Complements tests/vm/hyprland-session.nix, which proves the
 # session actually works.
 
-{ pkgs, self, inputs, lib }:
+{ pkgs, self, lib }:
 
 let
   hosts = [ "desktop" "laptop" ];

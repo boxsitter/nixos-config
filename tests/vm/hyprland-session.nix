@@ -20,9 +20,7 @@
 
 {
   pkgs,
-  self,
   inputs,
-  lib,
 }:
 
 let
