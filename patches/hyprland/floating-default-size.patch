@@ -1,0 +1,44 @@
+--- a/src/layout/algorithm/Algorithm.cpp	2026-10-17 22:34:32.813293043 -0700
++++ b/src/layout/algorithm/Algorithm.cpp	2026-10-17 22:41:04.511908923 -0700
+@@ -81,7 +81,29 @@
+     return m_space.lock();
+ }
+ 
++// A window that has never been floated has no usable remembered floating size
++// (it is only the client's initial size). Floating it at its tiled size, often
++// most of the screen, is never wanted, so start from a modest default instead:
++// 65% of the work area's height at 16:10, at most half its width, and never
++// larger than the window already is.
++static Vector2D defaultFloatingSize(const CBox& workArea, const Vector2D& currentSize) {
++    const double H = workArea.height * 0.65;
++    const double W = std::min(H * 1.6, workArea.width * 0.5);
++    return Vector2D{std::min(W, currentSize.x), std::min(H, currentSize.y)}.floor();
++}
++
+ void CAlgorithm::setFloating(SP<ITarget> target, bool floating, bool reposition) {
++    // A window that was floated since it mapped (by a rule, say) keeps its own size.
++    if (!floating && target->floating())
++        target->m_everFloated = true;
++
++    // First time this window is floated from tiling: give it a sensible size.
++    if (floating && !target->floating() && !target->m_everFloated) {
++        if (const auto SPACE = space(); SPACE)
++            target->rememberFloatingSize(defaultFloatingSize(SPACE->workArea(true), target->position().size()));
++        target->m_everFloated = true;
++    }
++
+     removeTarget(target);
+ 
+     g_pHyprRenderer->damageWindow(target->window());
+--- a/src/layout/target/Target.hpp	2026-10-17 22:40:44.757855953 -0700
++++ b/src/layout/target/Target.hpp	2026-10-17 22:41:04.511946269 -0700
+@@ -72,6 +72,9 @@
+         virtual void                                                warpPositionSize()  = 0;
+         virtual void                                                onUpdateSpace()     = 0;
+ 
++        // set once the target has been through a floating period (see CAlgorithm::setFloating)
++        bool m_everFloated = false;
++
+       protected:
+         ITarget() = default;
+ 

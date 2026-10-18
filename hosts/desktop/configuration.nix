@@ -27,6 +27,16 @@
     };
   };
 
+  # Local builds (the patched Hyprland, large rebuilds) should not take over the
+  # machine: cap each build at 20 of the 24 threads, run at most 2 at once, and let
+  # anything interactive win when the CPU or disk is contended.
+  nix.settings = {
+    cores = 20;
+    max-jobs = 2;
+  };
+  nix.daemonCPUSchedPolicy = "idle";
+  nix.daemonIOSchedClass = "idle";
+
   powerManagement.cpuFreqGovernor = "performance";
   services.power-profiles-daemon.enable = false;
   

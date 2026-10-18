@@ -72,6 +72,14 @@ in
       exec = "${lib.getExe pkgs.udiskie} --automount --notify --no-tray";
     };
 
+    # Nautilus in background mode: no window, but the libraries and gvfs
+    # daemons are loaded, so Super + E opens a window in the running instance
+    # instead of paying a cold start.
+    nautilus = sessionService {
+      description = "Nautilus background instance (fast first launch)";
+      exec = "${pkgs.nautilus}/bin/nautilus --gapplication-service";
+    };
+
     # MPRIS proxy so media keys act on the most recently active player.
     playerctld = sessionService {
       description = "MPRIS proxy (most recent player)";

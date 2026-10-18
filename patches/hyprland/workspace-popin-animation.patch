@@ -1,0 +1,69 @@
+--- a/src/animation/AnimationManager.cpp	2026-10-17 22:34:32.806183612 -0700
++++ b/src/animation/AnimationManager.cpp	2026-10-17 22:41:04.511988332 -0700
+@@ -410,7 +410,17 @@
+     } else if (config.starts_with("workspaces") || config.starts_with("specialWorkspace")) {
+         if (style == "slide" || style == "slidevert" || style == "fade")
+             return "";
+-        else if (style.starts_with("slide")) {
++        else if (style.starts_with("popin")) {
++            // fade, plus the whole workspace grows from the monitor center. Optional minimum size, e.g. "popin 95%"
++            if (style.find('%') != std::string::npos) {
++                try {
++                    auto percstr = style.substr(style.find_last_of(' ') + 1);
++                    std::stoi(percstr.substr(0, percstr.length() - 1));
++                } catch (std::exception& e) { return "invalid minperc"; }
++            }
++
++            return "";
++        } else if (style.starts_with("slide")) {
+             // try parsing
+             float movePerc = 0.f;
+             if (style.find('%') != std::string::npos) {
+--- a/src/animation/WorkspaceAnimationController.cpp	2026-10-17 22:34:32.802600965 -0700
++++ b/src/animation/WorkspaceAnimationController.cpp	2026-10-17 22:41:04.512023165 -0700
+@@ -104,7 +104,7 @@
+                 *ws->m_renderOffset = Vector2D((left ? -PMONITOR->m_size.x : PMONITOR->m_size.x) * (movePerc / 100.F), 0.0);
+             }
+         }
+-    } else if (ANIMSTYLE == "fade") {
++    } else if (ANIMSTYLE == "fade" || ANIMSTYLE.starts_with("popin")) { // popin: the renderer scales by the alpha
+         ws->m_renderOffset->setValueAndWarp(Vector2D(0, 0));
+ 
+         if (IN) {
+--- a/src/render/Renderer.cpp	2026-10-17 22:34:32.809634724 -0700
++++ b/src/render/Renderer.cpp	2026-10-17 22:41:04.512243582 -0700
+@@ -1207,10 +1207,34 @@
+         if (ws->m_alpha->value() <= 0.F || !ws->m_isSpecialWorkspace)
+             continue;
+ 
++        // "popin" style: while fading in or out, the whole workspace is drawn
++        // scaled about the monitor's center, from MINPERC to full size by alpha, so
++        // it grows out of (and shrinks back into) the middle of the screen.
++        SRenderModifData POPIN = RENDERMODIFDATA;
++        if (const auto STYLE = ws->m_alpha->getStyle(); STYLE.starts_with("popin") && ws->m_alpha->isBeingAnimated()) {
++            float minPerc = 0.95F;
++            if (STYLE.find('%') != std::string::npos) {
++                try {
++                    minPerc = std::stoi(STYLE.substr(STYLE.find_last_of(' ') + 1)) / 100.F;
++                } catch (std::exception& e) { ; }
++            }
++
++            const float S = minPerc + (1.F - minPerc) * std::clamp(ws->m_alpha->value(), 0.F, 1.F);
++            if (S > 0.F && S != 1.F) {
++                POPIN.modifs.emplace_back(SRenderModifData::eRenderModifType::RMOD_TYPE_TRANSLATE, (pMonitor->m_pixelSize / 2.F) * ((1.F - S) / S));
++                POPIN.modifs.emplace_back(SRenderModifData::eRenderModifType::RMOD_TYPE_SCALE, S);
++                m_renderPass.add(makeUnique<CRendererHintsPassElement>(CRendererHintsPassElement::SData{POPIN}));
++            }
++        }
++        const bool POPINAPPLIED = POPIN.modifs.size() != RENDERMODIFDATA.modifs.size();
++
+         if (Fullscreen::controller()->hasFullscreen(ws.lock()))
+             renderWorkspaceWindowsFullscreen(pMonitor, ws.lock(), time);
+         else
+             renderWorkspaceWindows(pMonitor, ws.lock(), time);
++
++        if (POPINAPPLIED)
++            m_renderPass.add(makeUnique<CRendererHintsPassElement>(CRendererHintsPassElement::SData{RENDERMODIFDATA}));
+     }
+ 
+     // pinned always above

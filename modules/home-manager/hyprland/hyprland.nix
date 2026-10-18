@@ -97,7 +97,11 @@ in
               color = "${t.hyprA "bgDeep" 0.55}",
             },
 
+            -- Behind the scratchpad: darken and blur whatever is underneath.
+            dim_special = 0.4,
+
             blur = {
+              special = true,
               enabled = true,
               size = 6,
               passes = 3,
@@ -163,6 +167,11 @@ in
         hl.animation({ leaf = "fadeLayersIn",  enabled = true, speed = 1.79, bezier = "almostLinear" })
         hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
         hl.animation({ leaf = "workspaces",    enabled = true, speed = 3,    bezier = "easeOutQuint", style = "slide" })
+        -- The scratchpad fades in while the whole workspace grows slightly from
+        -- the center of the screen (and the reverse on the way out), instead of
+        -- sliding across a very wide monitor.
+        hl.animation({ leaf = "specialWorkspaceIn",  enabled = true, speed = 3, bezier = "easeOutQuint", style = "popin 95%" })
+        hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 3, bezier = "easeOutQuint", style = "popin 95%" })
       '';
 
       "30-input" = ''

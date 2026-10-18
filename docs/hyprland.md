@@ -31,12 +31,13 @@ running config, so it cannot go stale. This table is a snapshot:
 |---|---|
 | `Super + Return` | Terminal (kitty) |
 | `Super + Space` | Launcher |
-| `Super + E` / `B` | Files / Browser |
+| `Super + E` / `B` | Files / Browser (Firefox) |
+| `Super + A` | Claude Desktop (desktop only) |
 | `Super + Shift + Esc` | System monitor (btop) |
 | `Super + Q` | Close window |
 | `Super + F` / `Shift + F` | Fullscreen / Maximize |
 | `Super + V` | Toggle floating |
-| `Super + \` | Toggle split direction |
+| `Super + \` | Toggle split direction (desktop: swap with the center window) |
 | `Super + ←↓↑→` or `H J K L` | Focus (`+Shift` move window, `+Ctrl` resize) |
 | `Super + mouse` | Drag to move, right-drag to resize |
 | `Super + 1 … 0` | Workspace 1-10 (`+Shift` sends the window there) |
@@ -195,8 +196,8 @@ with `hyprctl monitors` and edit the `scale` if it is the 1080p panel.
 
 **Desktop (RTX 5080).** NVIDIA environment variables, software cursor (trial
 removing `no_hardware_cursors` once it is stable), and flat pointer acceleration
-to match GNOME. Scale 1.5 is a placeholder for a 4K panel; set the real monitor
-after the first login.
+to match GNOME. The monitor is a Samsung Odyssey G9 Neo on `DP-4`, pinned to
+7680x2160@240 at scale 1.25 (`preferred` falls back to 3840x1080@60).
 
 ## First login checklist
 
@@ -286,3 +287,27 @@ first attempt at this setup:
 - **Verify, don't assume.** The first attempt documented several things that were
   wrong (which services honour the scoping, what UWSM changes, that the config
   format was current). The tests exist so those claims are checked by machines.
+- **Master layout, centered.** On the 32:9 desktop monitor a dwindle tiling of
+  three windows leaves two thin slivers and one huge pane. The `master` layout in
+  `center` orientation with `mfact = 0.5` gives the first window the middle half
+  of the screen and stacks the rest on either side. Below three windows it falls
+  back to a left master, which with `mfact = 0.5` is the same 50/50 split as
+  dwindle. Desktop only (`hosts/desktop/leyton.nix`); the laptop stays on
+  dwindle.
+- **Patched Hyprland.** `patches/hyprland/` holds small patches applied in
+  `modules/nixos/services/hyprland.nix` for behaviour with no config option:
+  - dragging a tiled window floats it with the cursor staying at the same
+    relative spot (stock Hyprland re-centers it on the cursor at 85% size, a
+    jarring lurch);
+  - a window floated for the first time gets a modest default size (65% of the
+    work area's height at 16:10, at most half its width) instead of keeping its
+    tiled size; after that the remembered size is used, as before;
+  - a `popin` workspace animation style: a fade where the whole workspace scales
+    about the monitor center, so the scratchpad grows out of the middle of a very
+    wide screen instead of sliding across it. Used for `specialWorkspaceIn/Out`;
+    the scratchpad background is also dimmed and blurred.
+
+  Because the package differs from nixpkgs', Hyprland is compiled locally on the
+  first rebuild and after any flake update that changes it or one of its build
+  inputs. If a patch no longer applies the build fails naming the hunk; re-diff
+  it against the new source or drop it.

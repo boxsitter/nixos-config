@@ -1,0 +1,46 @@
+--- a/src/layout/supplementary/DragController.cpp	2026-10-17 22:34:32.799277484 -0700
++++ b/src/layout/supplementary/DragController.cpp	2026-10-17 22:41:04.511862091 -0700
+@@ -79,6 +79,17 @@
+     return m_exclusiveDeviceGrab && !m_target.expired();
+ }
+ 
++// A window that has never been floated has no usable remembered floating size
++// (it is only the client's initial size). Floating it at its tiled size, often
++// most of the screen, is never wanted, so start from a modest default instead:
++// 65% of the work area's height at 16:10, at most half its width, and never
++// larger than the window already is.
++static Vector2D defaultFloatingSize(const CBox& workArea, const Vector2D& currentSize) {
++    const double H = workArea.height * 0.65;
++    const double W = std::min(H * 1.6, workArea.width * 0.5);
++    return Vector2D{std::min(W, currentSize.x), std::min(H, currentSize.y)}.floor();
++}
++
+ bool CDragStateController::updateDragWindow() {
+     const auto DRAGGINGTARGET = m_target.lock();
+     const bool WAS_FULLSCREEN = DRAGGINGTARGET->window() ? Fullscreen::controller()->isFullscreen(DRAGGINGTARGET->window()) : false;
+@@ -106,11 +117,22 @@
+         const auto MOUSECOORDS = g_pInputManager->getMouseCoordsInternal();
+         DRAGGINGTARGET->setPositionGlobal(CBox{MOUSECOORDS - DRAGGINGTARGET->position().size() / 2.F, DRAGGINGTARGET->position().size()});
+     } else if (!DRAGGINGTARGET->floating() && m_dragMode == MBIND_MOVE) {
+-        Vector2D MINSIZE = DRAGGINGTARGET->minSize().value_or(Vector2D{MIN_WINDOW_SIZE, MIN_WINDOW_SIZE});
+-        DRAGGINGTARGET->rememberFloatingSize((DRAGGINGTARGET->position().size() * 0.8489).clamp(MINSIZE, Vector2D{}).floor());
++        // The window floats at its remembered floating size (or a default for one
++        // that was never floated), placed so the cursor stays at the same relative
++        // spot of the window it grabbed, instead of jumping to the window's center.
++        Vector2D   MINSIZE   = DRAGGINGTARGET->minSize().value_or(Vector2D{MIN_WINDOW_SIZE, MIN_WINDOW_SIZE});
++        const CBox ORIGBOX   = DRAGGINGTARGET->position();
++        const auto LASTSIZE  = m_draggingWindowOriginalFloatSize;
++        const bool HASLAST   = DRAGGINGTARGET->m_everFloated && LASTSIZE.x > 5 && LASTSIZE.y > 5;
++        const auto FLOATSIZE = (HASLAST ? LASTSIZE : defaultFloatingSize(DRAGGINGTARGET->space()->workArea(true), ORIGBOX.size())).clamp(MINSIZE, Vector2D{}).floor();
++
++        DRAGGINGTARGET->rememberFloatingSize(FLOATSIZE);
+ 
+         if (m_dragThresholdReached) {
+-            DRAGGINGTARGET->setPositionGlobal(CBox{g_pInputManager->getMouseCoordsInternal() - DRAGGINGTARGET->position().size() / 2.F, DRAGGINGTARGET->position().size()});
++            const auto MOUSECOORDS = g_pInputManager->getMouseCoordsInternal();
++            const auto REL         = Vector2D{std::clamp((MOUSECOORDS.x - ORIGBOX.x) / std::max(ORIGBOX.width, 1.0), 0.0, 1.0),
++                                              std::clamp((MOUSECOORDS.y - ORIGBOX.y) / std::max(ORIGBOX.height, 1.0), 0.0, 1.0)};
++            DRAGGINGTARGET->setPositionGlobal(CBox{MOUSECOORDS - REL * FLOATSIZE, FLOATSIZE});
+             g_layoutManager->changeFloatingMode(DRAGGINGTARGET);
+             m_draggingTiled = true;
+         }

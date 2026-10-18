@@ -26,9 +26,28 @@
 
     # nixpkgs' Hyprland ships two session entries. The "uwsm-managed" one starts
     # through UWSM, which this setup does not use, so choosing it at the GDM
-    # login screen would just fail. Advertise only the plain session. (This
-    # changes `passthru` only, so Hyprland itself is not rebuilt.)
+    # login screen would just fail. Advertise only the plain session.
+    #
+    # Patches (patches/hyprland/): small behaviour changes with no config knob.
+    # Hyprland is therefore built locally instead of substituted from the cache,
+    # on the first rebuild and again whenever a flake update changes it or one of
+    # its build inputs. A patch that stops applying fails the build, naming the
+    # hunk: re-diff it against the new source, or drop it if upstream added a
+    # setting for the same thing.
+    #  - drag-tiled-keep-position: dragging a tiled window floats it with the
+    #    cursor staying at the same relative spot, instead of snapping it, shrunk,
+    #    to be centered on the cursor.
+    #  - floating-default-size: a window floated for the first time gets a modest
+    #    default size instead of keeping its (often screen-sized) tiled size.
+    #  - workspace-popin-animation: a "popin" style for workspace animations
+    #    (fade, and the whole workspace scales about the monitor center); used
+    #    for the scratchpad.
     package = pkgs.hyprland.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [
+        ../../../patches/hyprland/drag-tiled-keep-position.patch
+        ../../../patches/hyprland/floating-default-size.patch
+        ../../../patches/hyprland/workspace-popin-animation.patch
+      ];
       passthru = old.passthru // {
         providedSessions = [ "hyprland" ];
       };
